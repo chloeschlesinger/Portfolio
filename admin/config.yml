@@ -2,7 +2,7 @@
 # CHANGE the "repo" line below to  your-github-username/your-repo-name  (see SETUP.md)
 backend:
   name: github
-  repo: chloeschlesinger/portfolio
+  repo: chloeschlesinger/Portfolio
   branch: main
 
 # Publish straight away when you click Publish (no draft/review steps).
