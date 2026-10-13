@@ -1,0 +1,97 @@
+# Edit-my-portfolio dashboard settings.
+# CHANGE the "repo" line below to  your-github-username/your-repo-name  (see SETUP.md)
+backend:
+  name: github
+  repo: chloeschlesinger/portfolio
+  branch: main
+
+# Publish straight away when you click Publish (no draft/review steps).
+publish_mode: simple
+
+media_folder: src/uploads
+public_folder: /uploads
+
+collections:
+  - name: pages
+    label: "Pages"
+    files:
+      - name: home
+        label: "Home page"
+        file: content/home.json
+        fields:
+          - { label: "First name", name: first_name, widget: string }
+          - { label: "Last name", name: last_name, widget: string }
+          - { label: "Role", name: role, widget: string }
+          - { label: "Photo or cut-out (optional)", name: photo, widget: image, required: false }
+          - { label: "Photo note (shows only while there is no photo)", name: photo_caption, widget: string, required: false }
+          - { label: "Text on the felt patch", name: patch_text, widget: text }
+          - { label: "Small label (bottom)", name: felt_label, widget: string }
+          - { label: "Enter link text", name: enter_text, widget: string }
+      - name: about
+        label: "About me + Contact"
+        file: content/about.json
+        fields:
+          - { label: "Big title", name: title, widget: string }
+          - { label: "Badge", name: badge, widget: string }
+          - { label: "Main line", name: line, widget: string }
+          - { label: "Sub line (new line = new row)", name: sub, widget: text }
+          - { label: "Portrait photo", name: portrait, widget: image, required: false }
+          - { label: "Portrait description (for screen readers)", name: portrait_alt, widget: string, required: false }
+          - { label: "Bio heading", name: bio_heading, widget: string }
+          - { label: "Bio", name: bio, widget: text }
+          - label: "Photos (4 look best)"
+            name: photos
+            widget: list
+            fields:
+              - { label: "Photo", name: image, widget: image, required: false }
+              - { label: "Description (for screen readers)", name: alt, widget: string, required: false }
+          - { label: "Email", name: email, widget: string, required: false }
+          - { label: "LinkedIn link", name: linkedin, widget: string, required: false }
+          - label: "Other links"
+            name: other_links
+            widget: list
+            required: false
+            fields:
+              - { label: "Name (e.g. Instagram)", name: label, widget: string }
+              - { label: "Link", name: url, widget: string }
+          - { label: "Résumé (PDF)", name: resume, widget: file, required: false }
+
+  - name: campaigns
+    label: "Campaigns"
+    label_singular: "Campaign"
+    folder: content/campaigns
+    extension: json
+    format: json
+    create: true
+    slug: "{{slug}}"
+    summary: "{{order}}. {{tab_label}}"
+    sortable_fields: ["order"]
+    fields:
+      - { label: "Order (1 = first tab)", name: order, widget: number, value_type: int, min: 1 }
+      - { label: "Tab name", name: tab_label, widget: string }
+      - { label: "Big title (new line = new row)", name: title, widget: text }
+      - { label: "Badge (small word on the title card, optional)", name: badge, widget: string, required: false }
+      - { label: "Layout", name: layout, widget: select, options: [{ label: "Mixed grid (like Godox)", value: mix }, { label: "Tall posters (like Strip Jerky)", value: tall }], default: mix }
+      - { label: "Accent color", name: accent, widget: select, options: [{ label: "Burnt orange", value: orange }, { label: "Olive", value: olive }, { label: "Pink", value: pink }, { label: "Chocolate", value: brown }, { label: "Butter", value: butter }], default: pink }
+      - { label: "Main line", name: line, widget: string }
+      - { label: "Sub line", name: sub, widget: string }
+      - { label: "Hide any sections?", name: hidden_sections, widget: select, multiple: true, required: false, options: [{ label: "Concept board", value: concept_board }, { label: "Posters", value: posters }, { label: "Billboard", value: billboard }, { label: "Activations", value: activations }] }
+      - { label: "Concept board image", name: concept_board, widget: image, required: false }
+      - label: "Posters / visuals"
+        name: posters
+        widget: list
+        required: false
+        fields:
+          - { label: "Image", name: image, widget: image, required: false }
+          - { label: "Shape", name: shape, widget: select, options: [wide, tall, square, large], default: wide }
+          - { label: "Description (for screen readers)", name: alt, widget: string, required: false }
+      - { label: "Billboard image", name: billboard, widget: image, required: false }
+      - label: "Activations"
+        name: activations
+        widget: list
+        required: false
+        fields:
+          - { label: "Image", name: image, widget: image, required: false }
+          - { label: "Shape", name: shape, widget: select, options: [wide, tall, square, large, strip, landscape], default: wide }
+          - { label: "Caption", name: caption, widget: string, required: false }
+          - { label: "Description (for screen readers)", name: alt, widget: string, required: false }

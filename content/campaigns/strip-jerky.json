@@ -1,0 +1,59 @@
+{
+  "order": 2,
+  "tab_label": "Strip Jerky",
+  "title": "Strip\nJerky",
+  "badge": "",
+  "layout": "tall",
+  "accent": "olive",
+  "line": "Stripped Down to the Good Stuff.",
+  "sub": "Campaign 2. [placeholder: one short line about the project goes here]",
+  "hidden_sections": [],
+  "concept_board": "",
+  "posters": [
+    {
+      "image": "",
+      "shape": "tall",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "tall",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "tall",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "large",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "large",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "tall",
+      "alt": ""
+    }
+  ],
+  "billboard": "",
+  "activations": [
+    {
+      "image": "",
+      "shape": "strip",
+      "caption": "Ingredient Claw Machine",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "strip",
+      "caption": "The Good Stuff Has Taken Over",
+      "alt": ""
+    }
+  ]
+}

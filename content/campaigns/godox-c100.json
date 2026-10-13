@@ -1,0 +1,87 @@
+{
+  "order": 1,
+  "tab_label": "Godox C100",
+  "title": "Godox",
+  "badge": "C100",
+  "layout": "mix",
+  "accent": "orange",
+  "line": "Yes, You Captured It. Did You See It?",
+  "sub": "Campaign 1. [placeholder: one short line about the project goes here]",
+  "hidden_sections": [],
+  "concept_board": "",
+  "posters": [
+    {
+      "image": "",
+      "shape": "wide",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "tall",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "wide",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "square",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "square",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "tall",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "tall",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "wide",
+      "alt": ""
+    }
+  ],
+  "billboard": "",
+  "activations": [
+    {
+      "image": "",
+      "shape": "wide",
+      "caption": "",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "strip",
+      "caption": "Godox Photo Booth",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "wide",
+      "caption": "",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "wide",
+      "caption": "Say Cheese!",
+      "alt": ""
+    },
+    {
+      "image": "",
+      "shape": "strip",
+      "caption": "The Flatiron building is finally done with construction!",
+      "alt": ""
+    }
+  ]
+}
