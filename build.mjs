@@ -177,6 +177,7 @@ function homePage() {
   </aside>
   <div class="sheetwrap">
     <i class="tape l"></i><i class="tape r"></i>
+    <div class="note-abs">${note}</div>
     <div class="sheet">
       <h1 aria-label="${esc(home.first_name)} ${esc(home.last_name)}, ${esc(home.role)}">
         <span class="chunk c-blue l1">${L(home.first_name)}</span>
@@ -189,10 +190,9 @@ function homePage() {
     ${tabsRow("home")}
   </div>
   <aside class="side r">
-    ${bird("left:30%;top:90px")}
-    <div style="position:absolute;left:10px;top:300px">${note}</div>
-    ${star("left:48%;top:520px", "#2F5FD0")}
-    ${squig("left:20%;top:650px")}
+    ${bird("left:30%;top:10%")}
+    ${star("left:48%;top:62%", "#2F5FD0")}
+    ${squig("left:20%;top:80%")}
   </aside>
 </main>
 ${foot}`;

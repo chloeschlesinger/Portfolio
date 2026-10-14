@@ -66,10 +66,10 @@ img,video{display:block;max-width:100%}
 @keyframes dr{to{stroke-dashoffset:0}}
 
 /* ---------------- HOME ---------------- */
-.homewall{display:grid;grid-template-columns:1fr minmax(0,900px) 1fr;gap:0 10px;align-items:start;max-width:1500px;margin:0 auto;padding:30px 14px 60px}
-.homewall .sheetwrap{grid-column:2}
+.homewall{display:grid;grid-template-columns:minmax(0,1fr) 900px minmax(0,1fr);gap:0 10px;align-items:start;max-width:1500px;margin:0 auto;padding:30px 14px 60px}
+.homewall .sheetwrap{grid-column:2;width:100%;margin:0}
 .wallcaps{grid-column:1/-1;display:flex;justify-content:space-between;padding:0 30px 16px}
-.side{position:relative;align-self:stretch;min-height:520px}
+.side{position:relative;align-self:stretch}
 .home h1{margin:0;font-size:1rem;font-weight:400;display:block;position:relative;z-index:2}
 .home .l1{display:block;font-size:clamp(76px,16vw,150px)}
 .home .l2{display:block;font-size:clamp(26px,6.4vw,70px);letter-spacing:.08em;margin-top:clamp(6px,1.6vw,20px)}
@@ -79,7 +79,19 @@ img,video{display:block;max-width:100%}
   clip-path:polygon(0 3%,8% 0,26% 2%,48% 0,70% 3%,100% 0,98% 30%,100% 58%,97% 100%,76% 97%,52% 100%,30% 96%,10% 100%,0 96%,2% 62%,0 30%)}
 .note b{color:var(--mag);font-weight:700;display:block}
 .note small{display:block;font-family:var(--f-blk);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-top:10px;color:var(--red)}
-.side.r .note{position:absolute;left:10px;top:330px}
+.note-abs{position:absolute;right:-34px;top:34%;z-index:4}
+
+/* home fits the screen without scrolling: sizes follow the window height too */
+body.home .foot{display:none}
+body.home .homewall{padding-top:min(30px,2.4vh);padding-bottom:min(30px,2vh)}
+body.home .wallcaps{padding-bottom:min(16px,1.4vh)}
+body.home .sheet{padding:min(5vw,4vh) clamp(18px,4.4vw,60px) min(5vw,3.5vh)}
+body.home .l1{font-size:min(16vw,17vh,150px)}
+body.home .l2{font-size:min(5.4vw,6.4vh,54px);margin-top:min(1.6vw,1.6vh)}
+body.home .l3{font-size:min(9vw,10vh,88px);margin-top:min(2.6vw,2.4vh)}
+body.home .hint{font-size:min(3.6vw,4vh);margin:min(5vw,4vh) 0 min(2vw,1vh)}
+body.home .tab{height:min(27vw,26vh)}
+body.home .tape{top:-2vh}
 
 /* ---------------- INNER PAGES ---------------- */
 .hero{position:relative;padding-bottom:clamp(16px,3vw,30px)}
@@ -149,6 +161,7 @@ img,video{display:block;max-width:100%}
   .homewall{grid-template-columns:minmax(0,1fr)}.homewall .sheetwrap{grid-column:1}
   .side{display:none}
   .home-note{display:block;text-align:center;margin-top:30px}
+  .note-abs{display:none}
 }
 @media (min-width:1101px){.home-note{display:none}}
 @media (max-width:760px){
