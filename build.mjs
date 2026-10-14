@@ -1,4 +1,4 @@
-// VERSION 2 (paper flyer redesign). Builds the site from /content and /src into /dist.  Run: node build.mjs
+// VERSION 3 (paper flyer, tear-off rip transition). Builds the site from /content and /src into /dist.  Run: node build.mjs
 // No packages needed. Netlify runs this automatically each time you save in the dashboard.
 import fs from "node:fs";
 import path from "node:path";
@@ -58,11 +58,21 @@ function imgRatio(p) {
 const SHAPES = { wide: 1.5, tall: 0.667, square: 1, large: 0.75, strip: 0.667, landscape: 1.333 };
 const isVideo = (p) => /\.(mp4|webm|mov)$/i.test(p || "");
 
+// lighter webp copy (made by tools/optimize.py) is used when it exists; the original stays as the fallback
+function webpPic(image, alt) {
+  const base = path.basename(image).replace(/\.[^.]+$/, "");
+  const has = !image.startsWith("http") && fs.existsSync(path.join(root, "src/optimized", base + ".webp"));
+  const r = imgRatio(image);
+  const dim = r ? ` width="1000" height="${Math.round(1000 / r)}"` : "";
+  const img = `<img class="im" src="${url(image)}" alt="${esc(alt)}" loading="lazy" decoding="async"${dim}>`;
+  return has ? `<picture><source srcset="/optimized/${base}.webp" type="image/webp">${img}</picture>` : img;
+}
+
 function pic({ image, alt, label, shape, note }) {
   if (image) {
     return isVideo(image)
       ? `<video src="${url(image)}" controls playsinline preload="metadata" aria-label="${esc(alt || label)}"></video>`
-      : `<img class="im" src="${url(image)}" alt="${esc(alt || label)}" loading="lazy">`;
+      : webpPic(image, alt || label);
   }
   const r = SHAPES[shape] || 1.5;
   return `<div class="ph" style="--r:${r}" role="img" aria-label="Placeholder for ${esc(label)}"><span><b>${esc(label)}</b>${esc(note || "placeholder: upload this in the dashboard")}</span></div>`;
@@ -109,12 +119,13 @@ function menuItems() {
     { href: "/about/#contact", label: "Contact", key: "contact" },
   ];
 }
+const resumeItem = () => (about.resume ? [{ href: url(about.resume), label: "Résumé", key: "resume", cls: "res", dl: true }] : []);
 
 function topnav(current) {
-  const items = [{ href: "/", label: "← cover", key: "home", cls: "cover" }, ...menuItems()];
+  const items = [{ href: "/", label: "← cover", key: "home", cls: "cover" }, ...menuItems(), ...resumeItem()];
   return `<nav class="topnav" aria-label="Main">
   ${items
-    .map((i) => `<a class="${i.cls || ""}" href="${i.href}"${i.key === current ? ' aria-current="page"' : ""}><span class="sh"><span class="strip">${esc(i.label.toLowerCase())}</span></span></a>`)
+    .map((i) => `<a class="${i.cls || ""}" href="${i.href}"${i.dl ? " download" : ""}${i.key === current ? ' aria-current="page"' : ""}><span class="sh"><span class="strip">${esc(i.label.toLowerCase())}</span></span></a>`)
     .join("\n  ")}
 </nav>`;
 }
@@ -130,11 +141,12 @@ function tabsRow(current) {
     const it = items[i];
     if (it && it.key !== current) {
       const num = it.n || pad(++nn);
-      out += `<a class="tab" href="${it.href}" style="clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t" style="color:${it.key === "home" ? "var(--green)" : tcolor(i)}">${esc(it.label)}</span></a>`;
+      const colr = it.key === "home" ? "var(--green)" : tcolor(i);
+      out += `<a class="tab" href="${it.href}" data-n="${num}" data-label="${esc(it.label)}" data-color="${colr}" data-key="${esc(it.key)}" style="clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t" style="color:${it.key === "home" ? "var(--green)" : tcolor(i)}">${esc(it.label)}</span></a>`;
     } else {
       if (it) nn++;
       const h = it ? 34 : [22, 110, 60][i % 3];
-      out += `<span class="stub" style="height:${h}px;clip-path:${jag(i + 7)}" aria-hidden="true"></span>`;
+      out += `<span class="stub${it ? "" : " blank"}" style="height:${h}px;clip-path:${jag(i + 7)}" aria-hidden="true"></span>`;
     }
   }
   return `<nav class="tabs" aria-label="Pages (tear-off tabs)">${out}</nav>`;
@@ -152,10 +164,12 @@ function shell({ title, description, body, cls = "" }) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="${FONTS}" rel="stylesheet">
 <style>${rd("src/site.css")}</style>
+<script>document.documentElement.className+=" js"</script>
 </head>
 <body class="${cls}">
 ${SVG_DEFS}
 ${body}
+<script>${rd("src/site.js")}</script>
 </body>
 </html>
 `;
@@ -221,11 +235,11 @@ function campaignPage(c, idx) {
   if (!hidden.has("concept_board"))
     secs.push(`<figure class="bigfig" style="margin-top:clamp(20px,4vw,50px)">${pic({ image: c.concept_board, alt: `${titleText} concept board`, label: "Concept board", shape: "wide", note: "placeholder: your concept board image" })}</figure>`);
   if (!hidden.has("posters") && (c.posters || []).length)
-    secs.push(`<section class="section" aria-labelledby="h-posters"><p class="cap" id="h-posters">— Posters</p>${grid(c.posters, { label: "Poster", h: 300, mh: 520 })}</section>`);
+    secs.push(`<section class="section" aria-labelledby="h-posters"><p class="cap" id="h-posters"><b>01</b> Posters</p>${grid(c.posters, { label: "Poster", h: 300, mh: 520 })}</section>`);
   if (!hidden.has("billboard"))
-    secs.push(`<section class="section" aria-labelledby="h-bill"><p class="cap" id="h-bill">— Billboard</p><figure class="bigfig bill">${pic({ image: c.billboard, alt: `${titleText} billboard`, label: "Billboard", shape: "wide", note: "placeholder: your billboard image" })}</figure></section>`);
+    secs.push(`<section class="section" aria-labelledby="h-bill"><p class="cap" id="h-bill"><b>02</b> Billboard</p><figure class="bigfig bill">${pic({ image: c.billboard, alt: `${titleText} billboard`, label: "Billboard", shape: "wide", note: "placeholder: your billboard image" })}</figure></section>`);
   if (!hidden.has("activations") && (c.activations || []).length)
-    secs.push(`<section class="section" aria-labelledby="h-act"><p class="cap" id="h-act">— Activations</p>${grid(c.activations, { label: "Activation", h: 320, mh: 540, caps: true })}</section>`);
+    secs.push(`<section class="section" aria-labelledby="h-act"><p class="cap" id="h-act"><b>03</b> Activations</p>${grid(c.activations, { label: "Activation", h: 320, mh: 540, caps: true })}</section>`);
 
   const nextLink = next
     ? `<p class="cap" style="text-align:center">Next campaign</p><a href="/${next.slug}/" class="sh"><span class="strip" style="background:var(--sage);color:var(--red)">${esc(ctitle(next))} →</span></a>`
@@ -238,7 +252,7 @@ ${topnav(c.slug)}
     <i class="tape l"></i><i class="tape r"></i>
     <div class="sheet">
       <header class="hero">
-        <p class="cap num">Campaign ${pad(idx + 1)}</p>
+        <span class="torn" id="torn" style="--c:var(--${COLORS[idx % COLORS.length]})"><b>${pad(idx + 1)}</b>${esc(titleText)}</span>
         <h1 aria-label="${esc(titleText)}">${titleHtml}</h1>
         ${c.badge ? `<span class="badge sh"><span class="strip">${esc(c.badge)}</span></span>` : ""}
         <p class="lede-line">${esc(c.line)}</p>
@@ -332,6 +346,7 @@ const copyDir = (from, to) => {
   fs.cpSync(from, to, { recursive: true });
 };
 copyDir(path.join(root, "src/uploads"), path.join(dist, "uploads"));
+copyDir(path.join(root, "src/optimized"), path.join(dist, "optimized"));
 copyDir(path.join(root, "admin"), path.join(dist, "admin"));
 write("_headers", "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n");
 console.log("Built", 2 + campaigns.length, "pages into dist/");

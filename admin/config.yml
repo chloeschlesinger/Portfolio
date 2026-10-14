@@ -3,7 +3,7 @@
 backend:
   name: github
   repo: chloeschlesinger/Portfolio
-  branch: v2-redesign
+  branch: v3-redesign
 
 # Publish straight away when you click Publish (no draft/review steps).
 publish_mode: simple
