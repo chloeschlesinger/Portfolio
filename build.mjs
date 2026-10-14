@@ -3,6 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
+const THEME = process.env.THEME || "";
 const root = path.dirname(new URL(import.meta.url).pathname);
 const rd = (p) => fs.readFileSync(path.join(root, p), "utf8");
 const json = (p) => JSON.parse(rd(p));
@@ -147,10 +148,10 @@ function shell({ title, description, body, cls = "" }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="${FONTS}" rel="stylesheet">
-<style>${rd("src/site.css")}</style>
+<style>${rd("src/site.css")}${THEME ? rd("src/themes.css") : ""}</style>
 <script>document.documentElement.className+=" js"</script>
 </head>
-<body class="${cls}">
+<body class="${cls}${THEME ? " t-" + THEME : ""}">
 ${SVG_DEFS}
 <div class="scene" aria-hidden="true"></div>
 ${body}
