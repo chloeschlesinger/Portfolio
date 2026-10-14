@@ -1,59 +1,59 @@
 {
-  "order": 2,
-  "tab_label": "Strip Jerky",
-  "title": "Strip\nJerky",
-  "badge": "",
-  "layout": "tall",
-  "accent": "olive",
-  "line": "Stripped Down to the Good Stuff.",
   "sub": "Campaign 2. [placeholder: one short line about the project goes here]",
   "hidden_sections": [],
-  "concept_board": "",
+  "badge": "",
   "posters": [
     {
-      "image": "",
+      "image": "/uploads/bag.png",
       "shape": "tall",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/yees.png",
       "shape": "tall",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/shaddow.png",
       "shape": "tall",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/stripped.png",
       "shape": "large",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/ingredients.png",
       "shape": "large",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/good1.png",
       "shape": "tall",
       "alt": ""
     }
   ],
-  "billboard": "",
+  "accent": "olive",
+  "tab_label": "Strip Jerky",
+  "layout": "tall",
+  "order": 2,
+  "concept_board": "/uploads/concepboardnew.png",
+  "line": "Stripped Down to the Good Stuff.",
+  "title": "Strip\nJerky",
   "activations": [
     {
-      "image": "",
+      "image": "/uploads/s.png",
       "shape": "strip",
       "caption": "Ingredient Claw Machine",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/92ebd50a-2d34-4483-addd-e717c7ebb107.png",
       "shape": "strip",
       "caption": "The Good Stuff Has Taken Over",
       "alt": ""
     }
-  ]
+  ],
+  "billboard": "/uploads/8013b4ea-f6ff-4229-9f2c-380539dd8d2d.png"
 }
