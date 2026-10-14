@@ -13,16 +13,12 @@
     store("rip", JSON.stringify({ k: a.dataset.key, t: Date.now() }));
     if (reduce || !a.animate) return;
     e.preventDefault();
-    var href = a.href, r = a.getBoundingClientRect();
-    var fly = a.cloneNode(true);
-    fly.removeAttribute("href"); fly.setAttribute("aria-hidden", "true");
-    fly.className = "tab tab-flying";
-    fly.style.cssText += ";position:fixed;left:" + r.left + "px;top:" + r.top + "px;width:" + r.width + "px;height:" + r.height + "px;margin:0;z-index:50;pointer-events:none;transform-origin:50% 0";
-    document.body.appendChild(fly);
+    var href = a.href, fly = a;
     var stub = document.createElement("span");
-    stub.className = "stub left"; stub.setAttribute("aria-hidden", "true");
-    stub.style.height = "38px"; stub.style.clipPath = a.style.clipPath;
-    a.replaceWith(stub);
+    stub.className = "torn-stub"; stub.setAttribute("aria-hidden", "true");
+    stub.style.cssText = "left:" + a.offsetLeft + "px;width:" + a.offsetWidth + "px;height:38px;clip-path:" + a.style.clipPath;
+    a.parentNode.insertBefore(stub, a);
+    fly.classList.add("tab-flying");
     var dir = Math.random() < .5 ? -1 : 1;
     fly.animate([
       { transform: "none", offset: 0 },
@@ -53,20 +49,11 @@
     els.forEach(function (el) { el.classList.add("rv"); io.observe(el); });
   }
 
-  // DOWN THE TREE: scrolling carries you from the bright canopy toward the dark forest floor; the flyer sways with your scroll
-  var root = document.documentElement, wrap = document.querySelector(".sheetwrap");
+  // DOWN THE TREE: scrolling carries you from the bright canopy toward the dark forest floor (the flyer itself stays put)
+  var root = document.documentElement;
   if (!reduce && !document.body.classList.contains("home")) {
-    var last = scrollY, tilt = 0, tick = false;
-    var upd = function () {
-      tick = false;
-      var max = Math.max(1, root.scrollHeight - innerHeight), y = scrollY;
-      root.style.setProperty("--p", Math.min(1, Math.max(0, y / max)).toFixed(3));
-      root.style.setProperty("--py", (-y * .06).toFixed(1) + "px");
-      var v = y - last; last = y;
-      tilt += (Math.max(-1.6, Math.min(1.6, v * .06)) - tilt) * .5;
-      if (wrap) wrap.style.setProperty("--tilt", tilt.toFixed(2) + "deg");
-      if (Math.abs(tilt) > .02) requestAnimationFrame(function () { tick = true; upd(); });
-    };
+    var tick = false;
+    var upd = function () { tick = false; var max = Math.max(1, root.scrollHeight - innerHeight); root.style.setProperty("--p", Math.min(1, Math.max(0, scrollY / max)).toFixed(3)); };
     addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
     upd();
   }
