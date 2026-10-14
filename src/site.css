@@ -90,11 +90,16 @@ body.home .l1{font-size:min(16vw,17vh,150px)}
 body.home .l2{font-size:min(5.4vw,6.4vh,54px);margin-top:min(1.6vw,1.6vh)}
 body.home .l3{font-size:min(9vw,10vh,88px);margin-top:min(2.6vw,2.4vh)}
 body.home .hint{font-size:min(3.6vw,4vh);margin:min(5vw,4vh) 0 min(2vw,1vh)}
+
 body.home .homewall{min-height:100vh;grid-template-rows:auto minmax(0,1fr);padding-bottom:0}
 body.home .homewall .sheetwrap{display:flex;flex-direction:column;align-self:stretch}
-body.home .sheet{flex:none}
-body.home .tabs{flex:1;padding-bottom:14px}
-body.home .tab{height:auto;min-height:clamp(200px,24vw,260px)}
+body.home .sheet{flex:1 1 auto;display:flex;flex-direction:column}
+body.home .hint{margin-top:auto}
+body.home .tabs{flex:none;padding-bottom:0}
+body.home .tab{--f:clamp(18px,min(3.2vw,4vh),38px);height:calc(54px + var(--f)*5.7)}
+body.home .tab .n{top:10px}
+body.home .tab .t{top:34px;bottom:20px;font-size:var(--f)}
+body.home .note-abs{top:40%}
 body.home .tape{top:-2vh}
 
 /* ---------------- INNER PAGES ---------------- */
