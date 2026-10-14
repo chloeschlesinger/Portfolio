@@ -207,6 +207,46 @@ body.home .foot,body.home .ground{display:none}
   .tab{max-width:none;height:clamp(210px,56vw,260px)}
   .tab .t{font-size:clamp(22px,6.4vw,30px)}
 }
+
+/* ---------------- HOME: real tree photo + physical flyer ---------------- */
+body.home{--T:max(calc(100vw*785/1576),calc(100vh*785/998));background:#2a1a0c}
+body.home .scene .s-high{background:url(/scene/trunk.webp) 50.8% 50%/cover no-repeat}
+body.home .s-low,body.home .fleaves{display:none}
+.trunk.home{background:none;box-shadow:none;--W:min(var(--T)*.86,calc(100vw - 24px),calc((88vh - 20px)/1.24));width:100%}
+.trunk.home::before,.trunk.home::after{display:none}
+/* paper hangs off the staples: tight contact shadow at top, shadow opens toward the bottom where it lifts off the bark */
+.trunk.home .sheetwrap{filter:drop-shadow(.5px 1px .6px rgba(8,3,0,.7)) drop-shadow(5px 9px 6px rgba(8,3,0,.38)) drop-shadow(16px 30px 22px rgba(8,3,0,.38))}
+.home .sheet{background-color:#FBF3DF;
+  clip-path:polygon(0 .5%,7% 0,21% .6%,40% 0,62% .5%,83% 0,100% .6%,99.6% 30%,100% 62%,99.7% 100%,0 100%,.3% 64%,0 30%)}
+.home .sheet::before{background:url(/scene/wrinkle.webp) 0 0/100% 100% no-repeat,url(/scene/paper.webp) 0 0/1000px 1000px repeat;opacity:.8}
+/* the sheet bows around the trunk: darker toward the sides, light catching the middle, edge thickness lines */
+.home .sheet::after{background:
+  linear-gradient(90deg,rgba(40,24,10,.16),rgba(40,24,10,.03) 9%,transparent 22%,rgba(255,250,235,.22) 46%,transparent 66%,rgba(40,24,10,.05) 88%,rgba(40,24,10,.2)),
+  radial-gradient(ellipse 5% 4% at 9% 3%,rgba(40,24,10,.2),transparent 80%),radial-gradient(ellipse 5% 4% at 49% 3%,rgba(40,24,10,.2),transparent 80%),radial-gradient(ellipse 5% 4% at 91% 3%,rgba(40,24,10,.2),transparent 80%),
+  linear-gradient(180deg,rgba(40,24,10,.08),transparent 9%,transparent 70%,rgba(255,250,235,.14)),
+  linear-gradient(0deg,rgba(90,60,30,.08),transparent 16%);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.55),inset -1px 0 0 rgba(60,40,20,.35)}
+.home .dapple{opacity:.55}
+/* staples: steel crown with a specular line, prongs dug into the bark, cast shadow + paper pucker */
+.staple{height:8px;border-radius:1.5px 1.5px 2px 2px;top:1.7cqw;
+  background:linear-gradient(180deg,#fff 0 12%,#c9ced4 14% 38%,#8a9099 58%,#464b52);
+  box-shadow:1.5px 3px 2px rgba(10,4,0,.65),0 0 0 .5px rgba(0,0,0,.45),inset 0 -1px 1px rgba(0,0,0,.35)}
+.staple::before{content:"";position:absolute;inset:-9px -8px;z-index:-1;border-radius:50%;
+  background:radial-gradient(ellipse at 45% 40%,rgba(255,255,255,.4),transparent 35%),radial-gradient(ellipse,transparent 40%,rgba(40,24,10,.13) 62%,transparent 74%)}
+.staple::after{content:"";position:absolute;left:-1px;right:-1px;top:6px;height:3px;background:
+  linear-gradient(90deg,#1a1008 0 2px,transparent 2px calc(100% - 2px),#1a1008 calc(100% - 2px));opacity:.8}
+/* tabs: each one slightly bowed with a lifted, shadowed corner */
+.home .tab{box-shadow:inset 0 10px 8px -8px rgba(35,31,32,.3),inset 1px 0 0 rgba(255,255,255,.4),1px 0 1px rgba(30,15,5,.35)}
+.home .tab::after{width:56%;height:32%;background:linear-gradient(135deg,transparent 46%,rgba(35,31,32,.28) 49%,#fffaf0 53%,#e9dcc0 100%);
+  border-top-left-radius:60% 40%;box-shadow:-5px -5px 8px -4px rgba(35,31,32,.28)}
+.home .tab:nth-child(2n)::after{width:44%;height:24%}
+.home .tab:nth-child(3n)::after{left:0;right:auto;transform-origin:0 100%;background:linear-gradient(225deg,transparent 46%,rgba(35,31,32,.28) 49%,#fffaf0 53%,#e9dcc0 100%);border-top-left-radius:0;border-top-right-radius:60% 40%;box-shadow:5px -5px 8px -4px rgba(35,31,32,.28)}
+.home .tab:hover{box-shadow:inset 0 10px 8px -8px rgba(35,31,32,.3),0 14px 14px -6px rgba(10,4,0,.5)}
+@media (max-width:760px){
+  body.home{--T:max(calc(100vw*1.05),calc(100vh*785/998))}
+  body.home .scene .s-high{background-image:url(/scene/trunk-m.webp)}
+  .trunk.home{padding-top:clamp(120px,19vh,150px);--W:min(calc(100vw - 20px),calc((86vh - 130px)/1.24))}
+}
 @media (prefers-reduced-motion:reduce){
   .draw{animation:none;stroke-dashoffset:0}
   .lt,.tab,.topnav a,.im,.contact-links li,.resume{transition:none}
