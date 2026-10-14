@@ -83,14 +83,18 @@ img,video{display:block;max-width:100%}
 
 /* home fits the screen without scrolling: sizes follow the window height too */
 body.home .foot{display:none}
-body.home .homewall{padding-top:min(30px,2.4vh);padding-bottom:min(30px,2vh)}
+body.home .homewall{padding-top:min(30px,2.4vh)}
 body.home .wallcaps{padding-bottom:min(16px,1.4vh)}
 body.home .sheet{padding:min(5vw,4vh) clamp(18px,4.4vw,60px) min(5vw,3.5vh)}
 body.home .l1{font-size:min(16vw,17vh,150px)}
 body.home .l2{font-size:min(5.4vw,6.4vh,54px);margin-top:min(1.6vw,1.6vh)}
 body.home .l3{font-size:min(9vw,10vh,88px);margin-top:min(2.6vw,2.4vh)}
 body.home .hint{font-size:min(3.6vw,4vh);margin:min(5vw,4vh) 0 min(2vw,1vh)}
-body.home .tab{height:min(27vw,26vh)}
+body.home .homewall{min-height:100vh;grid-template-rows:auto minmax(0,1fr);padding-bottom:0}
+body.home .homewall .sheetwrap{display:flex;flex-direction:column;align-self:stretch}
+body.home .sheet{flex:none}
+body.home .tabs{flex:1;padding-bottom:14px}
+body.home .tab{height:auto;min-height:clamp(200px,24vw,260px)}
 body.home .tape{top:-2vh}
 
 /* ---------------- INNER PAGES ---------------- */
