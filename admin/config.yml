@@ -34,7 +34,7 @@ collections:
           - { label: "Badge", name: badge, widget: string }
           - { label: "Main line", name: line, widget: string }
           - { label: "Sub line (new line = new row)", name: sub, widget: text }
-          - { label: "Portrait photo (not shown in this version)", name: portrait, widget: image, required: false }
+          - { label: "Portrait photo (top of the About page)", name: portrait, widget: image, required: false }
           - { label: "Portrait description (for screen readers)", name: portrait_alt, widget: string, required: false }
           - { label: "Bio heading", name: bio_heading, widget: string }
           - { label: "Bio", name: bio, widget: text }

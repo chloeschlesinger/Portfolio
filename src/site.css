@@ -132,6 +132,8 @@ body.home .tape{top:-2vh}
 .nextrow .strip{padding:.18em .5em .1em;font-size:clamp(42px,9vw,110px);transform:rotate(-2deg);display:inline-block}
 
 /* about */
+.hero .hero-portrait{position:absolute;right:clamp(0px,3vw,48px);top:0;width:clamp(170px,24vw,330px);margin:0;transform:rotate(2deg);z-index:2}
+.hero .hero-portrait img{width:100%;height:auto;box-shadow:0 10px 22px rgba(35,31,32,.3)}
 .hi{display:flex;flex-wrap:wrap;align-items:flex-end;gap:0 .02em}
 .hi .chunk{font-size:clamp(130px,26vw,330px)}
 .about-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,60px);align-items:start}
@@ -177,6 +179,7 @@ body.home .tape{top:-2vh}
   .wallcaps span:last-child{display:none}.wallcaps{padding:0 10px 12px}
   .about-top{grid-template-columns:1fr}
   .badge{margin-left:8px}
+  .hero .hero-portrait{position:relative;right:auto;margin:24px auto 0;width:min(70%,300px)}
   .tabs{gap:8px;padding:0 8px}
   .tape{width:84px;height:44px}
 }

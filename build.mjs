@@ -282,7 +282,8 @@ ${topnav("about")}
         ${about.badge ? `<span class="badge sh"><span class="strip" style="background:var(--butter)">${esc(about.badge)}</span></span>` : ""}
         <p class="who" style="margin-top:.5em">${esc(about.line).replace(/, (.*)$/, ",<i>$1</i>")}</p>
         <p class="sub">${lines(about.sub)}</p>
-        ${sun("right:8%;top:6%")}${star("right:3%;top:40%")}
+        ${about.portrait ? `<figure class="hero-portrait tissue t1">${pic({ image: about.portrait, alt: about.portrait_alt || "Portrait of Chloe", label: "Portrait", shape: "tall" })}</figure>` : ""}
+        ${sun("right:36%;top:4%")}${star("right:32%;top:50%")}
       </header>
       <main id="work">
         <div class="about-top section">
