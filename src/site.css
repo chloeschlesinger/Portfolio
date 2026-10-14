@@ -1,6 +1,6 @@
-/* VERSION 4: NYC telephone pole. Photo scene behind, paper flyer / poster in front. */
+/* VERSION 4: graphic NYC street-poster editorial. Black, cream, cobalt, red + a little yellow. */
 :root{
-  --ink:#141414;--paper:#F6F3EC;--blue:#1D4FE0;--red:#E5301B;--yellow:#FFD21F;
+  --ink:#121212;--paper:#F3EDDF;--blue:#1B4DDB;--red:#E5301B;--yellow:#FFD21F;
   --f-mark:'Permanent Marker','Marker Felt',cursive;
   --f-bold:'Archivo Black','Arial Black',Impact,sans-serif;
   --f-body:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -16,20 +16,16 @@ img,video{display:block;max-width:100%}
 .skip:focus{left:8px;top:8px}
 :focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 
-/* the street: a fixed photograph (blurred NYC block, wooden pole in focus). Swap src/scene/pole.webp for a real photo. */
-.scene{position:fixed;inset:0;z-index:-3;background:#2a2118 url(/scene/pole.webp) 50% 50%/cover no-repeat}
-body.inner .scene::after{content:"";position:absolute;inset:0;background:rgba(16,10,4,.3)}
-@media (max-width:760px){.scene{background-image:url(/scene/pole-m.webp)}}
+/* the wall: a flat cobalt field with photocopy grain and a soft vignette. No photograph. */
+.scene{position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.07),transparent 60%),radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(5,10,40,.45)),var(--blue)}
+.scene::after{content:"";position:absolute;inset:0;background:url(/scene/grain.webp) 0 0/320px 320px repeat;opacity:.5}
+body.inner .scene{background:radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.06),transparent 60%),radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(5,10,40,.5)),#17389f}
 
 /* ---------------- paper pieces shared by flyer and posters ---------------- */
-.staple{position:absolute;top:1.7cqw;width:clamp(26px,5.6cqw,38px);height:8px;border-radius:1.5px 1.5px 2px 2px;z-index:6;
-  background:linear-gradient(180deg,#fff 0 12%,#c9ced4 14% 38%,#8a9099 58%,#464b52);
-  box-shadow:1.5px 3px 2px rgba(10,4,0,.65),0 0 0 .5px rgba(0,0,0,.45),inset 0 -1px 1px rgba(0,0,0,.35);animation:pop .4s cubic-bezier(.3,1.8,.5,1) backwards}
-.staple::before{content:"";position:absolute;inset:-9px -8px;z-index:-1;border-radius:50%;
-  background:radial-gradient(ellipse at 45% 40%,rgba(255,255,255,.4),transparent 35%),radial-gradient(ellipse,transparent 40%,rgba(40,24,10,.13) 62%,transparent 74%)}
-.staple::after{content:"";position:absolute;left:-1px;right:-1px;top:6px;height:3px;background:linear-gradient(90deg,#1a1008 0 2px,transparent 2px calc(100% - 2px),#1a1008 calc(100% - 2px));opacity:.8}
-.staple.s1{left:9%;transform:rotate(-4deg);animation-delay:.6s}.staple.s2{left:49%;transform:rotate(2deg);animation-delay:.7s}.staple.s3{right:9%;transform:rotate(5deg);animation-delay:.8s}
-@keyframes pop{from{transform:scale(2.4) rotate(20deg);opacity:0}}
+.tape{position:absolute;z-index:6;width:15cqw;height:5.4cqw;max-width:130px;max-height:44px;min-width:70px;min-height:24px;background:linear-gradient(180deg,rgba(243,226,160,.9),rgba(232,212,140,.88));
+  box-shadow:0 1px 2px rgba(0,0,0,.28);clip-path:polygon(0 8%,4% 0,8% 10%,12% 0,100% 0,96% 22%,100% 46%,95% 70%,100% 100%,10% 100%,6% 90%,3% 100%,0 86%,3% 54%,0 30%);animation:pop .4s cubic-bezier(.3,1.5,.5,1) backwards}
+.tape.t1{left:-3%;top:-1.8cqw;transform:rotate(-34deg);animation-delay:.6s}.tape.t2{right:-3%;top:-1.8cqw;transform:rotate(33deg);animation-delay:.7s}
+@keyframes pop{from{transform:scale(1.6) rotate(0);opacity:0}}
 
 /* tear-off tabs */
 .tabs{display:flex;gap:.9cqw;padding:0 3cqw;margin-top:-1px;position:relative}
@@ -44,42 +40,46 @@ body.inner .scene::after{content:"";position:absolute;inset:0;background:rgba(16
 .tab:nth-child(3n)::after{right:auto;left:0;transform-origin:0 100%;background:linear-gradient(225deg,transparent 47%,rgba(20,14,8,.22) 50%,#fff 54%,#e6e0d2 100%);border-top-left-radius:0;border-top-right-radius:60% 40%}
 .tab .n{position:absolute;top:2.6cqw;left:0;right:0;text-align:center;font:700 2.3cqw/1 var(--f-narrow);letter-spacing:.16em;color:var(--k,var(--ink))}
 .tab .t{position:absolute;left:50%;top:7.6cqw;bottom:3.4cqw;writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg);
-  font:700 var(--tf,5cqw)/1 var(--f-narrow);text-transform:uppercase;letter-spacing:.015em;color:var(--k,var(--ink));white-space:nowrap}
+  font:700 var(--tf,4.7cqw)/1 var(--f-narrow);text-transform:uppercase;letter-spacing:.015em;color:var(--k,var(--ink));white-space:nowrap}
 .tab:hover,.tab:focus-visible{transform:perspective(700px) rotateX(-9deg) rotate(3deg) translateY(-1cqw);box-shadow:inset 0 .9cqw .8cqw -.8cqw rgba(20,14,8,.3),0 2cqw 2cqw -1cqw rgba(10,4,0,.5)}
 .tab:hover::after,.tab:focus-visible::after{transform:scale(1.55)}
 .tab.tab-flying{animation:none;transition:none;z-index:50;pointer-events:none;box-shadow:0 3cqw 3cqw -1cqw rgba(10,4,0,.5)}
 .tabs .torn-stub{position:absolute;top:0;z-index:0;background:var(--paper);box-shadow:inset 0 .8cqw .6cqw -.5cqw rgba(20,14,8,.35)}
 
-/* ---------------- HOME: the flyer on the pole ---------------- */
-body.home{--cover:max(100vw,calc(100vh*1.6));--pole:calc(var(--cover)*.36);overflow:hidden;height:100vh;height:100dvh}
-.pole.home{height:100vh;height:100dvh;display:flex;justify-content:center;align-items:flex-start;padding-top:clamp(12px,8vh,80px)}
-.home .sheetwrap{--W:min(calc(var(--pole)*.86),calc(100vw - 28px),calc((100dvh - 12vh)/1.56));width:var(--W);container-type:inline-size;position:relative;
-  filter:drop-shadow(.5px 1px .6px rgba(8,3,0,.7)) drop-shadow(5px 9px 6px rgba(8,3,0,.38)) drop-shadow(16px 30px 22px rgba(8,3,0,.4));
-  transform-origin:50% 0;animation:slap .8s cubic-bezier(.2,.9,.25,1) both}
-@keyframes slap{0%{transform:translateY(-16px) rotate(-1.4deg);opacity:0}45%{opacity:1}70%{transform:translateY(2px) rotate(.4deg)}100%{transform:none}}
-.sheet{position:relative;background:var(--paper);aspect-ratio:100/108;padding:7cqw 7.5cqw 0;display:flex;flex-direction:column;
+/* ---------------- HOME: an oversized flyer pasted up on the wall ---------------- */
+body.home{overflow:hidden;height:100vh;height:100dvh}
+.stage.home{height:100vh;height:100dvh;display:flex;justify-content:center;align-items:flex-start;padding-top:clamp(14px,5vh,56px)}
+.home .sheetwrap{--W:min(calc(100vw - 36px),calc((100dvh - 8vh)/1.5),760px);width:var(--W);container-type:inline-size;position:relative;
+  filter:drop-shadow(.2cqw .35cqw .2cqw rgba(5,8,30,.55)) drop-shadow(1.6cqw 2.6cqw 2.2cqw rgba(5,8,30,.4));
+  transform-origin:50% 0;animation:slap .85s cubic-bezier(.2,.9,.25,1) both}
+@keyframes slap{0%{transform:translateY(-20px) rotate(-1.6deg);opacity:0}45%{opacity:1}70%{transform:translateY(2px) rotate(.4deg)}100%{transform:none}}
+/* two paste-up layers behind the flyer give it depth: found black paper, a yellow offcut */
+.back{position:absolute;z-index:0;display:block}
+.b-black{left:-9cqw;right:-6cqw;top:6cqw;height:92cqw;background:var(--ink);transform:rotate(2.6deg);transform-origin:50% 0;
+  clip-path:polygon(0 1%,18% 0,46% 1.4%,74% 0,100% .8%,99% 40%,100% 74%,98.6% 100%,70% 98.6%,36% 100%,8% 98.8%,0 100%,1.2% 56%)}
+.b-yellow{left:-13cqw;top:-3cqw;width:56cqw;height:74cqw;background:var(--yellow);transform:rotate(-5.4deg);transform-origin:50% 0;
+  clip-path:polygon(0 0,100% 1.4%,98.6% 38%,100% 100%,60% 98%,26% 100%,1.4% 99%,0 52%)}
+.sheet{position:relative;z-index:1;background:var(--paper);aspect-ratio:100/106;padding:7.5cqw 8cqw 0;display:flex;flex-direction:column;
   clip-path:polygon(0 .3%,12% 0,34% .35%,58% 0,82% .3%,100% 0,99.7% 34%,100% 66%,99.8% 100%,0 100%,.25% 62%,0 30%)}
-.sheet::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.55;background:url(/scene/wrinkle.webp) 0 0/100% 100% no-repeat,url(/scene/paper.webp) 0 0/1000px 1000px repeat}
+.sheet::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.5;background:url(/scene/wrinkle.webp) 0 0/100% 100% no-repeat,url(/scene/paper.webp) 0 0/1000px 1000px repeat}
 .sheet::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
-  background:linear-gradient(90deg,rgba(40,24,10,.16),rgba(40,24,10,.03) 9%,transparent 22%,rgba(255,252,240,.22) 46%,transparent 66%,rgba(40,24,10,.05) 88%,rgba(40,24,10,.2)),
-  radial-gradient(ellipse 5% 4% at 9% 3%,rgba(40,24,10,.2),transparent 80%),radial-gradient(ellipse 5% 4% at 49% 3%,rgba(40,24,10,.2),transparent 80%),radial-gradient(ellipse 5% 4% at 91% 3%,rgba(40,24,10,.2),transparent 80%),
-  linear-gradient(180deg,rgba(40,24,10,.08),transparent 9%,transparent 70%,rgba(255,252,240,.14)),linear-gradient(0deg,rgba(90,60,30,.08),transparent 16%);
-  box-shadow:inset 1px 1px 0 rgba(255,255,255,.6),inset -1px 0 0 rgba(60,40,20,.3)}
+  background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 12%),linear-gradient(0deg,rgba(120,90,50,.09),transparent 14%);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.7),inset -1px 0 0 rgba(60,40,20,.25)}
 .sheet>*{position:relative;z-index:2}
+.tabs{z-index:2}
 .home h1{margin:0;font-weight:400;display:block}
-.h-first{display:block;font:400 24cqw/.86 var(--f-mark);letter-spacing:-.01em;color:var(--ink);transform:rotate(-2.2deg);transform-origin:0 100%;filter:url(#rough);margin-top:1cqw}
-.h-last{display:block;margin-top:2.4cqw;transform:rotate(.7deg);font:400 9.2cqw/1.12 var(--f-bold);letter-spacing:-.012em;color:var(--ink);white-space:nowrap}
-.h-last span{display:inline-block;padding:0 1.8cqw;margin-left:-1.8cqw;background:linear-gradient(transparent 12%,var(--yellow) 12% 90%,transparent 90%);filter:url(#rough)}
-.h-role{display:block;margin-top:3.8cqw;transform:rotate(-1.5deg);filter:drop-shadow(.3cqw .7cqw .5cqw rgba(0,0,0,.3));white-space:nowrap}
-.h-role span{display:inline-block;background:var(--blue);color:#fff;font:400 8.4cqw/1 var(--f-mark);padding:1.7cqw 3.6cqw 1.3cqw;letter-spacing:.01em;
-  clip-path:polygon(0 6%,5% 0,22% 4%,48% 0,76% 5%,100% 1%,98% 52%,100% 96%,80% 100%,54% 95%,30% 100%,9% 96%,0 100%,2% 50%)}
-.invite{margin:auto 0 0;font:400 12.6cqw/.92 var(--f-hand);color:var(--ink);transform:rotate(-1.4deg);white-space:nowrap}
-.invite span{color:var(--red);position:relative;display:inline-block}
-.invite span::after{content:"";position:absolute;left:-1%;right:-3%;bottom:-.5cqw;height:2.2cqw;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M2 8C30 2 52 12 84 6s58 5 92 0 20 2 22 1' fill='none' stroke='%23E5301B' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}
-.credit{margin:5cqw 0 5.5cqw;font:600 2.55cqw/1.5 var(--f-body);text-transform:uppercase;letter-spacing:.12em;color:#2b2a27}
+/* name: giant black grotesk with a cobalt off-register ghost, then a red marker surname, then a quiet black label */
+.h-first{display:block;font:400 21.5cqw/.82 var(--f-bold);letter-spacing:-.045em;color:var(--ink);text-shadow:.8cqw .7cqw 0 rgba(27,77,219,.78);transform:rotate(-1.2deg);transform-origin:0 100%;margin-left:-.6cqw}
+.h-last{display:block;margin-top:4.2cqw;font:400 10.6cqw/1.05 var(--f-mark);letter-spacing:-.005em;color:var(--red);transform:rotate(-1.8deg);transform-origin:0 50%;white-space:nowrap;filter:url(#rough)}
+.h-role{display:block;margin-top:3.2cqw;transform:rotate(-.9deg);white-space:nowrap}
+.h-role span{display:inline-block;background:var(--ink);color:var(--paper);font:700 5.4cqw/1 var(--f-narrow);letter-spacing:.3em;padding:1.7cqw 2.6cqw 1.5cqw 3cqw;
+  clip-path:polygon(0 8%,6% 0,24% 5%,52% 0,80% 6%,100% 0,98.6% 50%,100% 100%,78% 94%,50% 100%,24% 95%,6% 100%,0 92%,1.4% 50%)}
+.invite{margin:auto 0 0;font:400 13.4cqw/.92 var(--f-hand);color:var(--ink);transform:rotate(-1.6deg);white-space:nowrap}
+.invite span{color:var(--red);display:inline-block;background:linear-gradient(transparent 52%,var(--yellow) 52% 92%,transparent 92%);padding:0 1.2cqw;margin-left:-1.2cqw}
+.credit{margin:4.6cqw 0 5.4cqw;font:600 2.5cqw/1.4 var(--f-body);text-transform:uppercase;letter-spacing:.12em;color:#2b2a27;max-width:78cqw}
 .credit b{font-weight:800;color:var(--blue)}
-.home .tab{--th:44cqw}
-.foot{text-align:center;font:600 12px var(--f-narrow);letter-spacing:.18em;text-transform:uppercase;color:#fbf6ea;text-shadow:0 1px 5px rgba(20,8,0,.9);padding:0 16px 40px}
+.home .tab{--th:42cqw}
+.foot{text-align:center;font:600 12px var(--f-narrow);letter-spacing:.18em;text-transform:uppercase;color:#f3eddf;text-shadow:0 1px 5px rgba(5,8,30,.9);padding:0 16px 40px}
 
 /* ---------------- INNER PAGES: a poster unfolds over the street ---------------- */
 .topnav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 6px;padding:16px 12px;position:absolute;top:0;left:0;right:0;z-index:8}
@@ -100,7 +100,7 @@ body.home{--cover:max(100vw,calc(100vh*1.6));--pole:calc(var(--cover)*.36);overf
 .paper::after{content:"";position:absolute;left:0;right:0;top:0;height:min(100%,2600px);pointer-events:none;
   background:linear-gradient(180deg,transparent 0 24.8%,rgba(20,14,8,.07) 25%,rgba(255,255,255,.55) 25.2%,transparent 25.9%,transparent 0 49.8%,rgba(20,14,8,.07) 50%,rgba(255,255,255,.55) 50.2%,transparent 50.9%,transparent 0 74.8%,rgba(20,14,8,.07) 75%,rgba(255,255,255,.55) 75.2%,transparent 75.9%)}
 .paper>*{position:relative;z-index:1}
-.poster .staple{top:1.4cqw}
+.poster .tape{top:-1cqw;width:11cqw;height:4cqw}
 .poster .tabs{--th:24cqw;--tf:2.7cqw;padding:0 2.2cqw;gap:.8cqw;filter:drop-shadow(0 .5cqw .4cqw rgba(8,3,0,.45)) drop-shadow(0 2cqw 2.4cqw rgba(8,3,0,.35))}
 .poster .tab .n{font-size:1.45cqw;top:1.4cqw}
 .poster .tab .t{top:4.6cqw;bottom:2cqw}
@@ -164,9 +164,9 @@ body.home{--cover:max(100vw,calc(100vh*1.6));--pole:calc(var(--cover)*.36);overf
 .js .rv.in{opacity:1;transform:none}
 
 @media (max-width:760px){
-  body.home{--cover:max(100vw,calc(100dvh*.5556));--pole:calc(var(--cover)*.8)}
-  .home .sheetwrap{--W:min(calc(var(--pole)*.9),calc(100vw - 28px),calc((100dvh - 8vh)/1.56))}
-  .pole.home{padding-top:clamp(10px,5vh,50px)}
+  .home .sheetwrap{--W:min(calc(100vw - 40px),calc((100dvh - 8vh)/1.6))}
+  .b-black{left:-5cqw;right:-3cqw}.b-yellow{left:-6cqw}
+  .stage.home{padding-top:clamp(12px,4vh,40px)}
   .topnav{gap:5px;padding:12px 8px}
   .topnav a{font-size:11.5px;padding:7px 9px 6px}
   .poster-wrap{padding-top:clamp(96px,26vw,118px);padding-left:10px;padding-right:10px}
@@ -174,10 +174,9 @@ body.home{--cover:max(100vw,calc(100vh*1.6));--pole:calc(var(--cover)*.36);overf
   .poster .tab .n{font-size:3.2cqw;top:3cqw}.poster .tab .t{top:10cqw;bottom:3.6cqw}
   .about-top{grid-template-columns:1fr}
   .portrait{max-width:300px;margin:12px auto 0}
-  .staple{width:28px}
 }
 @media (prefers-reduced-motion:reduce){
   .tab,.topnav a,.next,.next span,.resume,.contact-links a{transition:none}
   .js .rv{opacity:1;transform:none;transition:none}
-  .sheetwrap,.poster,.staple,.tab,.topnav a{animation:none!important}
+  .sheetwrap,.poster,.tape,.tab,.topnav a{animation:none!important}
 }

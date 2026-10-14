@@ -1,4 +1,4 @@
-// VERSION 4 (NYC telephone pole, stapled tear-off flyer). Builds the site from /content and /src into /dist.  Run: node build.mjs
+// VERSION 4 (graphic NYC street-poster editorial, tear-off flyer). Builds the site from /content and /src into /dist.  Run: node build.mjs
 // No packages needed. Netlify runs this automatically each time you save in the dashboard.
 import fs from "node:fs";
 import path from "node:path";
@@ -160,24 +160,25 @@ ${body}
 `;
 }
 
-const staples = `<i class="staple s1"></i><i class="staple s2"></i><i class="staple s3"></i>`;
+const staples = `<i class="tape t1"></i><i class="tape t2"></i>`;
 const foot = `<p class="foot">${esc(home.first_name)} ${esc(home.last_name)} · ${esc(home.role)}</p>`;
 
 // ---------- HOME ----------
 function homePage() {
-  const roleWords = String(home.role).toUpperCase();
   const body = `<a class="skip" href="#cover">Skip to the cover</a>
-<main class="pole home" id="cover">
+<main class="stage home" id="cover">
   <div class="sheetwrap">
+    <i class="back b-yellow" aria-hidden="true"></i>
+    <i class="back b-black" aria-hidden="true"></i>
     ${staples}
     <div class="sheet">
       <h1 aria-label="${esc(home.first_name)} ${esc(home.last_name)}, ${esc(home.role)}">
         <span class="h-first">${esc(String(home.first_name).toUpperCase())}</span>
         <span class="h-last"><span>${esc(String(home.last_name).toUpperCase())}</span></span>
-        <span class="h-role"><span>${esc(roleWords)}</span></span>
+        <span class="h-role"><span>${esc(String(home.role).toUpperCase())}</span></span>
       </h1>
       <p class="invite">${esc(home.hint_line1 || "Pick a campaign.")}<br><span>${esc(home.hint_line2 || "Tear it off.")}</span></p>
-      <p class="credit">${esc(home.note_top || "")} ${esc(home.note_accent || "")}<br><b>${esc(home.note_small || "")}</b></p>
+      <p class="credit">${esc(home.note_top || "")} ${esc(home.note_accent || "")} <b>/ ${esc(home.note_small || "")}</b></p>
     </div>
     ${tabsRow("home")}
   </div>
