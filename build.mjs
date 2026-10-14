@@ -1,4 +1,4 @@
-// Builds the site from /content and /src into /dist.  Run: node build.mjs
+// VERSION 2 (paper flyer redesign). Builds the site from /content and /src into /dist.  Run: node build.mjs
 // No packages needed. Netlify runs this automatically each time you save in the dashboard.
 import fs from "node:fs";
 import path from "node:path";
@@ -16,15 +16,7 @@ const lines = (s = "") => String(s).split("\n").map(esc).join("<br>");
 const url = (p) => (p ? (p.startsWith("http") ? p : p.startsWith("/") ? p : "/" + p) : "");
 
 const FONTS =
-  "https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Bagel+Fat+One&family=Instrument+Serif:ital@0;1&family=Special+Elite&display=swap";
-
-const ACCENTS = {
-  orange: { a: "#E4824F", d: "#E4824F" },
-  olive: { a: "#9BA544", d: "#7C8729" },
-  pink: { a: "#EA94A8", d: "#D06683" },
-  brown: { a: "#5A3F30", d: "#3A281F" },
-  butter: { a: "#F2E3B5", d: "#CDB872" },
-};
+  "https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Gaegu:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Silkscreen:wght@400;700&family=Special+Elite&display=swap";
 
 // ---------- content ----------
 const home = json("content/home.json");
@@ -35,47 +27,120 @@ const campaigns = fs
   .map((f) => ({ slug: f.replace(/\.json$/, ""), ...json("content/campaigns/" + f) }))
   .sort((a, b) => (a.order || 99) - (b.order || 99));
 
+const ctitle = (c) => (c.tab_label || c.title || "").replace(/\n/g, " ");
+const COLORS = ["blue", "red", "mag", "green", "navy", "org"];
+const pad = (n) => String(n).padStart(2, "0");
+
+// ---------- helpers ----------
+// each letter becomes its own little piece that hops when the mouse touches it
+const R = [-9, 7, -6, 10, -8, 6, -10, 8];
+const L = (t = "") =>
+  [...String(t)].map((ch, i) => (ch === " " ? " " : `<span class="lt" style="--r:${R[i % 8]}deg">${esc(ch)}</span>`)).join("");
+
+// image sizes (so each row of pictures can line up to the same height)
+function imgRatio(p) {
+  try {
+    const f = path.join(root, "src", p.replace(/^\//, ""));
+    const b = fs.readFileSync(f);
+    if (b.slice(1, 4).toString() === "PNG") return b.readUInt32BE(16) / b.readUInt32BE(20);
+    if (b[0] === 0xff && b[1] === 0xd8) {
+      let i = 2;
+      while (i < b.length) {
+        if (b[i] !== 0xff) { i++; continue; }
+        const m = b[i + 1];
+        if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return b.readUInt16BE(i + 7) / b.readUInt16BE(i + 5);
+        i += 2 + b.readUInt16BE(i + 2);
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+const SHAPES = { wide: 1.5, tall: 0.667, square: 1, large: 0.75, strip: 0.667, landscape: 1.333 };
+const isVideo = (p) => /\.(mp4|webm|mov)$/i.test(p || "");
+
+function pic({ image, alt, label, shape, note }) {
+  if (image) {
+    return isVideo(image)
+      ? `<video src="${url(image)}" controls playsinline preload="metadata" aria-label="${esc(alt || label)}"></video>`
+      : `<img class="im" src="${url(image)}" alt="${esc(alt || label)}" loading="lazy">`;
+  }
+  const r = SHAPES[shape] || 1.5;
+  return `<div class="ph" style="--r:${r}" role="img" aria-label="Placeholder for ${esc(label)}"><span><b>${esc(label)}</b>${esc(note || "placeholder: upload this in the dashboard")}</span></div>`;
+}
+const ratioOf = (it) => (it.image && !isVideo(it.image) ? imgRatio(it.image) : null) || SHAPES[it.shape] || 1.5;
+
+function grid(items, { label, h = 300, mh = 520, caps = false }) {
+  const figs = items
+    .map((it, i) => {
+      const r = ratioOf(it);
+      const cap = caps && it.caption ? `<span class="cp sh"><span class="strip">${esc(it.caption)}</span></span>` : "";
+      return `<figure style="--r:${r.toFixed(3)}">${pic({ image: it.image, alt: it.alt, label: it.caption || `${label} ${i + 1}`, shape: it.shape })}${cap}</figure>`;
+    })
+    .join("\n      ");
+  return `<div class="jg" style="--h:${h}px;--mh:${mh}px">\n      ${figs}\n    </div>`;
+}
+
+const SVG_DEFS = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="rough" x="-6%" y="-6%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="8"/></filter>
+</defs></svg>`;
+
+// hand-drawn doodles in two colors
+const D = (cls, vb, w, h, inner, style = "") => `<svg class="doodle ${cls}" viewBox="${vb}" width="${w}" height="${h}" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="${style}">${inner}</svg>`;
+const sun = (style) => D("", "0 0 60 60", 60, 60, `<g stroke="#2F5FD0"><circle class="draw" pathLength="1" cx="30" cy="30" r="12"/><path class="draw" pathLength="1" d="M30 10V2M30 50v8M10 30H2M50 30h8M16 16l-6-6M44 44l6 6M44 16l6-6M16 44l-6 6"/></g>`, style);
+const star = (style, c = "#E3338F") => D("", "0 0 60 60", 54, 54, `<path class="draw" pathLength="1" stroke="${c}" d="M30 4l6 17h18l-14 11 5 18-15-11-15 11 5-18L6 21h18z"/>`, style);
+const squig = (style, c = "#E3338F") => D("", "0 0 120 20", 120, 20, `<path class="draw" pathLength="1" stroke="${c}" d="M2 12q10-14 20 0t20 0t20 0t20 0t20 0t20 0"/>`, style);
+const spiral = (style) => D("", "0 0 70 70", 70, 70, `<path class="draw" pathLength="1" stroke="#E3338F" d="M10 40c0-20 30-26 38-4c8 26-32 42-52 20"/>`, style);
+const arrow = (style) => D("", "0 0 190 120", 190, 120, `<path class="draw" pathLength="1" stroke="#2F5FD0" d="M6 6C40 70 110 108 186 114M186 114l-22-14M186 114l-16 18"/>`, style);
+const bird = (style) => D("", "0 0 90 40", 90, 40, `<path class="draw" pathLength="1" stroke="#E3338F" d="M4 26q18-24 36-4q20-22 36 6"/>`, style);
+const titleDoodles = () => sun("right:6%;top:2%") + star("right:12%;top:46%") + squig("right:4%;top:72%", "#2F5FD0");
+
 // ---------- shared pieces ----------
-const SVG_DEFS = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <filter id="wobble" x="-5%" y="-10%" width="110%" height="120%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="4" result="n"/>
-    <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
-  </filter>
-  <filter id="fuzz" x="-5%" y="-5%" width="110%" height="110%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" result="f"/>
-    <feDisplacementMap in="SourceGraphic" in2="f" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
-  </filter>
-</svg>`;
+function jag(seed) {
+  const pts = ["0 0", "100% 0"];
+  const n = 9;
+  for (let i = n; i >= 0; i--) pts.push(`${((i / n) * 100).toFixed(1)}% ${(100 - ((i * 37 + seed * 13) % 7) * 1.6).toFixed(1)}%`);
+  return `polygon(${pts.join(",")})`;
+}
 
-const EXTRA_CSS = `
-/* added for the editable site */
-.ph{cursor:default}
-.ph:hover{background:rgba(58,40,31,.07)}
-.hero h1 [data-split]{display:block}
-.photo .pic.has-img::before,.photo .pic.has-img::after{display:none}
-.photo .pic img{display:block;width:100%;height:100%;object-fit:cover}
-.hero > svg.scribble{position:absolute}
-.resume.empty{opacity:.85}
-.contact .ph-text{font-family:var(--font-type);font-size:clamp(.95rem,1.6vw,1.3rem);opacity:.7}
-.art video{display:block;width:100%;height:auto}
-`;
-
-function tabs(current) {
-  const items = [
-    { href: "/", label: "Home", key: "home" },
-    ...campaigns.map((c) => ({ href: `/${c.slug}/`, label: c.tab_label || c.title.replace(/\n/g, " "), key: c.slug })),
+function menuItems() {
+  return [
+    ...campaigns.map((c) => ({ href: `/${c.slug}/`, label: ctitle(c), key: c.slug })),
     { href: "/about/", label: "About me", key: "about" },
     { href: "/about/#contact", label: "Contact", key: "contact" },
   ];
-  return `<nav class="tabs" aria-label="Main">
-    ${items
-      .map((i) => `<a href="${i.href}"${i.key === current ? ' aria-current="page"' : ""}>${esc(i.label)}</a>`)
-      .join("\n    ")}
-  </nav>
-  <div class="tabline"></div>`;
 }
 
-function shell({ title, description, css, body, js }) {
+function topnav(current) {
+  const items = [{ href: "/", label: "← cover", key: "home", cls: "cover" }, ...menuItems()];
+  return `<nav class="topnav" aria-label="Main">
+  ${items
+    .map((i) => `<a class="${i.cls || ""}" href="${i.href}"${i.key === current ? ' aria-current="page"' : ""}><span class="sh"><span class="strip">${esc(i.label.toLowerCase())}</span></span></a>`)
+    .join("\n  ")}
+</nav>`;
+}
+
+// the row of tear-off tabs at the bottom of every sheet
+function tabsRow(current) {
+  const items = [...menuItems(), { href: "/", label: "Back to cover", key: "home", n: "←" }];
+  const tcolor = (i) => `var(--${COLORS[i % COLORS.length]})`;
+  const slots = Math.max(7, items.length + 2);
+  let out = "";
+  let nn = 0;
+  for (let i = 0; i < slots; i++) {
+    const it = items[i];
+    if (it && it.key !== current) {
+      const num = it.n || pad(++nn);
+      out += `<a class="tab" href="${it.href}" style="clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t" style="color:${it.key === "home" ? "var(--green)" : tcolor(i)}">${esc(it.label)}</span></a>`;
+    } else {
+      if (it) nn++;
+      const h = it ? 34 : [22, 110, 60][i % 3];
+      out += `<span class="stub" style="height:${h}px;clip-path:${jag(i + 7)}" aria-hidden="true"></span>`;
+    }
+  }
+  return `<nav class="tabs" aria-label="Pages (tear-off tabs)">${out}</nav>`;
+}
+
+function shell({ title, description, body, cls = "" }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,285 +151,168 @@ function shell({ title, description, css, body, js }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="${FONTS}" rel="stylesheet">
-<style>${css}${EXTRA_CSS}</style>
+<style>${rd("src/site.css")}</style>
 </head>
-<body>
+<body class="${cls}">
+${SVG_DEFS}
 ${body}
-<script>${js}</script>
 </body>
 </html>
 `;
 }
 
-const isVideo = (p) => /\.(mp4|webm|mov)$/i.test(p || "");
-
-// an image slot: your uploaded image, or a clearly labeled placeholder
-function slot({ image, alt, label, shape, note }) {
-  const ratio = { wide: "3/2", tall: "3/4", square: "1/1", large: "3/4", strip: "2/3", landscape: "4/3" }[shape] || "3/2";
-  if (image) {
-    return isVideo(image)
-      ? `<video src="${url(image)}" controls playsinline preload="metadata" aria-label="${esc(alt || label)}"></video>`
-      : `<img src="${url(image)}" alt="${esc(alt || label)}" loading="lazy">`;
-  }
-  return `<div class="ph" role="img" aria-label="Placeholder for ${esc(label)}" style="--r:${ratio}"><span><b>${esc(label)}</b>${esc(note || "placeholder: upload this in the dashboard")}</span></div>`;
-}
+const foot = `<p class="foot">${esc(home.first_name)} ${esc(home.last_name)} · ${esc(home.role)}</p>`;
 
 // ---------- HOME ----------
 function homePage() {
-  const photo = home.photo
-    ? `<div class="pic has-img"><img src="${url(home.photo)}" alt="${esc(home.photo_alt || "Photo of Chloe")}"></div>`
-    : `<div class="pic"></div>`;
-  const caption = home.photo ? (home.photo_caption_live ? `<figcaption>${esc(home.photo_caption_live)}</figcaption>` : "") : `<figcaption>${esc(home.photo_caption || "")}</figcaption>`;
-  const body = `<a class="skip" href="#cover">Skip to cover</a>
-${SVG_DEFS}
-<header>
-  ${tabs("home")}
-</header>
-
-<main id="cover" class="stage">
-
-  <div class="layer torn sheet-pink" data-depth="6" data-torn="1"><div class="fill"></div></div>
-  <div class="layer felt felt-strip" data-depth="12"><span>${esc(home.felt_label)}</span></div>
-
-  <h1 class="name layer" data-depth="-4" aria-label="${esc(home.first_name)} ${esc(home.last_name)}">
-    <span class="line" data-split>${esc(home.first_name)}</span>
-    <span class="line" data-split>${esc(home.last_name)}</span>
-  </h1>
-
-  <div class="role-wrap layer" data-depth="-8">
-    <p class="role">${esc(home.role)}</p>
-    <svg class="scribble role-ring" viewBox="0 0 520 156" aria-hidden="true">
-      <path pathLength="1" d="M20 83 C8 22 170 8 300 13 C450 18 512 57 462 103 C405 147 130 151 56 116 C18 98 34 44 130 24 C200 11 280 9 340 15"/>
-    </svg>
+  const first = campaigns[0] ? `/${campaigns[0].slug}/` : "/about/";
+  const note = `<div class="sh"><div class="note">${esc(home.note_top || "").replace(/\n/g, "<br>")}${home.note_accent ? `<b>${esc(home.note_accent)}</b>` : ""}${home.note_small ? `<small>${esc(home.note_small)}</small>` : ""}</div></div>`;
+  const body = `<a class="skip" href="#cover">Skip to the cover</a>
+<main class="homewall home" id="cover">
+  <div class="wallcaps"><span class="cap" style="color:var(--ink)">Portfolio · Vol. 01</span><span class="cap" style="color:var(--ink)">Tear one off</span></div>
+  <aside class="side l" aria-hidden="true">
+    ${sun("left:30%;top:90px")}
+    ${spiral("left:20%;top:380px")}
+    ${arrow("left:10%;top:560px")}
+  </aside>
+  <div class="sheetwrap">
+    <i class="tape l"></i><i class="tape r"></i>
+    <div class="sheet">
+      <h1 aria-label="${esc(home.first_name)} ${esc(home.last_name)}, ${esc(home.role)}">
+        <span class="chunk c-blue l1">${L(home.first_name)}</span>
+        <span class="blk c-red l2">${L(String(home.last_name).toUpperCase())}</span>
+        <span class="l3"><span class="c-green">${L(String(home.role).split(" ")[0])}</span> <span class="c-mag">${L(String(home.role).split(" ").slice(1).join(" "))}</span></span>
+      </h1>
+      <p class="hint">${esc(home.hint || "pick a campaign, tear it off ↓")}</p>
+      <div class="home-note">${note}</div>
+    </div>
+    ${tabsRow("home")}
   </div>
-
-  <figure class="layer torn photo" data-depth="16" data-torn="4" style="margin:0">
-    <div class="fill">${photo}</div>
-    ${caption}
-  </figure>
-
-  <div class="layer sticker" data-depth="18" role="img" aria-label="Felt patch: ${esc(home.patch_text.replace(/\n/g, " "))}">
-    <div class="felt patch-disc"></div>
-    <span class="patch-text">${lines(home.patch_text)}</span>
-  </div>
-
-  <svg class="scribble s-spiral" viewBox="0 0 100 100" aria-hidden="true"><path id="spiral" pathLength="1" d=""/></svg>
-  <svg class="scribble s-star" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="M50 6 L62 38 L96 40 L69 61 L79 94 L50 74 L21 94 L31 61 L4 40 L38 38 Z"/></svg>
-
-  <div class="enter layer" data-depth="8">
-    <a href="/${campaigns[0] ? campaigns[0].slug + "/" : "about/"}">${esc(home.enter_text)}</a>
-  </div>
-  <svg class="scribble s-squig" viewBox="0 0 120 14" aria-hidden="true"><path pathLength="1" d="M2 8 q8 -8 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/></svg>
-
-  <div class="ticker" aria-label="Info bar">
-    <span>${esc(home.first_name)} ${esc(home.last_name)}</span>
-    <span>${esc(home.role)}</span>
-    <span id="when"></span>
-  </div>
-</main>`;
+  <aside class="side r">
+    ${bird("left:30%;top:90px")}
+    <div style="position:absolute;left:10px;top:300px">${note}</div>
+    ${star("left:48%;top:520px", "#2F5FD0")}
+    ${squig("left:20%;top:650px")}
+  </aside>
+</main>
+${foot}`;
   return shell({
     title: `${home.first_name} ${home.last_name}, ${home.role}`,
     description: `Portfolio of ${home.first_name} ${home.last_name}, ${home.role}.`,
-    css: rd("src/css/home.css"),
     body,
-    js: rd("src/js/home.js"),
+    cls: "home",
   });
 }
 
 // ---------- CAMPAIGN ----------
-const POSTER_CLASSES = { mix: ["p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8"], tall: ["q1", "q2", "q3", "q4", "q5", "q6"] };
-const ACT_CLASSES = { mix: ["a1", "a2", "a3", "a4", "a5"], tall: ["a1", "a2"] };
-
 function campaignPage(c, idx) {
   const hidden = new Set(c.hidden_sections || []);
-  const layout = c.layout === "tall" ? "tall" : "mix";
-  const acc = ACCENTS[c.accent] || ACCENTS.orange;
-  const titleText = c.title.replace(/\n/g, " ");
-  const h1 = c.title
-    .split("\n")
-    .map((t) => `<span data-split>${esc(t)}</span>`)
-    .join("");
+  const t = c.title.split("\n");
+  const style = idx % 2 === 0 ? "chunk" : "blk";
+  const CH = ["blue", "mag", "navy", "green", "org"];
+  const col = CH[(idx / 2) % CH.length | 0];
+  const titleHtml =
+    style === "chunk"
+      ? `<span class="chunk c-${col} title-chunk" style="display:block">${t.map((x) => `<span style="display:block">${L(x)}</span>`).join("")}</span>`
+      : `<span class="blk c-red title-blk" style="display:block">${t.map((x, i) => `<span class="${i ? "row2" : ""}" style="display:block">${L(x.toUpperCase())}</span>`).join("")}</span>`;
   const next = campaigns[idx + 1];
-  const pc = POSTER_CLASSES[layout];
-  const ac = ACT_CLASSES[layout];
-
-  const posters = (c.posters || [])
-    .map(
-      (p, i) =>
-        `<figure class="art ${pc[i % pc.length]}">${slot({ image: p.image, alt: p.alt, label: `Poster ${i + 1}`, shape: p.shape })}</figure>`
-    )
-    .join("\n      ");
-  const acts = (c.activations || [])
-    .map(
-      (a, i) =>
-        `<figure class="art ${ac[i % ac.length]}">${slot({ image: a.image, alt: a.alt, label: a.caption || `Activation ${i + 1}`, shape: a.shape })}${a.caption ? `<figcaption>${esc(a.caption)}</figcaption>` : ""}</figure>`
-    )
-    .join("\n      ");
-
-  const sections = [];
+  const titleText = ctitle(c);
+  const secs = [];
   if (!hidden.has("concept_board"))
-    sections.push(`<section class="section board" aria-labelledby="h-board">
-    <h2 id="h-board" data-uline>Concept board</h2>
-    <figure class="art">${slot({ image: c.concept_board, alt: `${titleText} concept board`, label: "Concept board", shape: "wide", note: "placeholder: your concept board image (challenge, insight, idea inside)" })}</figure>
-  </section>`);
+    secs.push(`<figure class="bigfig" style="margin-top:clamp(20px,4vw,50px)">${pic({ image: c.concept_board, alt: `${titleText} concept board`, label: "Concept board", shape: "wide", note: "placeholder: your concept board image" })}</figure>`);
   if (!hidden.has("posters") && (c.posters || []).length)
-    sections.push(`<section class="section" aria-labelledby="h-posters">
-    <h2 id="h-posters" data-uline>Posters</h2>
-    <div class="posters">
-      ${posters}
-    </div>
-  </section>`);
+    secs.push(`<section class="section" aria-labelledby="h-posters"><p class="cap" id="h-posters">— Posters</p>${grid(c.posters, { label: "Poster", h: 300, mh: 520 })}</section>`);
   if (!hidden.has("billboard"))
-    sections.push(`<section class="section" aria-labelledby="h-billboard">
-    <h2 id="h-billboard" data-uline>Billboard</h2>
-    <figure class="art">${slot({ image: c.billboard, alt: `${titleText} billboard`, label: "Billboard", shape: "wide", note: "placeholder: your billboard image" })}</figure>
-  </section>`);
+    secs.push(`<section class="section" aria-labelledby="h-bill"><p class="cap" id="h-bill">— Billboard</p><figure class="bigfig bill">${pic({ image: c.billboard, alt: `${titleText} billboard`, label: "Billboard", shape: "wide", note: "placeholder: your billboard image" })}</figure></section>`);
   if (!hidden.has("activations") && (c.activations || []).length)
-    sections.push(`<section class="section" aria-labelledby="h-act">
-    <h2 id="h-act" data-uline>Activation + stunt</h2>
-    <div class="act">
-      ${acts}
-    </div>
-  </section>`);
+    secs.push(`<section class="section" aria-labelledby="h-act"><p class="cap" id="h-act">— Activations</p>${grid(c.activations, { label: "Activation", h: 320, mh: 540, caps: true })}</section>`);
 
   const nextLink = next
-    ? `<a href="/${next.slug}/">${esc(next.tab_label || next.title.replace(/\n/g, " "))} <span aria-hidden="true">&rarr;</span></a>`
-    : `<a href="/about/">About me <span aria-hidden="true">&rarr;</span></a>`;
+    ? `<p class="cap" style="text-align:center">Next campaign</p><a href="/${next.slug}/" class="sh"><span class="strip" style="background:var(--sage);color:var(--red)">${esc(ctitle(next))} →</span></a>`
+    : `<p class="cap" style="text-align:center">Keep going</p><a href="/about/" class="sh"><span class="strip" style="background:var(--pink);color:var(--mag)">About me →</span></a>`;
 
   const body = `<a class="skip" href="#work">Skip to the work</a>
-${SVG_DEFS}
-<header>
-  ${tabs(c.slug)}
-</header>
-
-<section class="hero" aria-labelledby="title">
-  <div class="hero-sheet" data-torn="${idx + 5}"></div>
-  <h1 id="title" aria-label="${esc(titleText)}">${h1}</h1>
-  ${c.badge ? `<p class="c100">${esc(c.badge)}</p>` : ""}
-  <p class="line">${esc(c.line)}</p>
-  ${c.sub ? `<p class="sub">${esc(c.sub)}</p>` : ""}
-  <svg class="scribble s-star" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="M50 6 L62 38 L96 40 L69 61 L79 94 L50 74 L21 94 L31 61 L4 40 L38 38 Z"/></svg>
-  <svg class="scribble s-sq" viewBox="0 0 120 14" aria-hidden="true"><path pathLength="1" d="M2 8 q8 -8 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/></svg>
-</section>
-
-<main id="work">
-
-  ${sections.join("\n\n  ")}
-
-</main>
-
-<nav class="next" aria-label="Next page">
-  <small>Next up</small>
-  ${nextLink}
-</nav>
-
-<div class="ticker" aria-label="Info bar">
-  <span>${esc(home.first_name)} ${esc(home.last_name)}</span>
-  <span>${esc(home.role)}</span>
-  <span>${esc(c.tab_label || titleText)}</span>
-</div>`;
-
-  const css =
-    rd(layout === "tall" ? "src/css/strip.css" : "src/css/godox.css") +
-    `\n:root{--accent:${acc.a}}\n.uline{stroke:${acc.d}}\n` +
-    ((c.accent === "pink" || c.accent === "butter") ? `.next a:hover span,.next a:focus-visible span{color:var(--orange)}\n` : "");
-  return shell({
-    title: `${titleText} | ${home.first_name} ${home.last_name}`,
-    description: `${titleText}: ${c.line}`,
-    css,
-    body,
-    js: rd(layout === "tall" ? "src/js/strip.js" : "src/js/godox.js"),
-  });
+${topnav(c.slug)}
+<div class="wall">
+  <div class="sheetwrap">
+    <i class="tape l"></i><i class="tape r"></i>
+    <div class="sheet">
+      <header class="hero">
+        <p class="cap num">Campaign ${pad(idx + 1)}</p>
+        <h1 aria-label="${esc(titleText)}">${titleHtml}</h1>
+        ${c.badge ? `<span class="badge sh"><span class="strip">${esc(c.badge)}</span></span>` : ""}
+        <p class="lede-line">${esc(c.line)}</p>
+        ${c.sub ? `<p class="sub">${esc(c.sub)}</p>` : ""}
+        ${titleDoodles()}
+      </header>
+      <main id="work">
+        ${secs.join("\n        ")}
+      </main>
+      <div class="nextrow">${nextLink}</div>
+    </div>
+    ${tabsRow(c.slug)}
+  </div>
+</div>
+${foot}`;
+  return shell({ title: `${titleText} | ${home.first_name} ${home.last_name}`, description: `${titleText}: ${c.line}`, body });
 }
 
-// ---------- ABOUT ----------
-const SCRAPS = ["var(--olive)", "var(--butter)", "var(--accent)", "#E4824F"];
-const EXPOS = ["e1", "e2", "e3", "e4"];
-
+// ---------- ABOUT (+ contact at the bottom) ----------
 function aboutPage() {
-  const paras = about.bio
-    .split(/\n\s*\n/)
-    .map((p) => `<p class="lede">${esc(p.trim())}</p>`)
-    .join("\n        ");
-  const photos = (about.photos || [])
-    .map(
-      (p, i) =>
-        `<figure class="art ${EXPOS[i % 4]} scrap" style="--sc:${SCRAPS[i % 4]}">${slot({ image: p.image, alt: p.alt, label: `Photo ${i + 1}`, shape: "tall", note: "placeholder: add a photo in the dashboard" })}</figure>`
-    )
-    .join("\n      ");
-
-  const row = (k, val, href, ph) =>
-    `<li><span class="k">${k}</span>${val ? `<a href="${esc(href)}">${esc(val)}</a>` : `<span class="ph-text">${ph}</span>`}</li>`;
-  const others = (about.other_links || [])
-    .map((l) => `<li><span class="k">${esc(l.label)}</span><a href="${esc(l.url)}">${esc(l.url.replace(/^https?:\/\/(www\.)?/, ""))}</a></li>`)
-    .join("\n      ");
+  const HI = ["green", "navy", "org", "mag", "blue", "red"];
+  const hi = [...about.title].map((ch, i) => `<span class="chunk c-${HI[i % HI.length]}" style="transform:rotate(${[-4, 3, -2, 4, -3][i % 5]}deg)">${L(ch)}</span>`).join("");
+  const paras = about.bio.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim())}</p>`).join("\n          ");
+  const photos = (about.photos || []).slice(0, 8);
+  const photoFig = (p, i) => `<figure class="tissue t${(i % 2) + 1}">${pic({ image: p.image, alt: p.alt, label: `Photo ${i + 1}`, shape: "tall", note: "placeholder: add a photo in the dashboard" })}</figure>`;
+  const email = about.email ? `<li><a href="mailto:${esc(about.email)}" class="sh"><span class="strip">${esc(about.email)}</span></a></li>` : "";
+  const li = about.linkedin ? `<li><a href="${esc(about.linkedin)}" class="sh"><span class="strip">LinkedIn ↗</span></a></li>` : "";
+  const others = (about.other_links || []).map((l) => `<li><a href="${esc(l.url)}" class="sh"><span class="strip">${esc(l.label)} ↗</span></a></li>`).join("");
   const resume = about.resume
-    ? `<a class="resume" href="${url(about.resume)}" download><span class="felt resume-bg"></span><span class="resume-text">Download résumé</span></a>`
-    : `<span class="resume empty"><span class="felt resume-bg"></span><span class="resume-text">Résumé coming soon</span></span>`;
+    ? `<a class="resume" href="${url(about.resume)}" download><span>résumé<small>download · pdf</small></span></a>`
+    : `<span class="resume"><span>résumé<small>coming soon</small></span></span>`;
 
   const body = `<a class="skip" href="#work">Skip to the profile</a>
-${SVG_DEFS}
-<header>
-  ${tabs("about").replace('href="/about/#contact"', 'href="#contact" data-jump')}
-</header>
+${topnav("about")}
+<div class="wall">
+  <div class="sheetwrap">
+    <i class="tape l"></i><i class="tape r"></i>
+    <div class="sheet">
+      <header class="hero">
+        <h1 class="hi" aria-label="${esc(about.title)}">${hi}</h1>
+        ${about.badge ? `<span class="badge sh"><span class="strip" style="background:var(--butter)">${esc(about.badge)}</span></span>` : ""}
+        <p class="who" style="margin-top:.5em">${esc(about.line).replace(/, (.*)$/, ",<i>$1</i>")}</p>
+        <p class="sub">${lines(about.sub)}</p>
+        ${sun("right:8%;top:6%")}${star("right:3%;top:40%")}
+      </header>
+      <main id="work">
+        <div class="about-top section">
+          <div class="bio">
+            <h2 class="chunk c-navy">${L(about.bio_heading)}</h2>
+            ${paras}
+          </div>
+          <div>
+            <div class="pics" style="margin-top:0">${photos.slice(0, 2).map(photoFig).join("")}</div>
+          </div>
+        </div>
+        ${photos.length > 2 ? `<div class="pics" style="max-width:760px;margin-left:auto;margin-right:auto">${photos.slice(2).map((p, i) => photoFig(p, i + 2)).join("")}</div>` : ""}
 
-<section class="hero" aria-labelledby="title">
-  <div class="hero-sheet" data-torn="9"></div>
-  <h1 id="title"><span data-split>${esc(about.title)}</span></h1>
-  ${about.badge ? `<p class="c100">${esc(about.badge)}</p>` : ""}
-  <p class="line">${esc(about.line)}</p>
-  <p class="sub">${lines(about.sub)}</p>
-  <svg class="scribble s-star" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="M50 6 L62 38 L96 40 L69 61 L79 94 L50 74 L21 94 L31 61 L4 40 L38 38 Z"/></svg>
-  <svg class="scribble s-sq" viewBox="0 0 120 14" aria-hidden="true"><path pathLength="1" d="M2 8 q8 -8 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/></svg>
-</section>
-
-<main id="work">
-
-  <section class="section" aria-labelledby="h-profile">
-    <div class="profile-grid">
-      <figure class="art portrait scrap" style="--sc:var(--pink)">${slot({ image: about.portrait, alt: about.portrait_alt, label: "Portrait", shape: "tall", note: "placeholder: your photo" })}</figure>
-
-      <div class="bio">
-        <h2 id="h-profile" data-uline>${esc(about.bio_heading)}</h2>
-        ${paras}
-      </div>
+        <section id="contact" aria-labelledby="h-contact">
+          <div class="cutline"></div>
+          <p class="cap" id="h-contact">Contact</p>
+          <div class="say">
+            <h2 aria-label="Say hello." style="margin:0;font-weight:400"><span class="chunk c-blue s1">${L("Say")}</span><span class="chunk c-mag s2">${L("hello.")}</span></h2>
+            ${star("right:12%;top:8%", "#2F5FD0")}${squig("right:6%;top:50%")}
+          </div>
+          <ul class="contact-links">${email}${li}${others}</ul>
+          ${resume}
+        </section>
+      </main>
     </div>
-  </section>
-
-  <section class="section" aria-label="Photos">
-    <div class="ex">
-      ${photos}
-    </div>
-  </section>
-
-  <section class="section" id="contact" aria-labelledby="h-contact">
-    <h2 id="h-contact" data-uline>Contact</h2>
-    <ul class="contact">
-      ${row("Email", about.email, "mailto:" + about.email, "[placeholder: your email]")}
-      ${row("LinkedIn", about.linkedin, about.linkedin, "[placeholder: your LinkedIn link]")}
-      ${others}
-    </ul>
-    ${resume}
-  </section>
-
-</main>
-
-<nav class="next" aria-label="Back to the cover">
-  <a href="/">Back to the cover <span aria-hidden="true">&rarr;</span></a>
-</nav>
-
-<div class="ticker" aria-label="Info bar">
-  <span>${esc(home.first_name)} ${esc(home.last_name)}</span>
-  <span>${esc(home.role)}</span>
-  <span>About me</span>
-</div>`;
-  return shell({
-    title: `About me | ${home.first_name} ${home.last_name}`,
-    description: `About ${home.first_name} ${home.last_name}.`,
-    css: rd("src/css/about.css"),
-    body,
-    js: rd("src/js/about.js"),
-  });
+    ${tabsRow("about")}
+  </div>
+</div>
+${foot}`;
+  return shell({ title: `About me | ${home.first_name} ${home.last_name}`, description: `About ${home.first_name} ${home.last_name}.`, body });
 }
 
 // ---------- write ----------
@@ -376,9 +324,8 @@ const write = (rel, data) => {
 write("index.html", homePage());
 campaigns.forEach((c, i) => write(`${c.slug}/index.html`, campaignPage(c, i)));
 write("about/index.html", aboutPage());
-write("404.html", shell({ title: "Page not found", description: "", css: rd("src/css/about.css"), body: `<main style="padding:4rem 8%"><h1 style="font-family:var(--font-marker);font-size:clamp(4rem,12vw,9rem);margin:0">Lost.</h1><p style="font-size:1.4rem"><a href="/">Back to the cover</a></p></main>`, js: "" }));
+write("404.html", shell({ title: "Page not found", description: "", body: `<main style="padding:4rem 8%"><h1 class="chunk c-blue" style="font-size:clamp(4rem,12vw,9rem)">Lost.</h1><p style="font-size:1.4rem"><a href="/">Back to the cover</a></p></main>` }));
 
-// uploads + dashboard
 const copyDir = (from, to) => {
   if (!fs.existsSync(from)) return;
   fs.cpSync(from, to, { recursive: true });

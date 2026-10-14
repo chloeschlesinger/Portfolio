@@ -3,7 +3,7 @@
 backend:
   name: github
   repo: chloeschlesinger/Portfolio
-  branch: main
+  branch: v2-redesign
 
 # Publish straight away when you click Publish (no draft/review steps).
 publish_mode: simple
@@ -21,12 +21,11 @@ collections:
         fields:
           - { label: "First name", name: first_name, widget: string }
           - { label: "Last name", name: last_name, widget: string }
-          - { label: "Role", name: role, widget: string }
-          - { label: "Photo or cut-out (optional)", name: photo, widget: image, required: false }
-          - { label: "Photo note (shows only while there is no photo)", name: photo_caption, widget: string, required: false }
-          - { label: "Text on the felt patch", name: patch_text, widget: text }
-          - { label: "Small label (bottom)", name: felt_label, widget: string }
-          - { label: "Enter link text", name: enter_text, widget: string }
+          - { label: "Role (two words look best, e.g. Art Director)", name: role, widget: string }
+          - { label: "Pink note: first line", name: note_top, widget: string }
+          - { label: "Pink note: colorful line", name: note_accent, widget: string, required: false }
+          - { label: "Pink note: small line", name: note_small, widget: string, required: false }
+          - { label: "Hint line under the name", name: hint, widget: string, required: false }
       - name: about
         label: "About me + Contact"
         file: content/about.json
@@ -35,7 +34,7 @@ collections:
           - { label: "Badge", name: badge, widget: string }
           - { label: "Main line", name: line, widget: string }
           - { label: "Sub line (new line = new row)", name: sub, widget: text }
-          - { label: "Portrait photo", name: portrait, widget: image, required: false }
+          - { label: "Portrait photo (not shown in this version)", name: portrait, widget: image, required: false }
           - { label: "Portrait description (for screen readers)", name: portrait_alt, widget: string, required: false }
           - { label: "Bio heading", name: bio_heading, widget: string }
           - { label: "Bio", name: bio, widget: text }
@@ -71,8 +70,6 @@ collections:
       - { label: "Tab name", name: tab_label, widget: string }
       - { label: "Big title (new line = new row)", name: title, widget: text }
       - { label: "Badge (small word on the title card, optional)", name: badge, widget: string, required: false }
-      - { label: "Layout", name: layout, widget: select, options: [{ label: "Mixed grid (like Godox)", value: mix }, { label: "Tall posters (like Strip Jerky)", value: tall }], default: mix }
-      - { label: "Accent color", name: accent, widget: select, options: [{ label: "Burnt orange", value: orange }, { label: "Olive", value: olive }, { label: "Pink", value: pink }, { label: "Chocolate", value: brown }, { label: "Butter", value: butter }], default: pink }
       - { label: "Main line", name: line, widget: string }
       - { label: "Sub line (optional, leave empty to hide)", name: sub, widget: string, required: false }
       - { label: "Hide any sections?", name: hidden_sections, widget: select, multiple: true, required: false, options: [{ label: "Concept board", value: concept_board }, { label: "Posters", value: posters }, { label: "Billboard", value: billboard }, { label: "Activations", value: activations }] }

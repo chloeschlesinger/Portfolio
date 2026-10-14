@@ -2,9 +2,8 @@
   "first_name": "Chloe",
   "last_name": "Schlesinger",
   "role": "Art Director",
-  "photo": "/uploads/img_9084.jpg",
-  "photo_caption": "placeholder: your photo or cut-out goes here",
-  "patch_text": "strategic\ncommunication,\ncreative track",
-  "felt_label": "CU Boulder",
-  "enter_text": "[enter the portfolio]"
+  "note_top": "strategic communication,",
+  "note_accent": "creative track",
+  "note_small": "CU Boulder",
+  "hint": "pick a campaign, tear it off ↓"
 }
