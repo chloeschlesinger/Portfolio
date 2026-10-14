@@ -142,7 +142,7 @@ function tabsRow(current) {
     if (it && it.key !== current) {
       const num = it.n || pad(++nn);
       const colr = it.key === "home" ? "var(--green)" : tcolor(i);
-      out += `<a class="tab" href="${it.href}" data-n="${num}" data-label="${esc(it.label)}" data-color="${colr}" data-key="${esc(it.key)}" style="--i:${i};clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t" style="color:${it.key === "home" ? "var(--green)" : tcolor(i)}">${esc(it.label)}</span></a>`;
+      out += `<a class="tab" href="${it.href}" data-n="${num}" data-label="${esc(it.label)}" data-color="${colr}" data-key="${esc(it.key)}" style="--i:${i};--h:${[1, 0.95, 1.04, 0.98, 1.02, 0.96, 1.03][i % 7]};--r0:${[-0.7, 0.9, -0.4, 0.6, -0.9, 0.5, -0.3][i % 7]}deg;clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t" style="color:${it.key === "home" ? "var(--green)" : tcolor(i)}">${esc(it.label)}</span></a>`;
     } else {
       if (it) nn++;
       const h = it ? 34 : [22, 110, 60][i % 3];
@@ -197,6 +197,7 @@ function homePage() {
         <span class="l3"><span class="c-green">${L(String(home.role).split(" ")[0])}</span> <span class="c-mag">${L(String(home.role).split(" ").slice(1).join(" "))}</span></span>
       </h1>
       <p class="hint">${esc(home.hint || "pick a campaign, tear it off ↓")}</p>
+      <i class="dapple" aria-hidden="true"></i>
     </div>
     ${tabsRow("home")}
   </div>
