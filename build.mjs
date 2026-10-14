@@ -242,7 +242,7 @@ ${SVG_DEFS}
   <h1 id="title" aria-label="${esc(titleText)}">${h1}</h1>
   ${c.badge ? `<p class="c100">${esc(c.badge)}</p>` : ""}
   <p class="line">${esc(c.line)}</p>
-  <p class="sub">${esc(c.sub)}</p>
+  ${c.sub ? `<p class="sub">${esc(c.sub)}</p>` : ""}
   <svg class="scribble s-star" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="M50 6 L62 38 L96 40 L69 61 L79 94 L50 74 L21 94 L31 61 L4 40 L38 38 Z"/></svg>
   <svg class="scribble s-sq" viewBox="0 0 120 14" aria-hidden="true"><path pathLength="1" d="M2 8 q8 -8 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/></svg>
 </section>

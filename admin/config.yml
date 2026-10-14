@@ -74,7 +74,7 @@ collections:
       - { label: "Layout", name: layout, widget: select, options: [{ label: "Mixed grid (like Godox)", value: mix }, { label: "Tall posters (like Strip Jerky)", value: tall }], default: mix }
       - { label: "Accent color", name: accent, widget: select, options: [{ label: "Burnt orange", value: orange }, { label: "Olive", value: olive }, { label: "Pink", value: pink }, { label: "Chocolate", value: brown }, { label: "Butter", value: butter }], default: pink }
       - { label: "Main line", name: line, widget: string }
-      - { label: "Sub line", name: sub, widget: string }
+      - { label: "Sub line (optional, leave empty to hide)", name: sub, widget: string, required: false }
       - { label: "Hide any sections?", name: hidden_sections, widget: select, multiple: true, required: false, options: [{ label: "Concept board", value: concept_board }, { label: "Posters", value: posters }, { label: "Billboard", value: billboard }, { label: "Activations", value: activations }] }
       - { label: "Concept board image", name: concept_board, widget: image, required: false }
       - label: "Posters / visuals"
