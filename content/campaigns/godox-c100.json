@@ -1,87 +1,81 @@
 {
-  "order": 1,
-  "tab_label": "Godox C100",
-  "title": "Godox",
-  "badge": "C100",
-  "layout": "mix",
-  "accent": "orange",
-  "line": "Yes, You Captured It. Did You See It?",
   "sub": "Campaign 1. [placeholder: one short line about the project goes here]",
   "hidden_sections": [],
-  "concept_board": "",
+  "badge": "C100",
   "posters": [
     {
-      "image": "",
+      "image": "/uploads/seeeeee.png",
       "shape": "wide",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/phone.png",
       "shape": "tall",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/stamppp.png",
       "shape": "wide",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/rr.png",
       "shape": "square",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/tt.png",
       "shape": "square",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/sss.png",
       "shape": "tall",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/gg.png",
       "shape": "tall",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/diner2.png",
       "shape": "wide",
       "alt": ""
     }
   ],
-  "billboard": "",
+  "accent": "orange",
+  "tab_label": "Godox C100",
+  "layout": "mix",
+  "order": 1,
+  "concept_board": "/uploads/newnew222.png",
+  "line": "Yes, You Captured It. Did You See It?",
+  "title": "Godox",
   "activations": [
     {
-      "image": "",
+      "image": "/uploads/8e21839e-2522-43ec-aa28-95cf01267a04-1.png",
       "shape": "wide",
       "caption": "",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/5ffbe8d5-7597-4432-9ff2-bed7d8bef289.png",
       "shape": "strip",
       "caption": "Godox Photo Booth",
       "alt": ""
     },
     {
-      "image": "",
-      "shape": "wide",
-      "caption": "",
-      "alt": ""
-    },
-    {
-      "image": "",
-      "shape": "wide",
-      "caption": "Say Cheese!",
-      "alt": ""
-    },
-    {
-      "image": "",
+      "image": "/uploads/9b788c2d-8acf-4804-bc9c-97121f42d2b6.png",
       "shape": "strip",
       "caption": "The Flatiron building is finally done with construction!",
       "alt": ""
+    },
+    {
+      "image": "/uploads/c0b26cd9-0795-4d00-9b3c-b193ad76151b.png",
+      "shape": "wide",
+      "caption": "Say Cheese!",
+      "alt": ""
     }
-  ]
+  ],
+  "billboard": "/uploads/6cf56cb4-6f8f-42d7-bd89-9d2a8bbf2e1a.png"
 }
