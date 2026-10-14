@@ -1,32 +1,34 @@
 {
-  "title": "Hi!",
-  "badge": "About me",
-  "line": "Chloe Schlesinger, Art Director.",
   "sub": "Strategic communication, creative track\nCU Boulder",
-  "portrait": "",
-  "portrait_alt": "Portrait of Chloe",
-  "bio_heading": "Hi, I'm Chloe!",
-  "bio": "You'll probably find me trying a new recipe, watching a movie, or stopping whatever I'm doing to say hi to a dog. My favorite movie is The Shining, which probably says something about me, but I'd rather not look into it too much. I love a good conversation, finding new places to explore, and picking up random hobbies that I get way too invested in. I'm easily entertained, endlessly curious, and always looking for my next obsession.",
   "photos": [
     {
-      "image": "",
+      "image": "/uploads/fullsizerender.jpeg",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/img_2500.jpeg",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/img_8590.jpeg",
       "alt": ""
     },
     {
-      "image": "",
+      "image": "/uploads/img_2624.jpeg",
       "alt": ""
-    }
+    },
+    {},
+    {}
   ],
-  "email": "",
-  "linkedin": "",
+  "badge": "About me",
+  "portrait_alt": "Portrait of Chloe",
+  "bio": "You'll probably find me trying a new recipe, watching a movie, or stopping whatever I'm doing to say hi to a dog. My favorite movie is The Shining, which probably says something about me, but I'd rather not look into it too much. I love a good conversation, finding new places to explore, and picking up random hobbies that I get way too invested in. I'm easily entertained, endlessly curious, and always looking for my next obsession.",
   "other_links": [],
-  "resume": ""
+  "bio_heading": "Hi, I'm Chloe!",
+  "resume": "/uploads/untitled-document-73-.pdf",
+  "line": "Chloe Schlesinger, Art Director.",
+  "title": "Hi!",
+  "portrait": "/uploads/img_9084.jpg",
+  "email": "cschlesinger3@gmail.com",
+  "linkedin": "https://www.linkedin.com/in/chloe-schlesinger-056737276"
 }
