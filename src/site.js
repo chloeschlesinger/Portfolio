@@ -52,4 +52,22 @@
     var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
     els.forEach(function (el) { el.classList.add("rv"); io.observe(el); });
   }
+
+  // DOWN THE TREE: scrolling carries you from the bright canopy toward the dark forest floor; the flyer sways with your scroll
+  var root = document.documentElement, wrap = document.querySelector(".sheetwrap");
+  if (!reduce && !document.body.classList.contains("home")) {
+    var last = scrollY, tilt = 0, tick = false;
+    var upd = function () {
+      tick = false;
+      var max = Math.max(1, root.scrollHeight - innerHeight), y = scrollY;
+      root.style.setProperty("--p", Math.min(1, Math.max(0, y / max)).toFixed(3));
+      root.style.setProperty("--py", (-y * .06).toFixed(1) + "px");
+      var v = y - last; last = y;
+      tilt += (Math.max(-1.6, Math.min(1.6, v * .06)) - tilt) * .5;
+      if (wrap) wrap.style.setProperty("--tilt", tilt.toFixed(2) + "deg");
+      if (Math.abs(tilt) > .02) requestAnimationFrame(function () { tick = true; upd(); });
+    };
+    addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
+    upd();
+  }
 })();

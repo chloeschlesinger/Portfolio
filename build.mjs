@@ -35,7 +35,7 @@ const pad = (n) => String(n).padStart(2, "0");
 // each letter becomes its own little piece that hops when the mouse touches it
 const R = [-9, 7, -6, 10, -8, 6, -10, 8];
 const L = (t = "") =>
-  [...String(t)].map((ch, i) => (ch === " " ? " " : `<span class="lt" style="--r:${R[i % 8]}deg">${esc(ch)}</span>`)).join("");
+  [...String(t)].map((ch, i) => (ch === " " ? " " : `<span class="lt" style="--r:${R[i % 8]}deg;--n:${i}">${esc(ch)}</span>`)).join("");
 
 // image sizes (so each row of pictures can line up to the same height)
 function imgRatio(p) {
@@ -125,7 +125,7 @@ function topnav(current) {
   const items = [{ href: "/", label: "← cover", key: "home", cls: "cover" }, ...menuItems(), ...resumeItem()];
   return `<nav class="topnav" aria-label="Main">
   ${items
-    .map((i) => `<a class="${i.cls || ""}" href="${i.href}"${i.dl ? " download" : ""}${i.key === current ? ' aria-current="page"' : ""}><span class="sh"><span class="strip">${esc(i.label.toLowerCase())}</span></span></a>`)
+    .map((i, n) => `<a style="--i:${n}" class="${i.cls || ""}" href="${i.href}"${i.dl ? " download" : ""}${i.key === current ? ' aria-current="page"' : ""}><span class="sh"><span class="strip">${esc(i.label.toLowerCase())}</span></span></a>`)
     .join("\n  ")}
 </nav>`;
 }
@@ -142,7 +142,7 @@ function tabsRow(current) {
     if (it && it.key !== current) {
       const num = it.n || pad(++nn);
       const colr = it.key === "home" ? "var(--green)" : tcolor(i);
-      out += `<a class="tab" href="${it.href}" data-n="${num}" data-label="${esc(it.label)}" data-color="${colr}" data-key="${esc(it.key)}" style="clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t" style="color:${it.key === "home" ? "var(--green)" : tcolor(i)}">${esc(it.label)}</span></a>`;
+      out += `<a class="tab" href="${it.href}" data-n="${num}" data-label="${esc(it.label)}" data-color="${colr}" data-key="${esc(it.key)}" style="--i:${i};clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t" style="color:${it.key === "home" ? "var(--green)" : tcolor(i)}">${esc(it.label)}</span></a>`;
     } else {
       if (it) nn++;
       const h = it ? 34 : [22, 110, 60][i % 3];
@@ -168,6 +168,8 @@ function shell({ title, description, body, cls = "" }) {
 </head>
 <body class="${cls}">
 ${SVG_DEFS}
+<div class="scene" aria-hidden="true"><i class="s-high"></i><i class="s-low"></i></div>
+<div class="fleaves" aria-hidden="true">${[["#c9772b",26,"14%",17,0],["#a8552a",20,"46%",22,-7],["#d6a23a",24,"70%",25,-13],["#b8401e",18,"30%",29,-19],["#e0a02e",22,"84%",20,-4]].map(([c,s,t,d,dl]) => `<i style="--c:${c};--s:${s}px;--t:${t};--d:${d}s;--dl:${dl}s"></i>`).join("")}</div>
 ${body}
 <script>${rd("src/site.js")}</script>
 </body>
@@ -175,6 +177,8 @@ ${body}
 `;
 }
 
+const staples = `<i class="staple s1"></i><i class="staple s2"></i><i class="staple s3"></i>`;
+const ground = `<div class="ground" aria-hidden="true"></div>`;
 const foot = `<p class="foot">${esc(home.first_name)} ${esc(home.last_name)} · ${esc(home.role)}</p>`;
 
 // ---------- HOME ----------
@@ -182,15 +186,9 @@ function homePage() {
   const first = campaigns[0] ? `/${campaigns[0].slug}/` : "/about/";
   const note = `<div class="sh"><div class="note">${esc(home.note_top || "").replace(/\n/g, "<br>")}${home.note_accent ? `<b>${esc(home.note_accent)}</b>` : ""}${home.note_small ? `<small>${esc(home.note_small)}</small>` : ""}</div></div>`;
   const body = `<a class="skip" href="#cover">Skip to the cover</a>
-<main class="homewall home" id="cover">
-  <div class="wallcaps"><span class="cap" style="color:var(--ink)">Portfolio · Vol. 01</span><span class="cap" style="color:var(--ink)">Tear one off</span></div>
-  <aside class="side l" aria-hidden="true">
-    ${sun("left:30%;top:90px")}
-    ${spiral("left:20%;top:380px")}
-    ${arrow("left:10%;top:560px")}
-  </aside>
+<main class="trunk home" id="cover">
   <div class="sheetwrap">
-    <i class="tape l"></i><i class="tape r"></i>
+    ${staples}
     <div class="note-abs">${note}</div>
     <div class="sheet">
       <h1 aria-label="${esc(home.first_name)} ${esc(home.last_name)}, ${esc(home.role)}">
@@ -199,17 +197,10 @@ function homePage() {
         <span class="l3"><span class="c-green">${L(String(home.role).split(" ")[0])}</span> <span class="c-mag">${L(String(home.role).split(" ").slice(1).join(" "))}</span></span>
       </h1>
       <p class="hint">${esc(home.hint || "pick a campaign, tear it off ↓")}</p>
-      <div class="home-note">${note}</div>
     </div>
     ${tabsRow("home")}
   </div>
-  <aside class="side r">
-    ${bird("left:30%;top:10%")}
-    ${star("left:48%;top:62%", "#2F5FD0")}
-    ${squig("left:20%;top:80%")}
-  </aside>
-</main>
-${foot}`;
+</main>`;
   return shell({
     title: `${home.first_name} ${home.last_name}, ${home.role}`,
     description: `Portfolio of ${home.first_name} ${home.last_name}, ${home.role}.`,
@@ -247,9 +238,9 @@ function campaignPage(c, idx) {
 
   const body = `<a class="skip" href="#work">Skip to the work</a>
 ${topnav(c.slug)}
-<div class="wall">
+<div class="trunk">
   <div class="sheetwrap">
-    <i class="tape l"></i><i class="tape r"></i>
+    ${staples}
     <div class="sheet">
       <header class="hero">
         <span class="torn" id="torn" style="--c:var(--${COLORS[idx % COLORS.length]})"><b>${pad(idx + 1)}</b>${esc(titleText)}</span>
@@ -267,6 +258,7 @@ ${topnav(c.slug)}
     ${tabsRow(c.slug)}
   </div>
 </div>
+${ground}
 ${foot}`;
   return shell({ title: `${titleText} | ${home.first_name} ${home.last_name}`, description: `${titleText}: ${c.line}`, body });
 }
@@ -287,9 +279,9 @@ function aboutPage() {
 
   const body = `<a class="skip" href="#work">Skip to the profile</a>
 ${topnav("about")}
-<div class="wall">
+<div class="trunk">
   <div class="sheetwrap">
-    <i class="tape l"></i><i class="tape r"></i>
+    ${staples}
     <div class="sheet">
       <header class="hero">
         <h1 class="hi" aria-label="${esc(about.title)}">${hi}</h1>
@@ -326,6 +318,7 @@ ${topnav("about")}
     ${tabsRow("about")}
   </div>
 </div>
+${ground}
 ${foot}`;
   return shell({ title: `About me | ${home.first_name} ${home.last_name}`, description: `About ${home.first_name} ${home.last_name}.`, body });
 }
@@ -347,6 +340,7 @@ const copyDir = (from, to) => {
 };
 copyDir(path.join(root, "src/uploads"), path.join(dist, "uploads"));
 copyDir(path.join(root, "src/optimized"), path.join(dist, "optimized"));
+copyDir(path.join(root, "src/scene"), path.join(dist, "scene"));
 copyDir(path.join(root, "admin"), path.join(dist, "admin"));
 write("_headers", "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n");
 console.log("Built", 2 + campaigns.length, "pages into dist/");
