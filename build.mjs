@@ -1,4 +1,4 @@
-// VERSION 3 (paper flyer, tear-off rip transition). Builds the site from /content and /src into /dist.  Run: node build.mjs
+// VERSION 4 (NYC telephone pole, stapled tear-off flyer). Builds the site from /content and /src into /dist.  Run: node build.mjs
 // No packages needed. Netlify runs this automatically each time you save in the dashboard.
 import fs from "node:fs";
 import path from "node:path";
@@ -16,7 +16,7 @@ const lines = (s = "") => String(s).split("\n").map(esc).join("<br>");
 const url = (p) => (p ? (p.startsWith("http") ? p : p.startsWith("/") ? p : "/" + p) : "");
 
 const FONTS =
-  "https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Gaegu:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Silkscreen:wght@400;700&family=Special+Elite&display=swap";
+  "https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Archivo+Black&family=Archivo:wght@400;600;800&family=Archivo+Narrow:wght@500;700&family=Reenie+Beanie&display=swap";
 
 // ---------- content ----------
 const home = json("content/home.json");
@@ -91,24 +91,16 @@ function grid(items, { label, h = 300, mh = 520, caps = false }) {
 }
 
 const SVG_DEFS = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-<filter id="rough" x="-6%" y="-6%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="8"/></filter>
+<filter id="rough" x="-4%" y="-8%" width="108%" height="116%"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter>
+<filter id="roughbig" x="-4%" y="-6%" width="108%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="6"/></filter>
 </defs></svg>`;
 
-// hand-drawn doodles in two colors
-const D = (cls, vb, w, h, inner, style = "") => `<svg class="doodle ${cls}" viewBox="${vb}" width="${w}" height="${h}" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="${style}">${inner}</svg>`;
-const sun = (style) => D("", "0 0 60 60", 60, 60, `<g stroke="#2F5FD0"><circle class="draw" pathLength="1" cx="30" cy="30" r="12"/><path class="draw" pathLength="1" d="M30 10V2M30 50v8M10 30H2M50 30h8M16 16l-6-6M44 44l6 6M44 16l6-6M16 44l-6 6"/></g>`, style);
-const star = (style, c = "#E3338F") => D("", "0 0 60 60", 54, 54, `<path class="draw" pathLength="1" stroke="${c}" d="M30 4l6 17h18l-14 11 5 18-15-11-15 11 5-18L6 21h18z"/>`, style);
-const squig = (style, c = "#E3338F") => D("", "0 0 120 20", 120, 20, `<path class="draw" pathLength="1" stroke="${c}" d="M2 12q10-14 20 0t20 0t20 0t20 0t20 0t20 0"/>`, style);
-const spiral = (style) => D("", "0 0 70 70", 70, 70, `<path class="draw" pathLength="1" stroke="#E3338F" d="M10 40c0-20 30-26 38-4c8 26-32 42-52 20"/>`, style);
-const arrow = (style) => D("", "0 0 190 120", 190, 120, `<path class="draw" pathLength="1" stroke="#2F5FD0" d="M6 6C40 70 110 108 186 114M186 114l-22-14M186 114l-16 18"/>`, style);
-const bird = (style) => D("", "0 0 90 40", 90, 40, `<path class="draw" pathLength="1" stroke="#E3338F" d="M4 26q18-24 36-4q20-22 36 6"/>`, style);
-const titleDoodles = () => sun("right:6%;top:2%") + star("right:12%;top:46%") + squig("right:4%;top:72%", "#2F5FD0");
-
 // ---------- shared pieces ----------
+// a hand-torn bottom edge for the tear-off tabs; every tab gets a slightly different one
 function jag(seed) {
   const pts = ["0 0", "100% 0"];
   const n = 9;
-  for (let i = n; i >= 0; i--) pts.push(`${((i / n) * 100).toFixed(1)}% ${(100 - ((i * 37 + seed * 13) % 7) * 1.6).toFixed(1)}%`);
+  for (let i = n; i >= 0; i--) pts.push(`${((i / n) * 100).toFixed(1)}% ${(100 - ((i * 37 + seed * 13) % 7) * 1.5).toFixed(1)}%`);
   return `polygon(${pts.join(",")})`;
 }
 
@@ -122,33 +114,25 @@ function menuItems() {
 const resumeItem = () => (about.resume ? [{ href: url(about.resume), label: "Résumé", key: "resume", cls: "res", dl: true }] : []);
 
 function topnav(current) {
-  const items = [{ href: "/", label: "← cover", key: "home", cls: "cover" }, ...menuItems(), ...resumeItem()];
+  const items = [{ href: "/", label: "← Cover", key: "home", cls: "cover" }, ...menuItems(), ...resumeItem()];
   return `<nav class="topnav" aria-label="Main">
   ${items
-    .map((i, n) => `<a style="--i:${n}" class="${i.cls || ""}" href="${i.href}"${i.dl ? " download" : ""}${i.key === current ? ' aria-current="page"' : ""}><span class="sh"><span class="strip">${esc(i.label.toLowerCase())}</span></span></a>`)
+    .map((i, n) => `<a style="--i:${n}" class="${i.cls || ""}" href="${i.href}"${i.dl ? " download" : ""}${i.key === current ? ' aria-current="page"' : ""}>${esc(i.label)}</a>`)
     .join("\n  ")}
 </nav>`;
 }
 
-// the row of tear-off tabs at the bottom of every sheet
+// the row of tear-off tabs at the bottom of every sheet (the site's real navigation)
+const TABINK = ["var(--blue)", "var(--red)", "var(--ink)", "var(--blue)", "var(--red)"];
 function tabsRow(current) {
-  const items = [...menuItems(), { href: "/", label: "Back to cover", key: "home", n: "←" }];
-  const tcolor = (i) => `var(--${COLORS[i % COLORS.length]})`;
-  const slots = Math.max(7, items.length + 2);
-  let out = "";
+  const items = [...menuItems(), { href: "/", label: "Back to cover", key: "home", n: "←" }].filter((it) => it.key !== current);
   let nn = 0;
-  for (let i = 0; i < slots; i++) {
-    const it = items[i];
-    if (it && it.key !== current) {
-      const num = it.n || pad(++nn);
-      const colr = it.key === "home" ? "var(--green)" : tcolor(i);
-      out += `<a class="tab" href="${it.href}" data-n="${num}" data-label="${esc(it.label)}" data-color="${colr}" data-key="${esc(it.key)}" style="--i:${i};--h:${[1, 0.95, 1.04, 0.98, 1.02, 0.96, 1.03][i % 7]};--r0:${[-0.7, 0.9, -0.4, 0.6, -0.9, 0.5, -0.3][i % 7]}deg;clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t" style="color:${it.key === "home" ? "var(--green)" : tcolor(i)}">${esc(it.label)}</span></a>`;
-    } else {
-      if (it) nn++;
-      const h = it ? 34 : [22, 110, 60][i % 3];
-      out += `<span class="stub${it ? "" : " blank"}" style="height:${h}px;clip-path:${jag(i + 7)}" aria-hidden="true"></span>`;
-    }
-  }
+  const out = items
+    .map((it, i) => {
+      const num = it.n || pad(menuItems().findIndex((m) => m.key === it.key) + 1);
+      return `<a class="tab" href="${it.href}" data-n="${num}" data-label="${esc(it.label)}" data-key="${esc(it.key)}" style="--i:${i};--h:${[1, 0.94, 1.03, 0.97, 1.02][i % 5]};--r0:${[-0.6, 0.8, -0.4, 0.6, -0.8][i % 5]}deg;--k:${TABINK[i % TABINK.length]};clip-path:${jag(i + 1)}"><span class="n">${num}</span><span class="t">${esc(it.label)}</span></a>`;
+    })
+    .join("");
   return `<nav class="tabs" aria-label="Pages (tear-off tabs)">${out}</nav>`;
 }
 
@@ -168,8 +152,7 @@ function shell({ title, description, body, cls = "" }) {
 </head>
 <body class="${cls}">
 ${SVG_DEFS}
-<div class="scene" aria-hidden="true"><i class="s-high"></i><i class="s-low"></i></div>
-<div class="fleaves" aria-hidden="true">${[["#c9772b",26,"14%",17,0],["#a8552a",20,"46%",22,-7],["#d6a23a",24,"70%",25,-13],["#b8401e",18,"30%",29,-19],["#e0a02e",22,"84%",20,-4]].map(([c,s,t,d,dl]) => `<i style="--c:${c};--s:${s}px;--t:${t};--d:${d}s;--dl:${dl}s"></i>`).join("")}</div>
+<div class="scene" aria-hidden="true"></div>
 ${body}
 <script>${rd("src/site.js")}</script>
 </body>
@@ -178,26 +161,23 @@ ${body}
 }
 
 const staples = `<i class="staple s1"></i><i class="staple s2"></i><i class="staple s3"></i>`;
-const ground = `<div class="ground" aria-hidden="true"></div>`;
 const foot = `<p class="foot">${esc(home.first_name)} ${esc(home.last_name)} · ${esc(home.role)}</p>`;
 
 // ---------- HOME ----------
 function homePage() {
-  const first = campaigns[0] ? `/${campaigns[0].slug}/` : "/about/";
-  const note = `<div class="sh"><div class="note">${esc(home.note_top || "").replace(/\n/g, "<br>")}${home.note_accent ? `<b>${esc(home.note_accent)}</b>` : ""}${home.note_small ? `<small>${esc(home.note_small)}</small>` : ""}</div></div>`;
+  const roleWords = String(home.role).toUpperCase();
   const body = `<a class="skip" href="#cover">Skip to the cover</a>
-<main class="trunk home" id="cover">
+<main class="pole home" id="cover">
   <div class="sheetwrap">
     ${staples}
-    <div class="note-abs">${note}</div>
     <div class="sheet">
       <h1 aria-label="${esc(home.first_name)} ${esc(home.last_name)}, ${esc(home.role)}">
-        <span class="chunk c-blue l1">${L(home.first_name)}</span>
-        <span class="blk c-red l2">${L(String(home.last_name).toUpperCase())}</span>
-        <span class="l3"><span class="c-green">${L(String(home.role).split(" ")[0])}</span> <span class="c-mag">${L(String(home.role).split(" ").slice(1).join(" "))}</span></span>
+        <span class="h-first">${esc(String(home.first_name).toUpperCase())}</span>
+        <span class="h-last"><span>${esc(String(home.last_name).toUpperCase())}</span></span>
+        <span class="h-role"><span>${esc(roleWords)}</span></span>
       </h1>
-      <p class="hint">${esc(home.hint || "pick a campaign, tear it off ↓")}</p>
-      <i class="dapple" aria-hidden="true"></i>
+      <p class="invite">${esc(home.hint_line1 || "Pick a campaign.")}<br><span>${esc(home.hint_line2 || "Tear it off.")}</span></p>
+      <p class="credit">${esc(home.note_top || "")} ${esc(home.note_accent || "")}<br><b>${esc(home.note_small || "")}</b></p>
     </div>
     ${tabsRow("home")}
   </div>
@@ -210,118 +190,110 @@ function homePage() {
   });
 }
 
+// editorial picture grid: pictures sit flat and clean, captions are handwritten
+function gridV4(items, { label, h = 300, mh = 520, caps = false }) {
+  const figs = items
+    .map((it, i) => {
+      const r = ratioOf(it);
+      const cap = caps && it.caption ? `<figcaption>${esc(it.caption)}</figcaption>` : "";
+      return `<figure style="--r:${r.toFixed(3)}">${pic({ image: it.image, alt: it.alt, label: it.caption || `${label} ${i + 1}`, shape: it.shape })}${cap}</figure>`;
+    })
+    .join("\n      ");
+  return `<div class="jg" style="--h:${h}px;--mh:${mh}px">\n      ${figs}\n    </div>`;
+}
+
 // ---------- CAMPAIGN ----------
 function campaignPage(c, idx) {
   const hidden = new Set(c.hidden_sections || []);
   const t = c.title.split("\n");
-  const style = idx % 2 === 0 ? "chunk" : "blk";
-  const CH = ["blue", "mag", "navy", "green", "org"];
-  const col = CH[(idx / 2) % CH.length | 0];
-  const titleHtml =
-    style === "chunk"
-      ? `<span class="chunk c-${col} title-chunk" style="display:block">${t.map((x) => `<span style="display:block">${L(x)}</span>`).join("")}</span>`
-      : `<span class="blk c-red title-blk" style="display:block">${t.map((x, i) => `<span class="${i ? "row2" : ""}" style="display:block">${L(x.toUpperCase())}</span>`).join("")}</span>`;
-  const next = campaigns[idx + 1];
   const titleText = ctitle(c);
+  const next = campaigns[idx + 1];
   const secs = [];
   if (!hidden.has("concept_board"))
-    secs.push(`<figure class="bigfig" style="margin-top:clamp(20px,4vw,50px)">${pic({ image: c.concept_board, alt: `${titleText} concept board`, label: "Concept board", shape: "wide", note: "placeholder: your concept board image" })}</figure>`);
+    secs.push(`<figure class="bigfig lead">${pic({ image: c.concept_board, alt: `${titleText} concept board`, label: "Concept board", shape: "wide", note: "placeholder: your concept board image" })}</figure>`);
   if (!hidden.has("posters") && (c.posters || []).length)
-    secs.push(`<section class="section" aria-labelledby="h-posters"><p class="cap" id="h-posters"><b>01</b> Posters</p>${grid(c.posters, { label: "Poster", h: 300, mh: 520 })}</section>`);
+    secs.push(`<section class="section" aria-labelledby="h-posters"><p class="cap" id="h-posters"><b>01</b> Posters</p>${gridV4(c.posters, { label: "Poster", h: 300, mh: 520 })}</section>`);
   if (!hidden.has("billboard"))
     secs.push(`<section class="section" aria-labelledby="h-bill"><p class="cap" id="h-bill"><b>02</b> Billboard</p><figure class="bigfig bill">${pic({ image: c.billboard, alt: `${titleText} billboard`, label: "Billboard", shape: "wide", note: "placeholder: your billboard image" })}</figure></section>`);
   if (!hidden.has("activations") && (c.activations || []).length)
-    secs.push(`<section class="section" aria-labelledby="h-act"><p class="cap" id="h-act"><b>03</b> Activations</p>${grid(c.activations, { label: "Activation", h: 320, mh: 540, caps: true })}</section>`);
+    secs.push(`<section class="section" aria-labelledby="h-act"><p class="cap" id="h-act"><b>03</b> Activations</p>${gridV4(c.activations, { label: "Activation", h: 320, mh: 540, caps: true })}</section>`);
 
   const nextLink = next
-    ? `<p class="cap" style="text-align:center">Next campaign</p><a href="/${next.slug}/" class="sh"><span class="strip" style="background:var(--sage);color:var(--red)">${esc(ctitle(next))} →</span></a>`
-    : `<p class="cap" style="text-align:center">Keep going</p><a href="/about/" class="sh"><span class="strip" style="background:var(--pink);color:var(--mag)">About me →</span></a>`;
+    ? `<p class="cap">Next campaign</p><a href="/${next.slug}/" class="next">${esc(ctitle(next))} <span aria-hidden="true">→</span></a>`
+    : `<p class="cap">Keep going</p><a href="/about/" class="next">About me <span aria-hidden="true">→</span></a>`;
 
   const body = `<a class="skip" href="#work">Skip to the work</a>
 ${topnav(c.slug)}
-<div class="trunk">
-  <div class="sheetwrap">
-    ${staples}
-    <div class="sheet">
-      <header class="hero">
-        <span class="torn" id="torn" style="--c:var(--${COLORS[idx % COLORS.length]})"><b>${pad(idx + 1)}</b>${esc(titleText)}</span>
-        <h1 aria-label="${esc(titleText)}">${titleHtml}</h1>
-        ${c.badge ? `<span class="badge sh"><span class="strip">${esc(c.badge)}</span></span>` : ""}
-        <p class="lede-line">${esc(c.line)}</p>
-        ${c.sub ? `<p class="sub">${esc(c.sub)}</p>` : ""}
-        ${titleDoodles()}
-      </header>
-      <main id="work">
-        ${secs.join("\n        ")}
-      </main>
-      <div class="nextrow">${nextLink}</div>
+<div class="poster-wrap">
+<main class="poster">
+  ${staples}
+  <div class="paper">
+    <header class="hero">
+      <span class="torn" id="torn"><b>${pad(idx + 1)}</b>${esc(titleText)}</span>
+      <h1 aria-label="${esc(titleText)}">${t.map((x) => `<span>${esc(x.toUpperCase())}</span>`).join("")}</h1>
+      ${c.badge ? `<span class="badge">${esc(c.badge)}</span>` : ""}
+      <p class="idea"><span>${esc(c.line)}</span></p>
+      ${c.sub ? `<p class="sub">${esc(c.sub)}</p>` : ""}
+    </header>
+    <div id="work">
+      ${secs.join("\n      ")}
     </div>
-    ${tabsRow(c.slug)}
+    <div class="nextrow">${nextLink}</div>
   </div>
+  ${tabsRow(c.slug)}
+</main>
 </div>
-${ground}
 ${foot}`;
-  return shell({ title: `${titleText} | ${home.first_name} ${home.last_name}`, description: `${titleText}: ${c.line}`, body });
+  return shell({ title: `${titleText} | ${home.first_name} ${home.last_name}`, description: `${titleText}: ${c.line}`, body, cls: "inner" });
 }
 
 // ---------- ABOUT (+ contact at the bottom) ----------
 function aboutPage() {
-  const HI = ["green", "navy", "org", "mag", "blue", "red"];
-  const hi = [...about.title].map((ch, i) => `<span class="chunk c-${HI[i % HI.length]}" style="transform:rotate(${[-4, 3, -2, 4, -3][i % 5]}deg)">${L(ch)}</span>`).join("");
   const paras = about.bio.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim())}</p>`).join("\n          ");
-  const photos = (about.photos || []).slice(0, 8);
-  const photoFig = (p, i) => `<figure class="tissue t${(i % 2) + 1}">${pic({ image: p.image, alt: p.alt, label: `Photo ${i + 1}`, shape: "tall", note: "placeholder: add a photo in the dashboard" })}</figure>`;
-  const email = about.email ? `<li><a href="mailto:${esc(about.email)}" class="sh"><span class="strip">${esc(about.email)}</span></a></li>` : "";
-  const li = about.linkedin ? `<li><a href="${esc(about.linkedin)}" class="sh"><span class="strip">LinkedIn ↗</span></a></li>` : "";
-  const others = (about.other_links || []).map((l) => `<li><a href="${esc(l.url)}" class="sh"><span class="strip">${esc(l.label)} ↗</span></a></li>`).join("");
+  const photos = (about.photos || []).filter((p) => p && p.image).slice(0, 8);
+  const photoFig = (p, i) => `<figure class="snap s${(i % 3) + 1}">${pic({ image: p.image, alt: p.alt, label: `Photo ${i + 1}`, shape: "tall", note: "placeholder: add a photo in the dashboard" })}</figure>`;
+  const email = about.email ? `<li><a href="mailto:${esc(about.email)}">${esc(about.email)}</a></li>` : "";
+  const li = about.linkedin ? `<li><a href="${esc(about.linkedin)}">LinkedIn <span aria-hidden="true">↗</span></a></li>` : "";
+  const others = (about.other_links || []).map((l) => `<li><a href="${esc(l.url)}">${esc(l.label)} <span aria-hidden="true">↗</span></a></li>`).join("");
   const resume = about.resume
-    ? `<a class="resume" href="${url(about.resume)}" download><span>résumé<small>download · pdf</small></span></a>`
-    : `<span class="resume"><span>résumé<small>coming soon</small></span></span>`;
+    ? `<a class="resume" href="${url(about.resume)}" download><span>Résumé</span><small>download · pdf</small></a>`
+    : `<span class="resume"><span>Résumé</span><small>coming soon</small></span>`;
 
   const body = `<a class="skip" href="#work">Skip to the profile</a>
 ${topnav("about")}
-<div class="trunk">
-  <div class="sheetwrap">
-    ${staples}
-    <div class="sheet">
-      <header class="hero">
-        <h1 class="hi" aria-label="${esc(about.title)}">${hi}</h1>
-        ${about.badge ? `<span class="badge sh"><span class="strip" style="background:var(--butter)">${esc(about.badge)}</span></span>` : ""}
-        <p class="who" style="margin-top:.5em">${esc(about.line).replace(/, (.*)$/, ",<i>$1</i>")}</p>
-        <p class="sub">${lines(about.sub)}</p>
-        ${about.portrait ? `<figure class="hero-portrait tissue t1">${pic({ image: about.portrait, alt: about.portrait_alt || "Portrait of Chloe", label: "Portrait", shape: "tall" })}</figure>` : ""}
-        ${sun("right:36%;top:4%")}${star("right:32%;top:50%")}
-      </header>
-      <main id="work">
-        <div class="about-top section">
-          <div class="bio">
-            <h2 class="chunk c-navy">${L(about.bio_heading)}</h2>
-            ${paras}
-          </div>
-          <div>
-            <div class="pics" style="margin-top:0">${photos.slice(0, 2).map(photoFig).join("")}</div>
-          </div>
+<div class="poster-wrap">
+<main class="poster">
+  ${staples}
+  <div class="paper">
+    <header class="hero about-hero">
+      <h1 class="hi" aria-label="${esc(about.title)}"><span>${esc(String(about.title).toUpperCase())}</span></h1>
+      ${about.badge ? `<span class="badge">${esc(about.badge)}</span>` : ""}
+      <p class="idea"><span>${esc(about.line)}</span></p>
+      <p class="sub">${lines(about.sub)}</p>
+    </header>
+    <div id="work">
+      <div class="about-top section">
+        <div class="bio">
+          <h2>${esc(about.bio_heading)}</h2>
+          ${paras}
         </div>
-        ${photos.length > 2 ? `<div class="pics" style="max-width:760px;margin-left:auto;margin-right:auto">${photos.slice(2).map((p, i) => photoFig(p, i + 2)).join("")}</div>` : ""}
+        ${about.portrait ? `<figure class="portrait snap s1">${pic({ image: about.portrait, alt: about.portrait_alt || "Portrait of Chloe", label: "Portrait", shape: "tall" })}</figure>` : ""}
+      </div>
+      ${photos.length ? `<div class="pics">${photos.map(photoFig).join("")}</div>` : ""}
 
-        <section id="contact" aria-labelledby="h-contact">
-          <div class="cutline"></div>
-          <p class="cap" id="h-contact">Contact</p>
-          <div class="say">
-            <h2 aria-label="Say hello." style="margin:0;font-weight:400"><span class="chunk c-blue s1">${L("Say")}</span><span class="chunk c-mag s2">${L("hello.")}</span></h2>
-            ${star("right:12%;top:8%", "#2F5FD0")}${squig("right:6%;top:50%")}
-          </div>
-          <ul class="contact-links">${email}${li}${others}</ul>
-          ${resume}
-        </section>
-      </main>
+      <section id="contact" class="contact" aria-labelledby="h-contact">
+        <p class="cap" id="h-contact">Contact</p>
+        <h2 class="say" aria-label="Say hello."><span>SAY</span><span>HELLO.</span></h2>
+        <ul class="contact-links">${email}${li}${others}</ul>
+        ${resume}
+      </section>
     </div>
-    ${tabsRow("about")}
   </div>
+  ${tabsRow("about")}
+</main>
 </div>
-${ground}
 ${foot}`;
-  return shell({ title: `About me | ${home.first_name} ${home.last_name}`, description: `About ${home.first_name} ${home.last_name}.`, body });
+  return shell({ title: `About me | ${home.first_name} ${home.last_name}`, description: `About ${home.first_name} ${home.last_name}.`, body, cls: "inner" });
 }
 
 // ---------- write ----------
@@ -333,7 +305,7 @@ const write = (rel, data) => {
 write("index.html", homePage());
 campaigns.forEach((c, i) => write(`${c.slug}/index.html`, campaignPage(c, i)));
 write("about/index.html", aboutPage());
-write("404.html", shell({ title: "Page not found", description: "", body: `<main style="padding:4rem 8%"><h1 class="chunk c-blue" style="font-size:clamp(4rem,12vw,9rem)">Lost.</h1><p style="font-size:1.4rem"><a href="/">Back to the cover</a></p></main>` }));
+write("404.html", shell({ title: "Page not found", description: "", cls: "inner", body: `<main style="padding:4rem 8%;color:#fff"><h1 style="font:400 clamp(4rem,12vw,9rem) 'Archivo Black',sans-serif;margin:0">LOST.</h1><p style="font-size:1.4rem"><a href="/" style="text-decoration:underline">Back to the cover</a></p></main>` }));
 
 const copyDir = (from, to) => {
   if (!fs.existsSync(from)) return;

@@ -6,55 +6,54 @@
   // coming back with the browser's back button: reset any half-torn flyer
   addEventListener("pageshow", function (e) { if (e.persisted && document.querySelector(".tab-flying")) location.reload(); });
 
-  // TEAR-OFF: click a tab and it rips off the flyer, then the next page opens with that strip as its header
+  // a ragged torn edge: the strip of paper left behind on the flyer
+  function raggedEdge() {
+    var pts = ["0 0", "100% 0"], n = 14, i;
+    for (i = n; i >= 0; i--) pts.push((i / n * 100).toFixed(1) + "% " + (62 + Math.random() * 38).toFixed(0) + "%");
+    return "polygon(" + pts.join(",") + ")";
+  }
+
+  // TEAR-OFF: lift the tab, rip it from the bottom up, let it fall; the torn strip stays on the flyer
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a.tab");
     if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     store("rip", JSON.stringify({ k: a.dataset.key, t: Date.now() }));
     if (reduce || !a.animate) return;
     e.preventDefault();
-    var href = a.href, fly = a;
+    var href = a.href, d = Math.random() < .5 ? -1 : 1;
     var stub = document.createElement("span");
     stub.className = "torn-stub"; stub.setAttribute("aria-hidden", "true");
-    stub.style.cssText = "left:" + a.offsetLeft + "px;width:" + a.offsetWidth + "px;height:38px;clip-path:" + a.style.clipPath;
+    stub.style.cssText = "left:" + a.offsetLeft + "px;width:" + a.offsetWidth + "px;height:" + Math.round(a.offsetWidth * .2) + "px;clip-path:" + raggedEdge();
     a.parentNode.insertBefore(stub, a);
-    fly.classList.add("tab-flying");
-    var dir = Math.random() < .5 ? -1 : 1;
-    fly.animate([
-      { transform: "none", offset: 0 },
-      { transform: "rotate(" + (-5 * dir) + "deg) translateY(5px)", offset: .22, easing: "ease-out" },
-      { transform: "rotate(" + (7 * dir) + "deg) translateY(16px)", offset: .38 },
-      { transform: "translate(" + (50 * dir) + "px,55vh) rotate(" + (48 * dir) + "deg)", opacity: .9, offset: 1 }
-    ], { duration: 720, easing: "cubic-bezier(.5,0,.85,.45)", fill: "forwards" });
-    setTimeout(function () { location.href = href; }, 560);
+    a.classList.add("tab-flying");
+    a.style.transformOrigin = d < 0 ? "88% 0" : "12% 0";
+    var P = "perspective(720px) ";
+    a.animate([
+      { transform: P + "rotate(0deg)", offset: 0 },
+      { transform: P + "rotateX(-26deg) rotate(" + 1.5 * d + "deg) translateY(-3px)", offset: .17, easing: "ease-out" },
+      { transform: P + "rotateX(-44deg) rotate(" + 6 * d + "deg) translate(" + 3 * d + "px,1px)", offset: .33, easing: "cubic-bezier(.6,0,1,1)" },
+      { transform: P + "rotateX(-58deg) rotate(" + 14 * d + "deg) translate(" + 10 * d + "px,16px)", offset: .45 },
+      { transform: P + "translate(" + 70 * d + "px,62vh) rotate(" + 58 * d + "deg) rotateX(-72deg)", opacity: .92, offset: 1 }
+    ], { duration: 940, easing: "linear", fill: "forwards" });
+    setTimeout(function () { location.href = href; }, 760);
   });
 
-  // ARRIVAL: the strip that was torn off lands in the page header
-  var torn = document.getElementById("torn");
-  var rip = load("rip");
+  // ARRIVAL: the strip that was torn off lands in the poster's header
+  var torn = document.getElementById("torn"), rip = load("rip");
   store("rip", null);
   if (torn && rip && !reduce && torn.animate) {
-    try { var d = JSON.parse(rip); if (Date.now() - d.t < 8000)
+    try { var r = JSON.parse(rip); if (Date.now() - r.t < 8000)
       torn.animate([
-        { transform: "translate(60px,-90px) rotate(88deg) scale(1.25)", opacity: 0 },
-        { transform: "translate(20px,-24px) rotate(40deg) scale(1.1)", opacity: 1, offset: .35 },
-        { transform: "rotate(-3deg)", opacity: 1 }
-      ], { duration: 780, easing: "cubic-bezier(.3,1.25,.5,1)" }); } catch (e) {}
+        { transform: "translate(40px,-80px) rotate(80deg) scale(1.2)", opacity: 0 },
+        { transform: "translate(14px,-18px) rotate(30deg) scale(1.08)", opacity: 1, offset: .35 },
+        { transform: "rotate(-1.5deg)", opacity: 1 }
+      ], { duration: 820, delay: 500, easing: "cubic-bezier(.3,1.2,.5,1)", fill: "backwards" }); } catch (e) {}
   }
 
   // gentle rise-in for pictures as you scroll
-  var els = [].slice.call(document.querySelectorAll(".jg figure,.bigfig,.pics figure"));
+  var els = [].slice.call(document.querySelectorAll(".jg figure,.bigfig,.pics figure,.portrait"));
   if (!reduce && "IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
     els.forEach(function (el) { el.classList.add("rv"); io.observe(el); });
-  }
-
-  // DOWN THE TREE: scrolling carries you from the bright canopy toward the dark forest floor (the flyer itself stays put)
-  var root = document.documentElement;
-  if (!reduce && !document.body.classList.contains("home")) {
-    var tick = false;
-    var upd = function () { tick = false; var max = Math.max(1, root.scrollHeight - innerHeight); root.style.setProperty("--p", Math.min(1, Math.max(0, scrollY / max)).toFixed(3)); };
-    addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
-    upd();
   }
 })();
