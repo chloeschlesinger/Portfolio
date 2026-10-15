@@ -172,9 +172,9 @@ const PERSON = (cls) => `<div class="vis ${cls}" aria-hidden="true"><svg viewBox
   <g class="legs"><g class="leg l"><path d="M33 140h17v108H33z" class="pants"/><path d="M29 246h24v12H29z" class="shoe"/></g><g class="leg r"><path d="M52 140h17v108H52z" class="pants"/><path d="M48 246h24v12H48z" class="shoe"/></g></g>
   <g class="body"><g class="arm l"><path d="M20 62q-9 36-6 78h12q0-38 6-72z" class="top dk"/><ellipse cx="20" cy="143" rx="6" ry="7" class="skin"/></g>
   <g class="arm r"><path d="M80 62q9 36 6 78H74q0-38-6-72z" class="top dk"/><ellipse cx="80" cy="143" rx="6" ry="7" class="skin"/></g>
-  <path d="M24 58q26-14 52 0l4 88q-30 8-60 0z" class="top"/><path d="M36 54q14-9 28 0l-3 16q-11 6-22 0z" class="hood"/>
+  <path d="M24 58q26-14 52 0l4 88q-30 8-60 0z" class="top"/><path d="M58 58q14 2 22 0l4 88q-14 4-26 3z" class="shade"/><path d="M40 70q8 40 4 76" class="shade" style="fill:none;stroke:#000;stroke-width:2;opacity:.12"/><path d="M52 80q6 34 2 66" class="shade" style="fill:none;stroke:#000;stroke-width:2;opacity:.1"/><path d="M36 54q14-9 28 0l-3 16q-11 6-22 0z" class="hood"/>
   <path d="M30 150q20 10 40 0l2 12q-22 8-44 0z" class="pants"/><rect class="bagstrap" x="62" y="60" width="5" height="88" transform="rotate(-12 64 100)"/><rect class="bag" x="64" y="104" width="24" height="30" rx="5"/></g>
-  <g class="head"><rect x="44" y="38" width="12" height="14" class="skin"/><ellipse cx="50" cy="28" rx="15" ry="18" class="hair"/><path d="M36 30q14 14 28 0v12q-14 8-28 0z" class="hair"/></g>
+  <g class="head"><rect x="44" y="38" width="12" height="14" class="skin"/><ellipse cx="50" cy="28" rx="15" ry="18" class="hair"/><path d="M42 16q8-6 18-2q-10 0-14 8z" class="hl"/><path d="M58 24q4 12-2 22q8-8 6-22z" class="shade"/><path d="M36 30q14 14 28 0v12q-14 8-28 0z" class="hair"/></g>
 </svg></div>`;
 
 const PHOTO = { w: 1672, h: 941 };

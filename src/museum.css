@@ -72,3 +72,11 @@ body.museum-page .scene{display:none}
 .stage[data-look="1"] .vis.sit.look .head{animation:none;transform:translate(4px,-3px) rotate(3deg) scaleY(1.05)}
 .stage>.vis{position:absolute}
 .stage>.vis{width:8cqw}
+
+/* still by default: no idle swaying; a quiet look up at the art, and a head turn toward the pointer on hover */
+.stage .vis.look .head{animation:none;transform:translate(0,-1px)}
+.stage .vis.hov:not(.drag) .head{transform:translate(calc(var(--lx,0)*5px),-2px) rotate(calc(var(--lx,0)*5deg));transition:transform .35s ease}
+.stage .vis.hov:not(.drag) .body{transform:translateX(calc(var(--lx,0)*1.2px));transition:transform .35s ease}
+.stage .vis{cursor:grab}
+.vis svg{filter:saturate(.82) sepia(.1) brightness(.97)}
+.vis .shade{fill:#000;opacity:.16}.vis .hl{fill:#fff;opacity:.18}
