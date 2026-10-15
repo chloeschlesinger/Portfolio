@@ -100,12 +100,54 @@
   var S2 = [{ u: .26, hold: .13, x: .40 }, { u: .62, hold: .12, x: .86 }];
   var S3 = [{ u: .3, hold: .1, x: .9 }, { u: .66, hold: .16, x: .42 }];
 
+  // ---- drag a visitor to stand (or sit) somewhere else ----
+  var man = {}, last = {}, floorEl = document.querySelector(".gallery .floor");
+  var floorTop = function () { return floorEl.getBoundingClientRect().top - room.getBoundingClientRect().top; };
+  var scaleAt = function (y) { var f = floorTop(); return lerp(.62, 1.3, Math.max(0, Math.min(1, (y - f) / (M.H - f)))); };
+  var seatFeet = function () { return M.seatY + M.fh * .43 * .96; };
+  var benchSpan = function () { var t = benchTop.getBoundingClientRect(), r = room.getBoundingClientRect(); return [t.left - r.left, t.right - r.left]; };
+  function manualPose(m, el) {
+    if (m.sit) return { x: m.x, y: seatFeet(), s: 1, sit: true, look: true, walk: false };
+    return { x: m.x, y: m.y, s: scaleAt(m.y), walk: !!m.drag, look: !m.drag };
+  }
+  function apply(el, p) {
+    last[el.className.match(/w\d/)[0]] = p; setState(el, p); place(el, p.x, p.y, p.s);
+    if (man[el.className.match(/w\d/)[0]] && !p.sit) el.style.zIndex = p.y > M.back + M.H * .01 ? 6 : 2;
+    else if (p.sit) el.style.zIndex = 4; else el.style.zIndex = "";
+  }
+  [w1, w2, w3].forEach(function (el) {
+    var key = el.className.match(/w\d/)[0], grab = null;
+    el.addEventListener("pointerdown", function (e) {
+      var p = last[key]; if (!p || p.on === false) return;
+      var r = room.getBoundingClientRect();
+      grab = { dx: e.clientX - r.left - p.x, dy: e.clientY - r.top - p.y };
+      man[key] = { x: p.x, y: p.sit ? seatFeet() : p.y, sit: false, drag: true };
+      if (p.sit) man[key].y = M.frontY;
+      el.setPointerCapture(e.pointerId); el.classList.add("drag"); e.preventDefault();
+    });
+    el.addEventListener("pointermove", function (e) {
+      if (!grab) return;
+      var r = room.getBoundingClientRect(), m = man[key];
+      m.x = Math.max(M.fw * .3, Math.min(M.W - M.fw * .3, e.clientX - r.left - grab.dx));
+      m.y = Math.max(floorTop() + M.H * .03, Math.min(M.H, e.clientY - r.top - grab.dy));
+      apply(el, manualPose(m, el));
+    });
+    var end = function () {
+      if (!grab) return; grab = null; el.classList.remove("drag");
+      var m = man[key], b = benchSpan();
+      m.drag = false;
+      if (m.x > b[0] && m.x < b[1] && m.y > M.back - M.H * .02 && m.y < M.frontY + M.H * .08) { m.sit = true; m.x = Math.max(b[0] + M.fw * .6, Math.min(b[1] - M.fw * .6, m.x)); }
+      apply(el, manualPose(m, el));
+    };
+    el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
+  });
+
   function frame(now) {
     var t = now / 1000;
-    setState(w1, pose1(t)); var p1 = pose1(t); place(w1, p1.x, p1.y, p1.s);
-    var p2 = wander(t, 1, 70, S2, .66, 4), p3 = wander(t, -1, 90, S3, .6, 31);
-    setState(w2, p2); place(w2, p2.x, p2.y, p2.s);
-    setState(w3, p3); place(w3, p3.x, p3.y, p3.s);
+    var p1 = man.w1 ? manualPose(man.w1, w1) : pose1(t);
+    var p2 = man.w2 ? manualPose(man.w2, w2) : wander(t, 1, 70, S2, .66, 4);
+    var p3 = man.w3 ? manualPose(man.w3, w3) : wander(t, -1, 90, S3, .6, 31);
+    apply(w1, p1); apply(w2, p2); apply(w3, p3);
     if (running) raf = requestAnimationFrame(frame);
   }
   var running = false, raf = 0;
@@ -118,10 +160,9 @@
 
   if (reduce) {
     // still scene: one visitor seated, two standing in front of the frames
-    var seatFeet = M.seatY + M.fh * .43 * .96;
-    setState(w1, { sit: true, look: false }); place(w1, M.seatX, seatFeet, 1);
-    setState(w2, { walk: false }); place(w2, M.W * .29, M.back, .8);
-    setState(w3, { walk: false }); place(w3, M.W * .76, M.back, .72);
+    apply(w1, { x: M.seatX, y: seatFeet(), s: 1, sit: true, look: false });
+    apply(w2, { x: M.W * .4, y: M.back, s: .66, walk: false });
+    apply(w3, { x: M.W * .9, y: M.back, s: .6, walk: false });
   } else { window.__t0 = performance.now(); start(); }
   window.__gallery = { seek: function (sec) { stop(); measure(); frame(sec * 1000); } };
 })();

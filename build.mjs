@@ -199,7 +199,7 @@ function homePage() {
     ${PERSON("w3")}
     <div class="bench" aria-hidden="true"><i class="top"></i><i class="front"></i><i class="lg a"></i><i class="lg b"></i><i class="lg c"></i><i class="lg d"></i></div>
     ${PERSON("w1")}
-    <p class="hint">Choose a frame.</p>
+    <p class="hint">Choose a frame. Drag a visitor to move them.</p>
   </div>
 </main>`;
   return shell({
