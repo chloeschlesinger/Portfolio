@@ -178,8 +178,9 @@ const PERSON = (cls) => `<div class="vis ${cls}" aria-hidden="true"><svg viewBox
 function homePage() {
   const fr = campaigns.map((c, i) => {
     const t = ctitle(c);
-    return `<a class="frame f${i + 1}" href="/${c.slug}/" data-i="${i}" aria-label="Open the ${esc(t)} campaign: ${esc(c.line)}">
-      <span class="gold"><span class="mat">${pic({ image: c.concept_board, alt: `${t} concept board`, label: t, shape: "wide" })}</span></span>
+    const th = c.thumbnail || c.concept_board;
+    return `<a class="frame f${i + 1}" style="--r:${(imgRatio(th) || 1.5).toFixed(3)}" href="/${c.slug}/" data-i="${i}" aria-label="Open the ${esc(t)} campaign: ${esc(c.line)}">
+      <span class="gold"><span class="mat">${pic({ image: th, alt: `${t} campaign`, label: t, shape: "wide" })}</span></span>
       <span class="lamp" aria-hidden="true"></span>
       <span class="label"><b>${pad(i + 1)}</b> ${esc(t)}<small>${esc(c.line)}</small></span></a>`;
   }).join("\n    ");

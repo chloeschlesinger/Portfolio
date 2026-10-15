@@ -73,6 +73,7 @@ collections:
       - { label: "Main line", name: line, widget: string }
       - { label: "Sub line (optional, leave empty to hide)", name: sub, widget: string, required: false }
       - { label: "Hide any sections?", name: hidden_sections, widget: select, multiple: true, required: false, options: [{ label: "Concept board", value: concept_board }, { label: "Posters", value: posters }, { label: "Billboard", value: billboard }, { label: "Activations", value: activations }] }
+      - { label: "Gallery frame picture (shown in the gold frame on the home page)", name: thumbnail, widget: image, required: false }
       - { label: "Concept board image", name: concept_board, widget: image, required: false }
       - label: "Posters / visuals"
         name: posters
