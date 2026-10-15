@@ -175,12 +175,15 @@ const PERSON = (id) => {
   const p = PEOPLE[id], st = p.stand, se = p.sit, bw = ((st.w / st.h) * BOX_H).toFixed(3);
   const layers = (s) => {
     const cut = ((s.cut / s.h) * 100).toFixed(2), ov = ((14 / s.h) * 100).toFixed(2);
-    return `<img class="body" src="${s.file}" alt="" draggable="false" style="--cut:${cut}%"><img class="head" src="${s.file}" alt="" draggable="false" style="--cut:${cut}%;--ov:${ov}%">`;
+    return [`<img class="body" src="${s.file}" alt="" draggable="false">`, `<span class="hw"><img class="head" src="${s.file}" alt="" draggable="false"></span>`, `--cut:${cut}%;--ov:${ov}%`];
   };
-  return `<div class="vis p-${id}" aria-hidden="true" style="--bw:${bw}cqw;--ar:${st.w}/${st.h}">
-    <span class="spr stand" style="width:100%;height:100%">${layers(st)}</span>
-    <span class="spr sit" style="width:${((se.w / st.w) * 100).toFixed(2)}%;height:${((se.h / st.h) * 100).toFixed(2)}%">${layers(se)}</span>
-  </div>`;
+  const IDLE = { a: "--bd:5s;--hd:9s;--dl:-1s", b: "--bd:5.6s;--hd:11s;--dl:-4s", c: "--bd:6.2s;--hd:13s;--dl:-7s" }[id];
+  const L1 = layers(st), L2 = layers(se);
+  return `<div class="vis p-${id}" aria-hidden="true" style="--bw:${bw}cqw;--ar:${st.w}/${st.h};${IDLE}">
+    <span class="spr stand" style="width:100%;height:100%;${L1[2]}">${L1[0]}${L1[1]}</span>
+    <span class="spr sit" style="width:${((se.w / st.w) * 100).toFixed(2)}%;height:${((se.h / st.h) * 100).toFixed(2)}%;${L2[2]}">${L2[0]}${L2[1]}</span>
+  </div>
+  <i class="sitshade s-${id}" aria-hidden="true"></i>`;
 };
 
 const PHOTO = { w: 1672, h: 941 };

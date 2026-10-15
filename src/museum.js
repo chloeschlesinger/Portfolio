@@ -60,7 +60,7 @@
   function measure() {
     var k = stage.clientWidth / PW;
     M.k = k; M.W = stage.clientWidth; M.H = stage.clientHeight;
-    M.floorTop = 730 * k; M.back = 746 * k; M.sitAnchor = 782 * k; M.sitMax = 800 * k; M.frontY = 905 * k; M.b0 = BX0 * k; M.b1 = BX1 * k;
+    M.floorTop = 730 * k; M.back = 746 * k; M.sitAnchor = 758 * k; M.sitMax = 800 * k; M.frontY = 905 * k; M.b0 = BX0 * k; M.b1 = BX1 * k;
   }
   var lerp = function (a, b, t) { return a + (b - a) * t; };
   var scaleAt = function (y) { return lerp(.9, 1.2, Math.max(0, Math.min(1, (y - M.floorTop) / (M.H - M.floorTop)))); };
@@ -69,10 +69,15 @@
     var y = m.sit ? M.sitAnchor : m.y, s = scaleAt(m.sit ? 770 * M.k : m.y);
     el.classList.toggle("sit", !!m.sit); el.classList.toggle("on", true);
     place(el, m.x, y, s);
+    var sh = stage.querySelector(".s-" + key);
+    if (sh) {
+      if (m.sit) { var sw = el.querySelector(".spr.sit").offsetWidth * s; sh.style.display = "block"; sh.style.width = (sw * 1.05).toFixed(1) + "px"; sh.style.left = m.x.toFixed(1) + "px"; sh.style.top = (748 * M.k).toFixed(1) + "px"; }
+      else sh.style.display = "none";
+    }
     if (!el.classList.contains("drag")) el.style.zIndex = m.sit ? 2 : (m.y > M.sitMax ? 6 : 2);
   }
   // seats along the bench: left to right  c, a, b
-  var seats = { c: .2, a: .5, b: .79 };
+  var seats = { c: .14, a: .42, b: .70 };
   function settle() {
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key]; if (!m) m = man[key] = { x: 0, y: 0, sit: true, seed: true };

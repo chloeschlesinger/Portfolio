@@ -15,11 +15,11 @@ STAND_H = 700          # standing sprites are resized to this height; seated one
 # name: (source, box x0,y0,x1,y1 to keep, 'cut' = source row of the neck (head layer ends here), seated?)
 SPR = {
     "a-stand": (SRC3, (600, 20, 950, 1000), 186),
-    "a-sit":   (SRC1, (600, 225, 945, 668), 378),
+    "a-sit":   (SRC1, (590, 225, 960, 712), 378, [(598,200),(955,200),(955,667),(933,667),(903,675),(867,693),(823,698),(690,698),(657,692),(613,675),(607,670),(590,668)]),
     "b-stand": (SRC3, (1060, 90, 1405, 1000), 262),
-    "b-sit":   (SRC1, (1005, 262, 1345, 668), 392),
+    "b-sit":   (SRC1, (1000, 262, 1360, 712), 392, [(1000,200),(1355,200),(1355,672),(1312,690),(1277,682),(1267,688),(1233,695),(1140,698),(1100,697),(1037,687),(1010,670),(1000,668)]),
     "c-stand": (SRC1, (100, 30, 440, 970), 196),
-    "c-sit":   (SRC1, (100, 30, 440, 470), 196),
+    "c-sit":   (SRC1, (100, 30, 440, 480), 196, [(100,20),(440,20),(440,386),(425,398),(395,407),(350,411),(190,411),(150,407),(122,398),(108,386)]),
 }
 def clean(arr):
     a = arr[:, :, 3]
@@ -38,8 +38,13 @@ def clean(arr):
     return np.dstack([rgb, (alpha * 255)]).astype(np.uint8)
 
 meta = {}
-for name, (src, (x0, y0, x1, y1), cut) in SPR.items():
-    im = np.asarray(Image.open(os.path.join(U, src)).convert("RGBA"))
+from PIL import ImageDraw
+for name, spec in SPR.items():
+    src, (x0, y0, x1, y1), cut = spec[:3]
+    im = np.asarray(Image.open(os.path.join(U, src)).convert("RGBA")).copy()
+    if len(spec) > 3:      # seated: keep only what lies above the curve where the person meets the cushion (thighs and hips included, the bench itself excluded)
+        m = Image.new("L", (im.shape[1], im.shape[0]), 0); ImageDraw.Draw(m).polygon(spec[3], fill=255)
+        im[:, :, 3] = np.minimum(im[:, :, 3], np.asarray(m))
     crop = im[y0:y1, x0:x1].copy()
     out = clean(crop)
     ys, xs = np.where(out[:, :, 3] > 20)

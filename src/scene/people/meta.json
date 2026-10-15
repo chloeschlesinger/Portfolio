@@ -9,7 +9,7 @@
   "sit": {
    "file": "/scene/people/a-sit.webp",
    "w": 240,
-   "h": 314,
+   "h": 337,
    "cut": 101
   }
  },
@@ -22,8 +22,8 @@
   },
   "sit": {
    "file": "/scene/people/b-sit.webp",
-   "w": 242,
-   "h": 309,
+   "w": 268,
+   "h": 334,
    "cut": 88
   }
  },
@@ -36,8 +36,8 @@
   },
   "sit": {
    "file": "/scene/people/c-sit.webp",
-   "w": 210,
-   "h": 327,
+   "w": 197,
+   "h": 283,
    "cut": 118
   }
  }
