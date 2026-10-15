@@ -1,0 +1,64 @@
+/* VERSION 6: a photographed museum. The campaigns are hung inside the photo's own gold frames. */
+body.museum-page{background:#d9c9ac;overflow:hidden}
+body.museum-page .scene{display:none}
+.museum{position:fixed;inset:0;overflow:hidden;background:#cdb690}
+.pan{position:absolute;inset:0;overflow:hidden}
+.stage{position:absolute;left:50%;top:50%;translate:-50% -50%;width:max(100vw,calc(100dvh*1.7767));aspect-ratio:1672/941;container-type:inline-size;
+  transition:transform 1.1s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.shot{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.stage>*{position:absolute}.stage>.shot{position:absolute}
+
+/* the campaign, mounted on a cream mat inside the photographed opening */
+.museum .stage .frame{display:block;outline:none;cursor:pointer;translate:none;transform:none;--ph:initial}
+.museum .stage .frame:hover,.museum .stage .frame:focus-visible{transform:none}
+.frame .art{position:absolute;overflow:hidden;background:linear-gradient(180deg,#e6d9c1,#efe5d0 60%,#e9dcc4);
+  box-shadow:inset 0 .55cqw .75cqw -.2cqw rgba(38,21,4,.62),inset .3cqw 0 .5cqw -.2cqw rgba(38,21,4,.38),inset -.15cqw 0 .3cqw -.1cqw rgba(38,21,4,.25)}
+.frame .art picture{position:absolute;left:50%;top:50%;width:91%;aspect-ratio:var(--r);translate:-50% -50%;display:block;
+  box-shadow:0 0 0 .22cqw #f7f1e4,0 0 0 .3cqw rgba(60,40,15,.28),0 .25cqw .5cqw rgba(30,15,0,.45)}
+.frame .art img{display:block;width:100%;height:100%;object-fit:contain}
+/* light falling on the print: spotlight from above, warm tint, a faint glass sheen, soft falloff at the bottom */
+.frame .art .lit{position:absolute;inset:0;pointer-events:none;
+  background:
+   linear-gradient(115deg,rgba(255,255,255,.17) 0,rgba(255,255,255,.04) 26%,transparent 38%,transparent 62%,rgba(255,255,255,.07) 74%,transparent 86%),
+   radial-gradient(ellipse 85% 65% at 50% -6%,rgba(255,238,196,.34),transparent 72%),
+   linear-gradient(180deg,rgba(40,22,4,.16),transparent 18%,transparent 70%,rgba(60,35,10,.18)),
+   linear-gradient(rgba(255,226,172,.10),rgba(255,226,172,.10))}
+.frame .glow{inset:-3%;left:-3%;top:-6%;width:106%;height:112%;pointer-events:none;opacity:0;transition:opacity .7s ease;
+  background:radial-gradient(ellipse 60% 50% at 50% 0,rgba(255,232,178,.55),rgba(255,226,160,.16) 55%,transparent 75%);mix-blend-mode:screen}
+.frame:hover .glow,.frame:focus-visible .glow{opacity:1}
+.frame:focus-visible::after{content:"";position:absolute;inset:-1%;border:2px solid #fff6dc;border-radius:2px;box-shadow:0 0 0 2px rgba(120,80,20,.7)}
+
+/* exhibition labels on the wall under each frame */
+.wl{margin:0;font:600 1.2cqw/1.15 'Cormorant Garamond',Georgia,serif;color:#4a3a22;letter-spacing:.02em;pointer-events:none;text-shadow:0 1px 0 rgba(255,250,238,.5)}
+.wl b{font:700 .78cqw 'Archivo Narrow','Archivo',sans-serif;letter-spacing:.22em;color:#8a6a1c;margin-right:.45cqw}
+.wl small{display:none;margin-top:.25cqw;font:italic 500 1cqw/1.25 'Cormorant Garamond',Georgia,serif;color:#6d5c40}
+
+/* name + navigation in the header, light enough to leave the cornice and artwork alone */
+.mast{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+  padding:calc(22px + env(safe-area-inset-top)) clamp(18px,3.6vw,56px) 36px;background:linear-gradient(180deg,rgba(248,243,232,.94),rgba(248,243,232,.7) 55%,rgba(248,243,232,0))}
+.mast h1{margin:0;font-weight:500}
+.mast .nm{display:block;font:500 clamp(26px,2.5vw,38px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.04em;color:#241d12}
+.mast small{display:block;margin-top:9px;font:600 clamp(9.5px,.72vw,11px) 'Archivo Narrow','Archivo',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#7b6a45}
+.mast nav{display:flex;gap:clamp(18px,2.4vw,38px);padding-top:6px}
+.mast nav a{font:600 clamp(10.5px,.82vw,12.5px) 'Archivo Narrow','Archivo',sans-serif;letter-spacing:.26em;text-transform:uppercase;color:#3a2f1a;padding:8px 0;position:relative}
+.mast nav a::after{content:"";position:absolute;left:0;right:100%;bottom:3px;height:1px;background:#a47a22;transition:right .35s ease}
+.mast nav a:hover::after,.mast nav a:focus-visible::after{right:0}
+.mast nav a:focus-visible{outline:2px solid #a47a22;outline-offset:4px}
+.swipe{display:none}
+
+/* phone: the photo is shown large and you swipe from one framed campaign to the other */
+@media (max-width:760px),(max-aspect-ratio:1/1){
+  .museum{display:flex;flex-direction:column;padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+  .pan{position:relative;inset:auto;flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+  .pan::-webkit-scrollbar{display:none}
+  .stage{position:relative;left:auto;top:auto;translate:none;height:100%;width:calc(100dvh*1.2);aspect-ratio:auto;flex:none}
+  .museum .stage .frame{scroll-snap-align:center}
+  .mast{position:relative;flex:none;flex-direction:column;align-items:center;text-align:center;gap:0;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;background:#f8f3e8;border-bottom:1px solid rgba(140,110,50,.35)}
+  .mast .nm{font-size:27px}.mast small{margin-top:7px;font-size:9.5px;letter-spacing:.3em}
+  .mast nav{position:fixed;left:0;right:0;bottom:0;justify-content:space-around;gap:0;padding:0 8px env(safe-area-inset-bottom);background:#f8f3e8;border-top:1px solid rgba(140,110,50,.35);z-index:6}
+  .mast nav a{font-size:12px;letter-spacing:.24em;padding:20px 14px}
+  .swipe{display:block;position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));text-align:center;margin:0;font:italic 500 15px 'Cormorant Garamond',Georgia,serif;color:#fff6e0;text-shadow:0 1px 4px rgba(30,15,0,.7);pointer-events:none;transition:opacity .6s}
+  .swipe.gone{opacity:0}
+  .wl{font-size:1.5cqw}.wl b{font-size:1cqw}
+}
+@media (prefers-reduced-motion:reduce){.stage,.frame .glow{transition:none}}

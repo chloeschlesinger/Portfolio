@@ -1,4 +1,4 @@
-// VERSION 5 (illustrated art-gallery homepage: gold frames, bench, animated visitors; editorial inner pages). Builds the site from /content and /src into /dist.  Run: node build.mjs
+// VERSION 6 (photographed museum homepage with the campaigns hung in its frames; gallery-styled inner pages). Builds the site from /content and /src into /dist.  Run: node build.mjs
 // No packages needed. Netlify runs this automatically each time you save in the dashboard.
 import fs from "node:fs";
 import path from "node:path";
@@ -148,7 +148,7 @@ function shell({ title, description, body, cls = "" }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="${FONTS}" rel="stylesheet">
-<style>${rd("src/site.css")}${rd("src/gallery.css")}</style>
+<style>${rd("src/site.css")}${rd("src/gallery.css")}${rd("src/museum.css")}</style>
 <script>document.documentElement.className+=" js"</script>
 </head>
 <body class="g ${cls}">
@@ -157,6 +157,7 @@ ${SVG_DEFS}
 ${body}
 <script>${rd("src/site.js")}</script>
 <script>${rd("src/gallery.js")}</script>
+<script>${rd("src/museum.js")}</script>
 </body>
 </html>
 `;
@@ -165,49 +166,47 @@ ${body}
 const staples = `<i class="tape t1"></i><i class="tape t2"></i>`;
 const foot = `<p class="foot">${esc(home.first_name)} ${esc(home.last_name)} · ${esc(home.role)}</p>`;
 
-// ---------- HOME: the gallery ----------
-const PERSON = (cls) => `<div class="vis ${cls}" aria-hidden="true"><svg viewBox="0 0 100 262" class="fig" focusable="false">
-  <g class="legs"><g class="leg l"><path d="M33 140h17v108H33z" class="pants"/><path d="M29 246h24v12H29z" class="shoe"/></g><g class="leg r"><path d="M52 140h17v108H52z" class="pants"/><path d="M48 246h24v12H48z" class="shoe"/></g></g>
-  <g class="body"><g class="arm l"><path d="M20 62q-9 36-6 78h12q0-38 6-72z" class="top dk"/><ellipse cx="20" cy="143" rx="6" ry="7" class="skin"/></g>
-  <g class="arm r"><path d="M80 62q9 36 6 78H74q0-38-6-72z" class="top dk"/><ellipse cx="80" cy="143" rx="6" ry="7" class="skin"/></g>
-  <path d="M24 58q26-14 52 0l4 88q-30 8-60 0z" class="top"/><path d="M36 54q14-9 28 0l-3 16q-11 6-22 0z" class="hood"/>
-  <path d="M30 150q20 10 40 0l2 12q-22 8-44 0z" class="pants"/><rect class="bagstrap" x="62" y="60" width="5" height="88" transform="rotate(-12 64 100)"/><rect class="bag" x="64" y="104" width="24" height="30" rx="5"/></g>
-  <g class="head"><rect x="44" y="38" width="12" height="14" class="skin"/><ellipse cx="50" cy="28" rx="15" ry="18" class="hair"/><path d="M36 30q14 14 28 0v12q-14 8-28 0z" class="hair"/></g>
-</svg></div>`;
+// ---------- HOME: the museum (photo of a real room, campaigns hung in its frames) ----------
+// positions are measured on the 1672 x 941 photo: outer frame box (x,y,w,h) and the opening inside it (ix,iy,iw,ih)
+const PHOTO = { w: 1672, h: 941 };
+const FRAMES = [
+  { x: 379, y: 188, w: 403, h: 370, ix: 418, iy: 226, iw: 329, ih: 296 },
+  { x: 910, y: 188, w: 398, h: 370, ix: 947.5, iy: 226, iw: 324, ih: 296 },
+];
+const pctX = (v) => ((v / PHOTO.w) * 100).toFixed(3) + "%";
+const pctY = (v) => ((v / PHOTO.h) * 100).toFixed(3) + "%";
 
 function homePage() {
-  const fr = campaigns.map((c, i) => {
-    const t = ctitle(c);
-    const th = c.thumbnail || c.concept_board;
-    return `<a class="frame f${i + 1}" style="--r:${(imgRatio(th) || 1.5).toFixed(3)}" href="/${c.slug}/" data-i="${i}" aria-label="Open the ${esc(t)} campaign: ${esc(c.line)}">
-      <span class="gold"><span class="mat">${pic({ image: th, alt: `${t} campaign`, label: t, shape: "wide" })}</span></span>
-      <span class="lamp" aria-hidden="true"></span>
-      <span class="label"><b>${pad(i + 1)}</b> ${esc(t)}<small>${esc(c.line)}</small></span></a>`;
-  }).join("\n    ");
-  const plaques = [{ href: "/about/", label: "About me" }, { href: "/about/#contact", label: "Contact" }, ...(about.resume ? [{ href: url(about.resume), label: "Résumé", dl: true }] : [])]
-    .map((p) => `<a class="plaque" href="${p.href}"${p.dl ? " download" : ""}>${esc(p.label)}</a>`).join("\n      ");
+  const fr = campaigns.slice(0, 2).map((c, i) => {
+    const f = FRAMES[i], t = ctitle(c), r = imgRatio(c.concept_board) || 1.5;
+    const art = `left:${(((f.ix - f.x) / f.w) * 100).toFixed(3)}%;top:${(((f.iy - f.y) / f.h) * 100).toFixed(3)}%;width:${((f.iw / f.w) * 100).toFixed(3)}%;height:${((f.ih / f.h) * 100).toFixed(3)}%;--r:${r.toFixed(4)}`;
+    return `<a class="frame f${i + 1}" data-i="${i}" href="/${c.slug}/" style="left:${pctX(f.x)};top:${pctY(f.y)};width:${pctX(f.w)};height:${pctY(f.h)}" aria-label="Open the ${esc(t)} campaign: ${esc(c.line)}">
+        <span class="art" style="${art}">${pic({ image: c.concept_board, alt: `${t} concept board`, label: t, shape: "wide" })}<i class="lit"></i></span>
+        <i class="glow" aria-hidden="true"></i>
+      </a>
+      <p class="wl wl${i + 1}" style="left:${pctX(f.x + 4)};top:${pctY(576)}"><b>${pad(i + 1)}</b> ${esc(t)}<small>${esc(c.line)}</small></p>`;
+  }).join("\n      ");
+  const nav = [{ href: "/about/", label: "About" }, { href: "/about/#contact", label: "Contact" }, ...(about.resume ? [{ href: url(about.resume), label: "Résumé", dl: true }] : [])]
+    .map((p) => `<a href="${p.href}"${p.dl ? " download" : ""}>${esc(p.label)}</a>`).join("");
   const body = `<a class="skip" href="#gallery">Skip to the gallery</a>
-<main class="gallery" id="gallery">
-  <div class="floor" aria-hidden="true"></div>
-  <div class="room">
-    <h1 class="vinyl"><span>${esc(home.first_name)} ${esc(home.last_name)}</span><small>${esc(home.role)} · ${esc(home.note_small || "")}</small></h1>
-    ${fr}
-    <nav class="plaques" aria-label="More">
-      ${plaques}
-    </nav>
-    <div class="rug" aria-hidden="true"></div>
-    ${PERSON("w2")}
-    ${PERSON("w3")}
-    <div class="bench" aria-hidden="true"><i class="top"></i><i class="front"></i><i class="lg a"></i><i class="lg b"></i><i class="lg c"></i><i class="lg d"></i></div>
-    ${PERSON("w1")}
-    <p class="hint">Choose a frame. Drag a visitor to move them.</p>
+<main class="museum" id="gallery">
+  <header class="mast">
+    <h1><span class="nm">${esc(home.first_name)} ${esc(home.last_name)}</span><small>${esc(home.role)} · ${esc(home.note_small || "CU Boulder")}</small></h1>
+    <nav aria-label="Main">${nav}</nav>
+  </header>
+  <div class="pan">
+    <div class="stage" style="--pw:${PHOTO.w};--ph:${PHOTO.h}">
+      <img class="shot" src="/scene/museum.webp" width="${PHOTO.w}" height="${PHOTO.h}" alt="" aria-hidden="true" fetchpriority="high">
+      ${fr}
+    </div>
   </div>
+  <p class="swipe" aria-hidden="true">Swipe to see both campaigns</p>
 </main>`;
   return shell({
     title: `${home.first_name} ${home.last_name}, ${home.role}`,
     description: `Portfolio of ${home.first_name} ${home.last_name}, ${home.role}.`,
     body,
-    cls: "home",
+    cls: "home museum-page",
   });
 }
 
