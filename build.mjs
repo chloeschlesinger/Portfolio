@@ -168,14 +168,20 @@ const foot = `<p class="foot">${esc(home.first_name)} ${esc(home.last_name)} · 
 
 // ---------- HOME: the museum (photo of a real room, campaigns hung in its frames) ----------
 // positions are measured on the 1672 x 941 photo: outer frame box (x,y,w,h) and the opening inside it (ix,iy,iw,ih)
-const PERSON = (cls) => `<div class="vis ${cls}" aria-hidden="true"><svg viewBox="0 0 100 262" class="fig" focusable="false">
-  <g class="legs"><g class="leg l"><path d="M33 140h17v108H33z" class="pants"/><path d="M29 246h24v12H29z" class="shoe"/></g><g class="leg r"><path d="M52 140h17v108H52z" class="pants"/><path d="M48 246h24v12H48z" class="shoe"/></g></g>
-  <g class="body"><g class="arm l"><path d="M20 62q-9 36-6 78h12q0-38 6-72z" class="top dk"/><ellipse cx="20" cy="143" rx="6" ry="7" class="skin"/></g>
-  <g class="arm r"><path d="M80 62q9 36 6 78H74q0-38-6-72z" class="top dk"/><ellipse cx="80" cy="143" rx="6" ry="7" class="skin"/></g>
-  <path d="M24 58q26-14 52 0l4 88q-30 8-60 0z" class="top"/><path d="M58 58q14 2 22 0l4 88q-14 4-26 3z" class="shade"/><path d="M40 70q8 40 4 76" class="shade" style="fill:none;stroke:#000;stroke-width:2;opacity:.12"/><path d="M52 80q6 34 2 66" class="shade" style="fill:none;stroke:#000;stroke-width:2;opacity:.1"/><path d="M36 54q14-9 28 0l-3 16q-11 6-22 0z" class="hood"/>
-  <path d="M30 150q20 10 40 0l2 12q-22 8-44 0z" class="pants"/><rect class="bagstrap" x="62" y="60" width="5" height="88" transform="rotate(-12 64 100)"/><rect class="bag" x="64" y="104" width="24" height="30" rx="5"/></g>
-  <g class="head"><rect x="44" y="38" width="12" height="14" class="skin"/><ellipse cx="50" cy="28" rx="15" ry="18" class="hair"/><path d="M42 16q8-6 18-2q-10 0-14 8z" class="hl"/><path d="M58 24q4 12-2 22q8-8 6-22z" class="shade"/><path d="M36 30q14 14 28 0v12q-14 8-28 0z" class="hair"/></g>
-</svg></div>`;
+// visitors: real photographed people (cut-outs). Each has a standing sprite and a seated one; heads are a separate layer so they can follow the pointer.
+const PEOPLE = JSON.parse(rd("src/scene/people/meta.json"));
+const BOX_H = 22.6; // height (in % of the room width) of a standing visitor at depth scale 1
+const PERSON = (id) => {
+  const p = PEOPLE[id], st = p.stand, se = p.sit, bw = ((st.w / st.h) * BOX_H).toFixed(3);
+  const layers = (s) => {
+    const cut = ((s.cut / s.h) * 100).toFixed(2), ov = ((14 / s.h) * 100).toFixed(2);
+    return `<img class="body" src="${s.file}" alt="" draggable="false" style="--cut:${cut}%"><img class="head" src="${s.file}" alt="" draggable="false" style="--cut:${cut}%;--ov:${ov}%">`;
+  };
+  return `<div class="vis p-${id}" aria-hidden="true" style="--bw:${bw}cqw;--ar:${st.w}/${st.h}">
+    <span class="spr stand" style="width:100%;height:100%">${layers(st)}</span>
+    <span class="spr sit" style="width:${((se.w / st.w) * 100).toFixed(2)}%;height:${((se.h / st.h) * 100).toFixed(2)}%">${layers(se)}</span>
+  </div>`;
+};
 
 const PHOTO = { w: 1672, h: 941 };
 // measured on the rebuilt photo (tools/make_museum_portrait.py): outer frame box (x,y,w,h) and the opening inside it (ix,iy,iw,ih)
@@ -211,9 +217,9 @@ function homePage() {
       <img class="shot" src="/scene/museum.webp" width="${PHOTO.w}" height="${PHOTO.h}" alt="" aria-hidden="true" fetchpriority="high">
       ${fr}
       <i class="benchcut" aria-hidden="true" style="left:${pctX(BENCH.x)};top:${pctY(BENCH.cutY)};width:${pctX(BENCH.w)};height:${pctY(BENCH.cutH)};background-size:${((PHOTO.w / BENCH.w) * 100).toFixed(2)}% auto;background-position:${((BENCH.x / (PHOTO.w - BENCH.w)) * 100).toFixed(2)}% ${((BENCH.cutY / (PHOTO.h - BENCH.cutH)) * 100).toFixed(2)}%"></i>
-      ${PERSON("w2")}
-      ${PERSON("w3")}
-      ${PERSON("w1")}
+      ${PERSON("c")}
+      ${PERSON("a")}
+      ${PERSON("b")}
     </div>
   </div>
   <p class="swipe" aria-hidden="true">Swipe to see both campaigns</p>

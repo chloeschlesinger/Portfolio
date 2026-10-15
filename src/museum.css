@@ -80,3 +80,20 @@ body.museum-page .scene{display:none}
 .stage .vis{cursor:grab}
 .vis svg{filter:saturate(.82) sepia(.1) brightness(.97)}
 .vis .shade{fill:#000;opacity:.16}.vis .hl{fill:#fff;opacity:.18}
+
+/* photographed visitors */
+.stage>.vis{width:var(--bw);aspect-ratio:var(--ar);pointer-events:none;cursor:grab;opacity:0}
+.stage>.vis.on{opacity:1}
+.stage>.vis::before{display:none}
+.stage>.vis .spr{position:absolute;left:50%;bottom:0;translate:-50% 0;display:block;transition:translate .25s ease}
+.stage>.vis .spr.sit{display:none}
+.stage>.vis.sit .spr.sit{display:block}.stage>.vis.sit .spr.stand{display:none}
+.stage>.vis img{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none;pointer-events:auto;
+  filter:saturate(.96) brightness(.97) drop-shadow(0 .5cqw .6cqw rgba(45,22,5,.28))}
+.stage>.vis.sit img{filter:saturate(.96) brightness(.97)}
+.stage>.vis img.body{clip-path:inset(var(--cut) 0 0 0)}
+.stage>.vis img.head{-webkit-mask-image:linear-gradient(#000 var(--cut),transparent calc(var(--cut) + var(--ov)));mask-image:linear-gradient(#000 var(--cut),transparent calc(var(--cut) + var(--ov)));
+  transform-origin:50% var(--cut);transform:translate(calc(var(--hx,0)*.14cqw),calc(.1cqw + var(--hy,0)*.09cqw)) rotate(calc(var(--hx,0)*2deg));transition:transform .22s ease-out;clip-path:none}
+.stage>.vis.drag .spr{translate:-50% -1cqw}
+.stage>.vis.drag{z-index:9!important}
+@media (prefers-reduced-motion:reduce){.stage>.vis img.head,.stage>.vis .spr{transition:none}}

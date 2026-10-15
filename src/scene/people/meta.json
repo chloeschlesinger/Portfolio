@@ -1,0 +1,44 @@
+{
+ "a": {
+  "stand": {
+   "file": "/scene/people/a-stand.webp",
+   "w": 235,
+   "h": 700,
+   "cut": 109
+  },
+  "sit": {
+   "file": "/scene/people/a-sit.webp",
+   "w": 240,
+   "h": 314,
+   "cut": 101
+  }
+ },
+ "b": {
+  "stand": {
+   "file": "/scene/people/b-stand.webp",
+   "w": 251,
+   "h": 700,
+   "cut": 122
+  },
+  "sit": {
+   "file": "/scene/people/b-sit.webp",
+   "w": 242,
+   "h": 309,
+   "cut": 88
+  }
+ },
+ "c": {
+  "stand": {
+   "file": "/scene/people/c-stand.webp",
+   "w": 241,
+   "h": 700,
+   "cut": 118
+  },
+  "sit": {
+   "file": "/scene/people/c-sit.webp",
+   "w": 210,
+   "h": 327,
+   "cut": 118
+  }
+ }
+}
