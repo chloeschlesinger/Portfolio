@@ -1,4 +1,4 @@
-// VERSION 4 (graphic NYC street-poster editorial, tear-off flyer). Builds the site from /content and /src into /dist.  Run: node build.mjs
+// VERSION 5 (illustrated art-gallery homepage: gold frames, bench, animated visitors; editorial inner pages). Builds the site from /content and /src into /dist.  Run: node build.mjs
 // No packages needed. Netlify runs this automatically each time you save in the dashboard.
 import fs from "node:fs";
 import path from "node:path";
@@ -17,7 +17,7 @@ const lines = (s = "") => String(s).split("\n").map(esc).join("<br>");
 const url = (p) => (p ? (p.startsWith("http") ? p : p.startsWith("/") ? p : "/" + p) : "");
 
 const FONTS =
-  "https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Archivo+Black&family=Archivo:wght@400;600;800&family=Archivo+Narrow:wght@500;700&family=Reenie+Beanie&display=swap";
+  "https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Archivo+Black&family=Archivo:wght@400;600;800&family=Archivo+Narrow:wght@500;700&family=Reenie+Beanie&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap";
 
 // ---------- content ----------
 const home = json("content/home.json");
@@ -148,14 +148,15 @@ function shell({ title, description, body, cls = "" }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="${FONTS}" rel="stylesheet">
-<style>${rd("src/site.css")}${THEME ? rd("src/themes.css") : ""}</style>
+<style>${rd("src/site.css")}${rd("src/gallery.css")}</style>
 <script>document.documentElement.className+=" js"</script>
 </head>
-<body class="${cls}${THEME ? " t-" + THEME : ""}">
+<body class="g ${cls}">
 ${SVG_DEFS}
 <div class="scene" aria-hidden="true"></div>
 ${body}
 <script>${rd("src/site.js")}</script>
+<script>${rd("src/gallery.js")}</script>
 </body>
 </html>
 `;
@@ -164,24 +165,41 @@ ${body}
 const staples = `<i class="tape t1"></i><i class="tape t2"></i>`;
 const foot = `<p class="foot">${esc(home.first_name)} ${esc(home.last_name)} · ${esc(home.role)}</p>`;
 
-// ---------- HOME ----------
+// ---------- HOME: the gallery ----------
+const PERSON = (cls) => `<div class="vis ${cls}" aria-hidden="true"><svg viewBox="0 0 100 262" class="fig" focusable="false">
+  <g class="legs"><g class="leg l"><path d="M33 140h17v108H33z" class="pants"/><path d="M29 246h24v12H29z" class="shoe"/></g><g class="leg r"><path d="M52 140h17v108H52z" class="pants"/><path d="M48 246h24v12H48z" class="shoe"/></g></g>
+  <g class="body"><g class="arm l"><path d="M20 62q-9 36-6 78h12q0-38 6-72z" class="top dk"/><ellipse cx="20" cy="143" rx="6" ry="7" class="skin"/></g>
+  <g class="arm r"><path d="M80 62q9 36 6 78H74q0-38-6-72z" class="top dk"/><ellipse cx="80" cy="143" rx="6" ry="7" class="skin"/></g>
+  <path d="M24 58q26-14 52 0l4 88q-30 8-60 0z" class="top"/><path d="M36 54q14-9 28 0l-3 16q-11 6-22 0z" class="hood"/>
+  <path d="M30 150q20 10 40 0l2 12q-22 8-44 0z" class="pants"/><rect class="bagstrap" x="62" y="60" width="5" height="88" transform="rotate(-12 64 100)"/><rect class="bag" x="64" y="104" width="24" height="30" rx="5"/></g>
+  <g class="head"><rect x="44" y="38" width="12" height="14" class="skin"/><ellipse cx="50" cy="28" rx="15" ry="18" class="hair"/><path d="M36 30q14 14 28 0v12q-14 8-28 0z" class="hair"/></g>
+</svg></div>`;
+
 function homePage() {
-  const body = `<a class="skip" href="#cover">Skip to the cover</a>
-<main class="stage home" id="cover">
-  <div class="sheetwrap">
-    <i class="back b-yellow" aria-hidden="true"></i>
-    <i class="back b-black" aria-hidden="true"></i>
-    ${staples}
-    <div class="sheet">
-      <h1 aria-label="${esc(home.first_name)} ${esc(home.last_name)}, ${esc(home.role)}">
-        <span class="h-first">${esc(String(home.first_name).toUpperCase())}</span>
-        <span class="h-last"><span>${esc(String(home.last_name).toUpperCase())}</span></span>
-        <span class="h-role"><span>${esc(String(home.role).toUpperCase())}</span></span>
-      </h1>
-      <p class="invite">${esc(home.hint_line1 || "Pick a campaign.")}<br><span>${esc(home.hint_line2 || "Tear it off.")}</span></p>
-      <p class="credit">${esc(home.note_top || "")} ${esc(home.note_accent || "")} <b>/ ${esc(home.note_small || "")}</b></p>
-    </div>
-    ${tabsRow("home")}
+  const fr = campaigns.map((c, i) => {
+    const t = ctitle(c);
+    return `<a class="frame f${i + 1}" href="/${c.slug}/" data-i="${i}" aria-label="Open the ${esc(t)} campaign: ${esc(c.line)}">
+      <span class="gold"><span class="mat">${pic({ image: c.concept_board, alt: `${t} concept board`, label: t, shape: "wide" })}</span></span>
+      <span class="lamp" aria-hidden="true"></span>
+      <span class="label"><b>${pad(i + 1)}</b> ${esc(t)}<small>${esc(c.line)}</small></span></a>`;
+  }).join("\n    ");
+  const plaques = [{ href: "/about/", label: "About me" }, { href: "/about/#contact", label: "Contact" }, ...(about.resume ? [{ href: url(about.resume), label: "Résumé", dl: true }] : [])]
+    .map((p) => `<a class="plaque" href="${p.href}"${p.dl ? " download" : ""}>${esc(p.label)}</a>`).join("\n      ");
+  const body = `<a class="skip" href="#gallery">Skip to the gallery</a>
+<main class="gallery" id="gallery">
+  <div class="floor" aria-hidden="true"></div>
+  <div class="room">
+    <h1 class="vinyl"><span>${esc(home.first_name)} ${esc(home.last_name)}</span><small>${esc(home.role)} · ${esc(home.note_small || "")}</small></h1>
+    ${fr}
+    <nav class="plaques" aria-label="More">
+      ${plaques}
+    </nav>
+    <div class="rug" aria-hidden="true"></div>
+    ${PERSON("w2")}
+    ${PERSON("w3")}
+    <div class="bench" aria-hidden="true"><i class="top"></i><i class="front"></i><i class="lg a"></i><i class="lg b"></i><i class="lg c"></i><i class="lg d"></i></div>
+    ${PERSON("w1")}
+    <p class="hint">Choose a frame.</p>
   </div>
 </main>`;
   return shell({
@@ -242,7 +260,6 @@ ${topnav(c.slug)}
     </div>
     <div class="nextrow">${nextLink}</div>
   </div>
-  ${tabsRow(c.slug)}
 </main>
 </div>
 ${foot}`;
@@ -291,7 +308,6 @@ ${topnav("about")}
       </section>
     </div>
   </div>
-  ${tabsRow("about")}
 </main>
 </div>
 ${foot}`;
