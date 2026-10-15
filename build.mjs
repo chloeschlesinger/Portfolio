@@ -168,23 +168,35 @@ const foot = `<p class="foot">${esc(home.first_name)} ${esc(home.last_name)} · 
 
 // ---------- HOME: the museum (photo of a real room, campaigns hung in its frames) ----------
 // positions are measured on the 1672 x 941 photo: outer frame box (x,y,w,h) and the opening inside it (ix,iy,iw,ih)
+const PERSON = (cls) => `<div class="vis ${cls}" aria-hidden="true"><svg viewBox="0 0 100 262" class="fig" focusable="false">
+  <g class="legs"><g class="leg l"><path d="M33 140h17v108H33z" class="pants"/><path d="M29 246h24v12H29z" class="shoe"/></g><g class="leg r"><path d="M52 140h17v108H52z" class="pants"/><path d="M48 246h24v12H48z" class="shoe"/></g></g>
+  <g class="body"><g class="arm l"><path d="M20 62q-9 36-6 78h12q0-38 6-72z" class="top dk"/><ellipse cx="20" cy="143" rx="6" ry="7" class="skin"/></g>
+  <g class="arm r"><path d="M80 62q9 36 6 78H74q0-38-6-72z" class="top dk"/><ellipse cx="80" cy="143" rx="6" ry="7" class="skin"/></g>
+  <path d="M24 58q26-14 52 0l4 88q-30 8-60 0z" class="top"/><path d="M36 54q14-9 28 0l-3 16q-11 6-22 0z" class="hood"/>
+  <path d="M30 150q20 10 40 0l2 12q-22 8-44 0z" class="pants"/><rect class="bagstrap" x="62" y="60" width="5" height="88" transform="rotate(-12 64 100)"/><rect class="bag" x="64" y="104" width="24" height="30" rx="5"/></g>
+  <g class="head"><rect x="44" y="38" width="12" height="14" class="skin"/><ellipse cx="50" cy="28" rx="15" ry="18" class="hair"/><path d="M36 30q14 14 28 0v12q-14 8-28 0z" class="hair"/></g>
+</svg></div>`;
+
 const PHOTO = { w: 1672, h: 941 };
+// measured on the rebuilt photo (tools/make_museum_portrait.py): outer frame box (x,y,w,h) and the opening inside it (ix,iy,iw,ih)
 const FRAMES = [
-  { x: 379, y: 188, w: 403, h: 370, ix: 418, iy: 226, iw: 329, ih: 296 },
-  { x: 910, y: 188, w: 398, h: 370, ix: 947.5, iy: 226, iw: 324, ih: 296 },
+  { x: 426, y: 138, w: 308, h: 440, ix: 465, iy: 176, iw: 234, ih: 366 },
+  { x: 955, y: 138, w: 308, h: 440, ix: 994, iy: 176, iw: 234, ih: 366 },
 ];
+const BENCH = { x: 543, w: 613, cutY: 762, cutH: 36 }; // front face of the bench: hides a seated visitor's lower body
 const pctX = (v) => ((v / PHOTO.w) * 100).toFixed(3) + "%";
 const pctY = (v) => ((v / PHOTO.h) * 100).toFixed(3) + "%";
 
 function homePage() {
   const fr = campaigns.slice(0, 2).map((c, i) => {
-    const f = FRAMES[i], t = ctitle(c), r = imgRatio(c.concept_board) || 1.5;
-    const art = `left:${(((f.ix - f.x) / f.w) * 100).toFixed(3)}%;top:${(((f.iy - f.y) / f.h) * 100).toFixed(3)}%;width:${((f.iw / f.w) * 100).toFixed(3)}%;height:${((f.ih / f.h) * 100).toFixed(3)}%;--r:${r.toFixed(4)}`;
+    const f = FRAMES[i], t = ctitle(c), th = c.thumbnail || c.concept_board, r = imgRatio(th) || 1.5;
+    const pw = Math.min(0.9 * f.iw, 0.9 * f.ih * r) / f.iw; // the print sits inside the mat, never cropped
+    const art = `left:${(((f.ix - f.x) / f.w) * 100).toFixed(3)}%;top:${(((f.iy - f.y) / f.h) * 100).toFixed(3)}%;width:${((f.iw / f.w) * 100).toFixed(3)}%;height:${((f.ih / f.h) * 100).toFixed(3)}%;--r:${r.toFixed(4)};--pw:${(pw * 100).toFixed(2)}%`;
     return `<a class="frame f${i + 1}" data-i="${i}" href="/${c.slug}/" style="left:${pctX(f.x)};top:${pctY(f.y)};width:${pctX(f.w)};height:${pctY(f.h)}" aria-label="Open the ${esc(t)} campaign: ${esc(c.line)}">
-        <span class="art" style="${art}">${pic({ image: c.concept_board, alt: `${t} concept board`, label: t, shape: "wide" })}<i class="lit"></i></span>
+        <span class="art" style="${art}">${pic({ image: th, alt: `${t} campaign artwork`, label: t, shape: "wide" })}<i class="lit"></i></span>
         <i class="glow" aria-hidden="true"></i>
       </a>
-      <p class="wl wl${i + 1}" style="left:${pctX(f.x + 4)};top:${pctY(576)}"><b>${pad(i + 1)}</b> ${esc(t)}<small>${esc(c.line)}</small></p>`;
+      <p class="wl wl${i + 1}" style="left:${pctX(f.x + 4)};top:${pctY(588)}"><b>${pad(i + 1)}</b> ${esc(t)}<small>${esc(c.line)}</small></p>`;
   }).join("\n      ");
   const nav = [{ href: "/about/", label: "About" }, { href: "/about/#contact", label: "Contact" }, ...(about.resume ? [{ href: url(about.resume), label: "Résumé", dl: true }] : [])]
     .map((p) => `<a href="${p.href}"${p.dl ? " download" : ""}>${esc(p.label)}</a>`).join("");
@@ -198,6 +210,10 @@ function homePage() {
     <div class="stage" style="--pw:${PHOTO.w};--ph:${PHOTO.h}">
       <img class="shot" src="/scene/museum.webp" width="${PHOTO.w}" height="${PHOTO.h}" alt="" aria-hidden="true" fetchpriority="high">
       ${fr}
+      <i class="benchcut" aria-hidden="true" style="left:${pctX(BENCH.x)};top:${pctY(BENCH.cutY)};width:${pctX(BENCH.w)};height:${pctY(BENCH.cutH)};background-size:${((PHOTO.w / BENCH.w) * 100).toFixed(2)}% auto;background-position:${((BENCH.x / (PHOTO.w - BENCH.w)) * 100).toFixed(2)}% ${((BENCH.cutY / (PHOTO.h - BENCH.cutH)) * 100).toFixed(2)}%"></i>
+      ${PERSON("w2")}
+      ${PERSON("w3")}
+      ${PERSON("w1")}
     </div>
   </div>
   <p class="swipe" aria-hidden="true">Swipe to see both campaigns</p>

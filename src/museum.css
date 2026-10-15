@@ -13,9 +13,9 @@ body.museum-page .scene{display:none}
 .museum .stage .frame:hover,.museum .stage .frame:focus-visible{transform:none}
 .frame .art{position:absolute;overflow:hidden;background:linear-gradient(180deg,#e6d9c1,#efe5d0 60%,#e9dcc4);
   box-shadow:inset 0 .55cqw .75cqw -.2cqw rgba(38,21,4,.62),inset .3cqw 0 .5cqw -.2cqw rgba(38,21,4,.38),inset -.15cqw 0 .3cqw -.1cqw rgba(38,21,4,.25)}
-.frame .art picture{position:absolute;left:50%;top:50%;width:91%;aspect-ratio:var(--r);translate:-50% -50%;display:block;
+.frame .art picture{position:absolute;left:50%;top:50%;width:var(--pw,90%);aspect-ratio:var(--r);translate:-50% -50%;display:block;
   box-shadow:0 0 0 .22cqw #f7f1e4,0 0 0 .3cqw rgba(60,40,15,.28),0 .25cqw .5cqw rgba(30,15,0,.45)}
-.frame .art img{display:block;width:100%;height:100%;object-fit:contain}
+.frame .art img{display:block;width:100%;height:100%;object-fit:cover}
 /* light falling on the print: spotlight from above, warm tint, a faint glass sheen, soft falloff at the bottom */
 .frame .art .lit{position:absolute;inset:0;pointer-events:none;
   background:
@@ -62,3 +62,13 @@ body.museum-page .scene{display:none}
   .wl{font-size:1.5cqw}.wl b{font-size:1cqw}
 }
 @media (prefers-reduced-motion:reduce){.stage,.frame .glow{transition:none}}
+
+/* the bench front face is re-laid over the seated visitor (a slice of the photo itself) */
+.benchcut{background-image:url(/scene/museum.webp);background-repeat:no-repeat;z-index:3;pointer-events:none}
+.museum .stage .frame{z-index:1}
+.vis:not(.on){pointer-events:none}
+.vis.drag{z-index:9!important}
+.stage[data-look="0"] .vis.sit.look .head{animation:none;transform:translate(-4px,-3px) rotate(-3deg) scaleY(1.05)}
+.stage[data-look="1"] .vis.sit.look .head{animation:none;transform:translate(4px,-3px) rotate(3deg) scaleY(1.05)}
+.stage>.vis{position:absolute}
+.stage>.vis{width:8cqw}
