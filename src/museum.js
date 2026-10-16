@@ -78,6 +78,8 @@
   }
   // seats along the bench: left to right  c, a, b
   var WALKER = null, REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // on arrival: the blonde and the brunette stand looking at the art, the man sits in the middle of the bench (photo coordinates; drag anyone anywhere)
+  var START = { c: [230, 849], b: [1397, 883] };
   var seatX = {};
   var seats = { c: .24, a: .45, b: .63 };
   function settle() {
@@ -88,8 +90,8 @@
     order.forEach(function (k, i) { seatX[k] = cur + ws[i] / 2; cur += ws[i] + gap; });
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key];
-      if (!m) m = man[key] = key === WALKER ? { x: M.W * .5, y: 915 * M.k, sit: false, seed: false, walk: !REDUCE } : { x: 0, y: 0, sit: true, seed: true };
-      if (m.seed) m.x = seatX[key];
+      if (!m) m = man[key] = START[key] ? { x: START[key][0] * M.k, y: START[key][1] * M.k, sit: false, seed: false } : { x: 0, y: 0, sit: true, seed: true };
+      if (m.seed) m.x = (M.b0 + M.b1) / 2;
       apply(vis[key], key, m);
     });
   }
