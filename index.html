@@ -384,17 +384,21 @@ body.museum-page .scene{display:none}
 /* phone: the photo is shown large and you swipe from one framed campaign to the other */
 @media (max-width:760px),(max-aspect-ratio:1/1){
   .museum{display:flex;flex-direction:column;padding-bottom:calc(60px + env(safe-area-inset-bottom))}
-  .museum{min-height:100dvh;background:#f8f3e8}
-  .pan{position:relative;inset:auto;flex:none;margin:auto 0;overflow:hidden;scrollbar-width:none;border-top:1px solid rgba(140,110,50,.45);border-bottom:1px solid rgba(140,110,50,.45)}
+  .museum{height:100dvh;background:#6f4a2a;position:relative;overflow:hidden}
+  .pan{position:relative;inset:auto;flex:1;min-height:0;display:flex;align-items:center;overflow:hidden;scrollbar-width:none}
+  .stage .ext{display:block;position:absolute;left:-12%;width:124%;height:100%;background:url(scene/museum.webp) 0 0/100% 4000% no-repeat;pointer-events:none;filter:blur(26px) brightness(.9)}
+  .stage .ext.t{bottom:calc(100% - 1px);background-position:0 0}.stage .ext.b{top:calc(100% - 1px);background-position:0 100%}
   .pan::-webkit-scrollbar{display:none}
-  .stage{position:relative;left:auto;top:auto;translate:none;flex:none;aspect-ratio:1672/941}
+  .stage{position:relative;left:auto;top:auto;translate:none;flex:none;aspect-ratio:1672/941;margin-bottom:calc(0px - 0px)}
   .stage>.vis img{touch-action:none}
   .museum .stage .frame{scroll-snap-align:center}
-  .mast{position:relative;flex:none;order:0;flex-direction:column;align-items:center;text-align:center;gap:0;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;background:#f8f3e8;border-bottom:1px solid rgba(140,110,50,.35)}
+  .mast{position:absolute;top:0;left:0;right:0;z-index:5;flex-direction:column;align-items:center;text-align:center;gap:0;padding:calc(18px + env(safe-area-inset-top)) 16px 26px;background:linear-gradient(rgba(50,30,14,.62),rgba(50,30,14,0))}
+  .mast .nm{color:#f6ecd6}.mast small{color:#d9c597}
   .mast .nm{font-size:27px}.mast small{margin-top:7px;font-size:9.5px;letter-spacing:.3em}
-  .mast nav{position:fixed;left:0;right:0;bottom:0;justify-content:space-around;gap:0;padding:0 8px env(safe-area-inset-bottom);background:#f8f3e8;border-top:1px solid rgba(140,110,50,.35);z-index:6}
+  .mast nav{position:fixed;left:0;right:0;bottom:0;justify-content:space-around;gap:0;padding:26px 8px env(safe-area-inset-bottom);background:linear-gradient(rgba(50,30,14,0),rgba(50,30,14,.66));z-index:6}
+  .mast nav a{color:#f6ecd6}
   .mast nav a{font-size:12px;letter-spacing:.24em;padding:20px 14px}
-  .swipe{display:block;position:static;order:3;text-align:center;margin:0 0 22px;font:italic 500 17px 'Cormorant Garamond',Georgia,serif;color:#6d5a33;pointer-events:none}
+  .swipe{display:none}
   .wl{font-size:1.5cqw}.wl b{font-size:1cqw}
 }
 @media (prefers-reduced-motion:reduce){.stage,.frame .glow{transition:none}}
@@ -402,6 +406,7 @@ body.museum-page .scene{display:none}
 /* the bench front face is re-laid over the seated visitor (a slice of the photo itself) */
 .benchcut{background-image:url(scene/museum.webp);background-repeat:no-repeat;z-index:3;pointer-events:none}
 .museum .stage .frame{z-index:1}
+.ext{display:none}
 .vis:not(.on){pointer-events:none}
 .vis.drag{z-index:9!important}
 .stage[data-look="0"] .vis.sit.look .head{animation:none;transform:translate(-4px,-3px) rotate(-3deg) scaleY(1.05)}
@@ -465,6 +470,7 @@ body.museum-page .scene{display:none}
   </header>
   <div class="pan">
     <div class="stage" style="--pw:1672;--ph:941">
+      <i class="ext t" aria-hidden="true"></i><i class="ext b" aria-hidden="true"></i>
       <img class="shot" src="scene/museum.webp" width="1672" height="941" alt="" aria-hidden="true" fetchpriority="high">
       <a class="frame f1" data-i="0" href="godox-c100/index.html" style="left:25.478%;top:14.665%;width:18.421%;height:46.759%" aria-label="Open the Godox C100 campaign: Yes, You Captured It. Did You See It?">
         <span class="art" style="left:12.662%;top:8.636%;width:75.974%;height:83.182%;--r:0.6667;--pw:90.00%"><picture><source srcset="optimized/gallery-godox-mona.webp" type="image/webp"><img class="im" src="optimized/gallery-godox-mona.webp" alt="Godox C100 campaign artwork" loading="lazy" decoding="async" width="1000" height="1500"></picture><i class="lit"></i></span>
@@ -753,7 +759,7 @@ body.museum-page .scene{display:none}
   function fit() {
     if (phone()) {
       var w = Math.round(pan.clientWidth * 1672 / CROPW); stage.style.width = w + "px"; stage.style.height = Math.round(w * 941 / 1672) + "px";
-      pan.style.height = stage.style.height; pan.scrollLeft = Math.round(CROP0 / 1672 * w);
+      pan.style.height = ""; pan.scrollLeft = Math.round(CROP0 / 1672 * w);
     } else { stage.style.width = ""; stage.style.height = ""; pan.style.height = ""; }
   }
   fit();
@@ -831,8 +837,8 @@ body.museum-page .scene{display:none}
   function settle() {
     // equal room between neighbours (and the bench ends): spread by the real widths of the seated sprites
     var order = ["c", "a", "b"], ws = order.map(function (k) { var sp = vis[k].querySelector(".spr.sit"); return sp.offsetWidth * scaleAt(770 * M.k); });
-    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = PHONE ? -tot * .03 : Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
-    cur = PHONE ? (M.b0 + M.b1) / 2 - (tot + gap * 2) / 2 - M.W * .014 : M.b0 + gap * .6;
+    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = PHONE ? tot * .045 : Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
+    cur = PHONE ? (M.b0 + M.b1) / 2 - (tot + gap * 2) / 2 - M.W * .02 : M.b0 + gap * .6;
     order.forEach(function (k, i) { seatX[k] = cur + ws[i] / 2; cur += ws[i] + gap; });
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key];
