@@ -102,9 +102,11 @@ body.museum-page .scene{display:none}
 .stage>.vis .hw{position:absolute;inset:0;display:block;transform-origin:50% var(--cut);animation:idleHead var(--hd,9s) ease-in-out infinite;animation-delay:var(--dl,0s);pointer-events:none}
 .stage>.vis img.head{inset:0}
 .stage>.vis img.body{transform-origin:50% 100%;animation:breathe var(--bd,5s) ease-in-out infinite;animation-delay:var(--dl,0s)}
-@keyframes breathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-.03cqw) scaleY(1.004)}}
-@keyframes idleHead{0%,100%{transform:translate(0,.02cqw) rotate(0)}22%{transform:translate(.05cqw,-.01cqw) rotate(.7deg)}50%{transform:translate(0,-.03cqw) rotate(.1deg)}74%{transform:translate(-.05cqw,0) rotate(-.7deg)}}
-@media (prefers-reduced-motion:reduce){.stage>.vis .hw,.stage>.vis img.body{animation:none}}
+@keyframes breathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-.05cqw) scaleY(1.01)}}
+.stage>.vis .spr{transform-origin:50% 100%;animation:sway calc(var(--bd,5s)*1.5) ease-in-out infinite;animation-delay:var(--dl,0s)}
+@keyframes sway{0%,100%{transform:translateX(-.14cqw) rotate(-.9deg)}50%{transform:translateX(.14cqw) rotate(.9deg)}}
+@keyframes idleHead{0%,100%{transform:translate(0,.02cqw) rotate(0)}22%{transform:translate(.12cqw,-.02cqw) rotate(2deg)}50%{transform:translate(0,-.06cqw) rotate(.2deg)}74%{transform:translate(-.12cqw,0) rotate(-2deg)}}
+@media (prefers-reduced-motion:reduce){.stage>.vis .hw,.stage>.vis img.body,.stage>.vis .spr{animation:none}}
 /* a soft dent of shadow where each visitor sits on the cushion */
 .sitshade{position:absolute;display:none;z-index:4;pointer-events:none;height:2.4cqw;transform:translateX(-50%);mix-blend-mode:multiply;
   background:radial-gradient(ellipse 50% 50% at 50% 35%,rgba(35,18,6,.5),rgba(35,18,6,.18) 55%,transparent 75%)}

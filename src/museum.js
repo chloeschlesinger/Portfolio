@@ -19,7 +19,7 @@
     if (reduce || phone()) return;
     var s = stage.getBoundingClientRect(), r = f.getBoundingClientRect();
     var ox = (r.left + r.width / 2 - s.left) / s.width * 100, oy = (r.top + r.height / 2 - s.top) / s.height * 100;
-    stage.style.transformOrigin = ox + "% " + oy + "%"; stage.style.transform = "scale(1.045)";
+    /* no screen zoom on hover (kept as a no-op) */
   }
   function unlean() { stage.style.transform = ""; }
   frames.forEach(function (f) {
