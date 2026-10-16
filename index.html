@@ -384,10 +384,10 @@ body.museum-page .scene{display:none}
 /* phone: the photo is shown large and you swipe from one framed campaign to the other */
 @media (max-width:760px),(max-aspect-ratio:1/1){
   .museum{display:flex;flex-direction:column;padding-bottom:calc(60px + env(safe-area-inset-bottom))}
-  .museum{height:100dvh;background:#6f4a2a;position:relative;overflow:hidden}
+  .museum{height:100dvh;background:linear-gradient(#6f4a2a 55%,#7a4520 55%);position:relative;overflow:hidden}
   .pan{position:relative;inset:auto;flex:1;min-height:0;display:flex;align-items:center;overflow:hidden;scrollbar-width:none}
   .stage .ext{display:block;position:absolute;left:-12%;width:124%;height:100%;background:url(scene/museum.webp) 0 0/100% 4000% no-repeat;pointer-events:none;filter:blur(26px) brightness(.9)}
-  .stage .ext.t{bottom:calc(100% - 1px);background-position:0 0}.stage .ext.b{top:calc(100% - 1px);background-position:0 100%}
+  .stage .ext.t{bottom:calc(100% - 1px);background-position:0 0}.stage .ext.b{left:0;width:100%;top:calc(100% - 7%);height:80%;z-index:1;background:url(scene/floor.webp) 0 0/100% 100% no-repeat;filter:brightness(.8) saturate(1.05);-webkit-mask-image:linear-gradient(#0000,#000 14%);mask-image:linear-gradient(#0000,#000 14%)}
   .pan::-webkit-scrollbar{display:none}
   .stage{position:relative;left:auto;top:auto;translate:none;flex:none;aspect-ratio:1672/941;margin-bottom:calc(0px - 0px)}
   .stage>.vis img{touch-action:none}
@@ -469,8 +469,9 @@ body.museum-page .scene{display:none}
   </header>
   <div class="pan">
     <div class="stage" style="--pw:1672;--ph:941">
-      <i class="ext t" aria-hidden="true"></i><i class="ext b" aria-hidden="true"></i>
+      <i class="ext t" aria-hidden="true"></i>
       <img class="shot" src="scene/museum.webp" width="1672" height="941" alt="" aria-hidden="true" fetchpriority="high">
+      <i class="ext b" aria-hidden="true"></i>
       <a class="frame f1" data-i="0" href="godox-c100/index.html" style="left:25.478%;top:14.665%;width:18.421%;height:46.759%" aria-label="Open the Godox C100 campaign: Yes, You Captured It. Did You See It?">
         <span class="art" style="left:12.662%;top:8.636%;width:75.974%;height:83.182%;--r:0.6667;--pw:90.00%"><picture><source srcset="optimized/gallery-godox-mona.webp" type="image/webp"><img class="im" src="optimized/gallery-godox-mona.webp" alt="Godox C100 campaign artwork" loading="lazy" decoding="async" width="1000" height="1500"></picture><i class="lit"></i></span>
         <i class="glow" aria-hidden="true"></i>
