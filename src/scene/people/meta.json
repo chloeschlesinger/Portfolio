@@ -36,9 +36,9 @@
   },
   "sit": {
    "file": "/scene/people/c-sit.webp",
-   "w": 326,
-   "h": 444,
-   "cut": 141
+   "w": 266,
+   "h": 363,
+   "cut": 115
   }
  }
 }
