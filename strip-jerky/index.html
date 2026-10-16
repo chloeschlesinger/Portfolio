@@ -384,16 +384,17 @@ body.museum-page .scene{display:none}
 /* phone: the photo is shown large and you swipe from one framed campaign to the other */
 @media (max-width:760px),(max-aspect-ratio:1/1){
   .museum{display:flex;flex-direction:column;padding-bottom:calc(60px + env(safe-area-inset-bottom))}
-  .pan{position:relative;inset:auto;flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+  .museum{min-height:100dvh;background:#f8f3e8}
+  .pan{position:relative;inset:auto;flex:none;margin:auto 0;overflow:hidden;scrollbar-width:none;border-top:1px solid rgba(140,110,50,.45);border-bottom:1px solid rgba(140,110,50,.45)}
   .pan::-webkit-scrollbar{display:none}
-  .stage{position:relative;left:auto;top:auto;translate:none;height:100%;width:calc(100dvh*1.2);aspect-ratio:auto;flex:none}
+  .stage{position:relative;left:auto;top:auto;translate:none;flex:none;aspect-ratio:1672/941}
+  .stage>.vis img{touch-action:none}
   .museum .stage .frame{scroll-snap-align:center}
-  .mast{position:relative;flex:none;flex-direction:column;align-items:center;text-align:center;gap:0;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;background:#f8f3e8;border-bottom:1px solid rgba(140,110,50,.35)}
+  .mast{position:relative;flex:none;order:0;flex-direction:column;align-items:center;text-align:center;gap:0;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;background:#f8f3e8;border-bottom:1px solid rgba(140,110,50,.35)}
   .mast .nm{font-size:27px}.mast small{margin-top:7px;font-size:9.5px;letter-spacing:.3em}
   .mast nav{position:fixed;left:0;right:0;bottom:0;justify-content:space-around;gap:0;padding:0 8px env(safe-area-inset-bottom);background:#f8f3e8;border-top:1px solid rgba(140,110,50,.35);z-index:6}
   .mast nav a{font-size:12px;letter-spacing:.24em;padding:20px 14px}
-  .swipe{display:block;position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));text-align:center;margin:0;font:italic 500 15px 'Cormorant Garamond',Georgia,serif;color:#fff6e0;text-shadow:0 1px 4px rgba(30,15,0,.7);pointer-events:none;transition:opacity .6s}
-  .swipe.gone{opacity:0}
+  .swipe{display:block;position:static;order:3;text-align:center;margin:0 0 22px;font:italic 500 17px 'Cormorant Garamond',Georgia,serif;color:#6d5a33;pointer-events:none}
   .wl{font-size:1.5cqw}.wl b{font-size:1cqw}
 }
 @media (prefers-reduced-motion:reduce){.stage,.frame .glow{transition:none}}
@@ -749,12 +750,16 @@ body.museum-page .scene{display:none}
   var store = function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} };
   var frames = [].slice.call(stage.querySelectorAll("a.frame"));
 
-  // phone: start centred on the first campaign; the swipe hint goes away once you move
-  function fit() { if (phone()) stage.style.width = Math.round(pan.clientHeight * 1672 / 941) + "px"; else stage.style.width = ""; }
+  // phone: the whole room fits the screen width (both paintings, the bench and everyone on it); no swiping needed
+  var CROP0 = 405, CROPW = 880;      // photo pixels shown on a phone: just the two frames and the bench
+  function fit() {
+    if (phone()) {
+      var w = Math.round(pan.clientWidth * 1672 / CROPW); stage.style.width = w + "px"; stage.style.height = Math.round(w * 941 / 1672) + "px";
+      pan.style.height = stage.style.height; pan.scrollLeft = Math.round(CROP0 / 1672 * w);
+    } else { stage.style.width = ""; stage.style.height = ""; pan.style.height = ""; }
+  }
   fit();
-  function center(i) { var f = frames[i]; pan.scrollLeft = f.offsetLeft + f.offsetWidth / 2 - pan.clientWidth / 2; }
-  if (phone()) { center(0); pan.addEventListener("scroll", function () { if (Math.abs(pan.scrollLeft - (frames[0].offsetLeft + frames[0].offsetWidth / 2 - pan.clientWidth / 2)) > 24 && swipe) swipe.classList.add("gone"); }, { passive: true }); setTimeout(function () { if (swipe) swipe.classList.add("gone"); }, 6000); }
-  addEventListener("resize", function () { fit(); if (phone()) center(0); });
+  addEventListener("resize", fit);
 
   // desktop hover: the camera drifts a little toward the frame you point at
   function lean(f) {
@@ -828,8 +833,8 @@ body.museum-page .scene{display:none}
   function settle() {
     // equal room between neighbours (and the bench ends): spread by the real widths of the seated sprites
     var order = ["c", "a", "b"], ws = order.map(function (k) { var sp = vis[k].querySelector(".spr.sit"); return sp.offsetWidth * scaleAt(770 * M.k); });
-    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
-    cur = M.b0 + gap * .6 + (PHONE ? M.W * .045 : 0);
+    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = PHONE ? -tot * .03 : Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
+    cur = PHONE ? (M.b0 + M.b1) / 2 - (tot + gap * 2) / 2 - M.W * .014 : M.b0 + gap * .6;
     order.forEach(function (k, i) { seatX[k] = cur + ws[i] / 2; cur += ws[i] + gap; });
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key];
@@ -866,11 +871,6 @@ body.museum-page .scene{display:none}
       el.classList.add("drag"); try { el.setPointerCapture(e.pointerId); } catch (x) {} apply(el, key, man[key]);
     }
     el.addEventListener("pointerdown", function (e) {
-      if (e.pointerType === "touch") {      // on a phone: swiping over a person scrolls the room; press and hold to pick them up
-        var sx = e.clientX, sy = e.clientY, id = e.pointerId, ev = { clientX: sx, clientY: sy, pointerId: id };
-        hold = { t: setTimeout(function () { hold = null; begin(ev); if (navigator.vibrate) try { navigator.vibrate(12); } catch (x) {} }, 320), sx: sx, sy: sy };
-        return;
-      }
       begin(e); e.preventDefault();
     });
     var cancelHold = function () { if (hold) { clearTimeout(hold.t); hold = null; } };
