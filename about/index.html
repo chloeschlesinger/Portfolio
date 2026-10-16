@@ -820,6 +820,7 @@ body.museum-page .scene{display:none}
   // seats along the bench: left to right  c, a, b
   var WALKER = null, REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   // on arrival: the blonde and the brunette stand looking at the art, the man sits in the middle of the bench (photo coordinates; drag anyone anywhere)
+  var PHONE = window.matchMedia && matchMedia("(max-width:760px),(max-aspect-ratio:1/1)").matches;
   var START = { c: [230, 849], b: [1397, 883] };
   var seatX = {};
   var seats = { c: .24, a: .45, b: .63 };
@@ -827,12 +828,12 @@ body.museum-page .scene{display:none}
     // equal room between neighbours (and the bench ends): spread by the real widths of the seated sprites
     var order = ["c", "a", "b"], ws = order.map(function (k) { var sp = vis[k].querySelector(".spr.sit"); return sp.offsetWidth * scaleAt(770 * M.k); });
     var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
-    cur = M.b0 + gap * .6;
+    cur = M.b0 + gap * .6 + (PHONE ? M.W * .045 : 0);
     order.forEach(function (k, i) { seatX[k] = cur + ws[i] / 2; cur += ws[i] + gap; });
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key];
-      if (!m) m = man[key] = START[key] ? { x: START[key][0] * M.k, y: START[key][1] * M.k, sit: false, seed: false } : { x: 0, y: 0, sit: true, seed: true };
-      if (m.seed) m.x = (M.b0 + M.b1) / 2;
+      if (!m) m = man[key] = START[key] && !PHONE ? { x: START[key][0] * M.k, y: START[key][1] * M.k, sit: false, seed: false } : { x: 0, y: 0, sit: true, seed: true };
+      if (m.seed) m.x = PHONE ? seatX[key] : (M.b0 + M.b1) / 2;
       apply(vis[key], key, m);
     });
   }
@@ -855,13 +856,24 @@ body.museum-page .scene{display:none}
   // drag and drop (they stay wherever you put them; drop on the bench to sit)
   ["a", "b", "c"].forEach(function (key) {
     var el = vis[key], grab = null;
-    el.addEventListener("pointerdown", function (e) {
+    var hold = null;
+    function begin(e) {
       var r = stage.getBoundingClientRect(), m = man[key];
       var px = e.clientX - r.left, py = e.clientY - r.top;
       grab = { dx: px - m.x, dy: py - (m.sit ? M.frontY : m.y) };
       man[key] = { x: m.x, y: m.sit ? M.frontY : m.y, sit: false, seed: false };
-      el.classList.add("drag"); el.setPointerCapture(e.pointerId); e.preventDefault(); apply(el, key, man[key]);
+      el.classList.add("drag"); try { el.setPointerCapture(e.pointerId); } catch (x) {} apply(el, key, man[key]);
+    }
+    el.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "touch") {      // on a phone: swiping over a person scrolls the room; press and hold to pick them up
+        var sx = e.clientX, sy = e.clientY, id = e.pointerId, ev = { clientX: sx, clientY: sy, pointerId: id };
+        hold = { t: setTimeout(function () { hold = null; begin(ev); if (navigator.vibrate) try { navigator.vibrate(12); } catch (x) {} }, 320), sx: sx, sy: sy };
+        return;
+      }
+      begin(e); e.preventDefault();
     });
+    var cancelHold = function () { if (hold) { clearTimeout(hold.t); hold = null; } };
+    el.addEventListener("pointermove", function (e) { if (hold && Math.hypot(e.clientX - hold.sx, e.clientY - hold.sy) > 9) cancelHold(); });
     el.addEventListener("pointermove", function (e) {
       if (!grab) return;
       var r = stage.getBoundingClientRect(), m = man[key], w = el.offsetWidth * .5;
@@ -875,8 +887,9 @@ body.museum-page .scene{display:none}
       if (m.x > M.b0 && m.x < M.b1 && m.y > M.back + M.H * .004 && m.y < M.sitMax) { m.sit = true; m.x = Math.max(M.b0 + 70 * M.k, Math.min(M.b1 - 70 * M.k, m.x)); }
       apply(el, key, m);
     };
-    el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
+    el.addEventListener("pointerup", function (e) { cancelHold(); end(e); }); el.addEventListener("pointercancel", function (e) { cancelHold(); end(e); });
   });
+  stage.addEventListener("touchmove", function (e) { if (stage.querySelector(".vis.drag")) e.preventDefault(); }, { passive: false });
   measure(); settle();
   // one visitor (the man) wanders the floor in front of the bench until someone picks him up; where you drop him, he stays
   var wPause = .6, wLast = 0;
@@ -896,6 +909,8 @@ body.museum-page .scene{display:none}
   }
   if (!REDUCE && WALKER) requestAnimationFrame(wander);
   addEventListener("resize", function () { measure(); settle(); });
+  addEventListener("load", function () { measure(); settle(); });
+  [].forEach.call(stage.querySelectorAll(".vis .spr.sit img.body"), function (im) { if (!im.complete) im.addEventListener("load", function () { measure(); settle(); }); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); settle(); });
   addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
 })();
