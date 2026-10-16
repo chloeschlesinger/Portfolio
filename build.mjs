@@ -217,8 +217,9 @@ function homePage() {
   </header>
   <div class="pan">
     <div class="stage" style="--pw:${PHOTO.w};--ph:${PHOTO.h}">
-      <i class="ext t" aria-hidden="true"></i><i class="ext b" aria-hidden="true"></i>
+      <i class="ext t" aria-hidden="true"></i>
       <img class="shot" src="/scene/museum.webp" width="${PHOTO.w}" height="${PHOTO.h}" alt="" aria-hidden="true" fetchpriority="high">
+      <i class="ext b" aria-hidden="true"></i>
       ${fr}
       <i class="benchcut" aria-hidden="true" style="left:${pctX(BENCH.x)};top:${pctY(BENCH.cutY)};width:${pctX(BENCH.w)};height:${pctY(BENCH.cutH)};background-size:${((PHOTO.w / BENCH.w) * 100).toFixed(2)}% auto;background-position:${((BENCH.x / (PHOTO.w - BENCH.w)) * 100).toFixed(2)}% ${((BENCH.cutY / (PHOTO.h - BENCH.cutH)) * 100).toFixed(2)}%"></i>
       ${PERSON("c")}
