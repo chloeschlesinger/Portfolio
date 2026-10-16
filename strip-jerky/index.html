@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strip Jerky | Chloe Schlesinger</title>
+<meta name="description" content="Strip Jerky: Stripped Down to the Good Stuff.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Archivo+Black&family=Archivo:wght@400;600;800&family=Archivo+Narrow:wght@500;700&family=Reenie+Beanie&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<style>/* VERSION 4: graphic NYC street-poster editorial. Black, cream, cobalt, red + a little yellow. */
+:root{
+  --ink:#121212;--paper:#F3EDDF;--blue:#1B4DDB;--red:#E5301B;--yellow:#FFD21F;
+  --f-mark:'Permanent Marker','Marker Felt',cursive;
+  --f-bold:'Archivo Black','Arial Black',Impact,sans-serif;
+  --f-body:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-narrow:'Archivo Narrow','Arial Narrow',sans-serif;
+  --f-hand:'Reenie Beanie','Segoe Print',cursive;
+}
+*{box-sizing:border-box}
+html{overflow-x:clip}
+body{margin:0;background:#2a2118;color:var(--ink);font-family:var(--f-body);line-height:1.5;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img,video{display:block;max-width:100%}
+.skip{position:absolute;left:-999px;top:0;background:var(--ink);color:#fff;padding:.6rem 1rem;z-index:99}
+.skip:focus{left:8px;top:8px}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+/* the wall: a flat cobalt field with photocopy grain and a soft vignette. No photograph. */
+.scene{position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.07),transparent 60%),radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(5,10,40,.45)),var(--blue)}
+.scene::after{content:"";position:absolute;inset:0;background:url(../scene/grain.webp) 0 0/320px 320px repeat;opacity:.5}
+body.inner .scene{background:radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.06),transparent 60%),radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(5,10,40,.5)),#17389f}
+
+/* ---------------- paper pieces shared by flyer and posters ---------------- */
+.tape{position:absolute;z-index:6;width:15cqw;height:5.4cqw;max-width:130px;max-height:44px;min-width:70px;min-height:24px;background:linear-gradient(180deg,rgba(243,226,160,.9),rgba(232,212,140,.88));
+  box-shadow:0 1px 2px rgba(0,0,0,.28);clip-path:polygon(0 8%,4% 0,8% 10%,12% 0,100% 0,96% 22%,100% 46%,95% 70%,100% 100%,10% 100%,6% 90%,3% 100%,0 86%,3% 54%,0 30%);animation:pop .4s cubic-bezier(.3,1.5,.5,1) backwards}
+.tape.t1{left:-3%;top:-1.8cqw;transform:rotate(-34deg);animation-delay:.6s}.tape.t2{right:-3%;top:-1.8cqw;transform:rotate(33deg);animation-delay:.7s}
+@keyframes pop{from{transform:scale(1.6) rotate(0);opacity:0}}
+
+/* tear-off tabs */
+.tabs{display:flex;gap:.9cqw;padding:0 3cqw;margin-top:-1px;position:relative}
+.tab{flex:1 1 0;min-width:0;position:relative;display:block;overflow:hidden;background:var(--paper);transform-origin:50% 0;
+  height:calc(var(--th,44cqw)*var(--h,1));transform:rotate(var(--r0,0deg));transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s;
+  box-shadow:inset 0 .9cqw .8cqw -.8cqw rgba(20,14,8,.3),inset .15cqw 0 0 rgba(255,255,255,.5);
+  animation:tabin .6s cubic-bezier(.3,1.3,.5,1) backwards;animation-delay:calc(.85s + var(--i,0)*.08s)}
+@keyframes tabin{from{transform:translateY(-3cqw) rotateX(60deg);opacity:0}}
+.tab::before{content:"";position:absolute;left:0;right:0;top:0;height:1.1cqw;z-index:2;opacity:.55;background:repeating-linear-gradient(90deg,rgba(20,14,8,.5) 0 .7cqw,transparent .7cqw 1.5cqw)}
+.tab::after{content:"";position:absolute;right:0;bottom:0;width:46%;height:19%;background:linear-gradient(135deg,transparent 47%,rgba(20,14,8,.22) 50%,#fff 54%,#e6e0d2 100%);border-top-left-radius:60% 40%;transform-origin:100% 100%;transition:transform .3s ease}
+.tab:nth-child(even)::after{width:38%;height:15%}
+.tab:nth-child(3n)::after{right:auto;left:0;transform-origin:0 100%;background:linear-gradient(225deg,transparent 47%,rgba(20,14,8,.22) 50%,#fff 54%,#e6e0d2 100%);border-top-left-radius:0;border-top-right-radius:60% 40%}
+.tab .n{position:absolute;top:2.6cqw;left:0;right:0;text-align:center;font:700 2.3cqw/1 var(--f-narrow);letter-spacing:.16em;color:var(--k,var(--ink))}
+.tab .t{position:absolute;left:50%;top:7.6cqw;bottom:3.4cqw;writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg);
+  font:700 var(--tf,4.7cqw)/1 var(--f-narrow);text-transform:uppercase;letter-spacing:.015em;color:var(--k,var(--ink));white-space:nowrap}
+.tab:hover,.tab:focus-visible{transform:perspective(700px) rotateX(-9deg) rotate(3deg) translateY(-1cqw);box-shadow:inset 0 .9cqw .8cqw -.8cqw rgba(20,14,8,.3),0 2cqw 2cqw -1cqw rgba(10,4,0,.5)}
+.tab:hover::after,.tab:focus-visible::after{transform:scale(1.55)}
+.tab.tab-flying{animation:none;transition:none;z-index:50;pointer-events:none;box-shadow:0 3cqw 3cqw -1cqw rgba(10,4,0,.5)}
+.tabs .torn-stub{position:absolute;top:0;z-index:0;background:var(--paper);box-shadow:inset 0 .8cqw .6cqw -.5cqw rgba(20,14,8,.35)}
+
+/* ---------------- HOME: an oversized flyer pasted up on the wall ---------------- */
+body.home{overflow:hidden;height:100vh;height:100dvh}
+.stage.home{height:100vh;height:100dvh;display:flex;justify-content:center;align-items:flex-start;padding-top:clamp(14px,5vh,56px)}
+.home .sheetwrap{--W:min(calc(100vw - 36px),calc((100dvh - 8vh)/1.5),760px);width:var(--W);container-type:inline-size;position:relative;
+  filter:drop-shadow(.2cqw .35cqw .2cqw rgba(5,8,30,.55)) drop-shadow(1.6cqw 2.6cqw 2.2cqw rgba(5,8,30,.4));
+  transform-origin:50% 0;animation:slap .85s cubic-bezier(.2,.9,.25,1) both}
+@keyframes slap{0%{transform:translateY(-20px) rotate(-1.6deg);opacity:0}45%{opacity:1}70%{transform:translateY(2px) rotate(.4deg)}100%{transform:none}}
+/* two paste-up layers behind the flyer give it depth: found black paper, a yellow offcut */
+.back{position:absolute;z-index:0;display:block}
+.b-black{left:-9cqw;right:-6cqw;top:6cqw;height:92cqw;background:var(--ink);transform:rotate(2.6deg);transform-origin:50% 0;
+  clip-path:polygon(0 1%,18% 0,46% 1.4%,74% 0,100% .8%,99% 40%,100% 74%,98.6% 100%,70% 98.6%,36% 100%,8% 98.8%,0 100%,1.2% 56%)}
+.b-yellow{left:-13cqw;top:-3cqw;width:56cqw;height:74cqw;background:var(--yellow);transform:rotate(-5.4deg);transform-origin:50% 0;
+  clip-path:polygon(0 0,100% 1.4%,98.6% 38%,100% 100%,60% 98%,26% 100%,1.4% 99%,0 52%)}
+.sheet{position:relative;z-index:1;background:var(--sheetbg,var(--paper));aspect-ratio:100/106;padding:7.5cqw 8cqw 0;display:flex;flex-direction:column;
+  clip-path:polygon(0 .3%,12% 0,34% .35%,58% 0,82% .3%,100% 0,99.7% 34%,100% 66%,99.8% 100%,0 100%,.25% 62%,0 30%)}
+.sheet::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.5;background:url(../scene/wrinkle.webp) 0 0/100% 100% no-repeat,url(../scene/paper.webp) 0 0/1000px 1000px repeat}
+.sheet::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 12%),linear-gradient(0deg,rgba(120,90,50,.09),transparent 14%);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.7),inset -1px 0 0 rgba(60,40,20,.25)}
+.sheet>*{position:relative;z-index:2}
+.tabs{z-index:2}
+.home h1{margin:0;font-weight:400;display:block}
+/* name: giant black grotesk with a cobalt off-register ghost, then a red marker surname, then a quiet black label */
+.h-first{display:block;font:400 21.5cqw/.82 var(--f-bold);letter-spacing:-.045em;color:var(--ink);text-shadow:.8cqw .7cqw 0 rgba(27,77,219,.78);transform:rotate(-1.2deg);transform-origin:0 100%;margin-left:-.6cqw}
+.h-last{display:block;margin-top:4.2cqw;font:400 10.6cqw/1.05 var(--f-mark);letter-spacing:-.005em;color:var(--red);transform:rotate(-1.8deg);transform-origin:0 50%;white-space:nowrap;filter:url(#rough)}
+.h-role{display:block;margin-top:3.2cqw;transform:rotate(-.9deg);white-space:nowrap}
+.h-role span{display:inline-block;background:var(--ink);color:var(--paper);font:700 5.4cqw/1 var(--f-narrow);letter-spacing:.3em;padding:1.7cqw 2.6cqw 1.5cqw 3cqw;
+  clip-path:polygon(0 8%,6% 0,24% 5%,52% 0,80% 6%,100% 0,98.6% 50%,100% 100%,78% 94%,50% 100%,24% 95%,6% 100%,0 92%,1.4% 50%)}
+.invite{margin:auto 0 0;font:400 13.4cqw/.92 var(--f-hand);color:var(--ink);transform:rotate(-1.6deg);white-space:nowrap}
+.invite span{color:var(--red);display:inline-block;background:linear-gradient(transparent 52%,var(--yellow) 52% 92%,transparent 92%);padding:0 1.2cqw;margin-left:-1.2cqw}
+.credit{margin:4.6cqw 0 5.4cqw;font:600 2.5cqw/1.4 var(--f-body);text-transform:uppercase;letter-spacing:.12em;color:#2b2a27;max-width:78cqw}
+.credit b{font-weight:800;color:var(--blue)}
+.home .tab{--th:42cqw}
+.foot{text-align:center;font:600 12px var(--f-narrow);letter-spacing:.18em;text-transform:uppercase;color:#f3eddf;text-shadow:0 1px 5px rgba(5,8,30,.9);padding:0 16px 40px}
+
+/* ---------------- INNER PAGES: a poster unfolds over the street ---------------- */
+.topnav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 6px;padding:16px 12px;position:absolute;top:0;left:0;right:0;z-index:8}
+.topnav a{font:700 12.5px/1 var(--f-narrow);letter-spacing:.14em;text-transform:uppercase;background:var(--paper);color:var(--ink);padding:8px 12px 7px;
+  box-shadow:0 2px 6px rgba(0,0,0,.45);transition:transform .2s ease;animation:navin .5s cubic-bezier(.3,1.4,.5,1) backwards;animation-delay:calc(.12s + var(--i,0)*.05s)}
+@keyframes navin{from{opacity:0;transform:translateY(-22px) rotate(-5deg)}}
+.topnav a:nth-child(odd){transform:rotate(-.8deg)}.topnav a:nth-child(even){transform:rotate(.7deg)}
+.topnav a:hover{transform:translateY(-3px) rotate(0)}
+.topnav a.cover{background:var(--yellow)}
+.topnav a[aria-current=page]{background:var(--ink);color:var(--paper)}
+.poster-wrap{perspective:1800px;padding:clamp(76px,9vw,104px) 16px clamp(50px,8vw,100px)}
+.poster{position:relative;max-width:1080px;margin:0 auto;container-type:inline-size;transform-origin:50% 0;animation:unfold 1.05s cubic-bezier(.22,.8,.22,1) both}
+@keyframes unfold{0%{transform:rotateX(-82deg) scaleY(.5);opacity:0}30%{opacity:1}68%{transform:rotateX(7deg)}84%{transform:rotateX(-2deg)}100%{transform:none}}
+.paper{position:relative;background:var(--paper);padding:clamp(34px,6.4cqw,76px) clamp(20px,6.4cqw,84px) clamp(44px,7cqw,90px);
+  box-shadow:0 1px 1px rgba(0,0,0,.5),0 10px 24px rgba(5,3,0,.45),0 34px 70px rgba(5,3,0,.35)}
+.paper::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:url(../scene/paper.webp) 0 0/1000px 1000px repeat}
+/* fold marks from where the poster was folded to be carried */
+.paper::after{content:"";position:absolute;left:0;right:0;top:0;height:min(100%,2600px);pointer-events:none;
+  background:linear-gradient(180deg,transparent 0 24.8%,rgba(20,14,8,.07) 25%,rgba(255,255,255,.55) 25.2%,transparent 25.9%,transparent 0 49.8%,rgba(20,14,8,.07) 50%,rgba(255,255,255,.55) 50.2%,transparent 50.9%,transparent 0 74.8%,rgba(20,14,8,.07) 75%,rgba(255,255,255,.55) 75.2%,transparent 75.9%)}
+.paper>*{position:relative;z-index:1}
+.poster .tape{top:-1cqw;width:11cqw;height:4cqw}
+.poster .tabs{--th:24cqw;--tf:2.7cqw;padding:0 2.2cqw;gap:.8cqw;filter:drop-shadow(0 .5cqw .4cqw rgba(8,3,0,.45)) drop-shadow(0 2cqw 2.4cqw rgba(8,3,0,.35))}
+.poster .tab .n{font-size:1.45cqw;top:1.4cqw}
+.poster .tab .t{top:4.6cqw;bottom:2cqw}
+.poster .tab{box-shadow:inset 0 .6cqw .5cqw -.5cqw rgba(20,14,8,.3)}
+
+.hero{position:relative;padding-bottom:clamp(6px,2cqw,24px)}
+.torn{display:inline-flex;align-items:center;gap:.7em;background:var(--yellow);color:var(--ink);font:700 clamp(12px,1.35cqw,15px)/1 var(--f-narrow);letter-spacing:.18em;text-transform:uppercase;padding:9px 15px 11px;transform:rotate(-1.5deg);
+  clip-path:polygon(0 0,100% 0,100% 82%,92% 100%,78% 88%,60% 100%,42% 90%,24% 100%,8% 88%,0 98%)}
+.torn b{color:var(--red)}
+.hero h1{margin:.28em 0 0;font:400 clamp(58px,15.5cqw,200px)/.88 var(--f-bold);letter-spacing:-.028em;text-transform:uppercase}
+.hero h1 span{display:block}
+.badge{display:inline-block;margin-top:clamp(10px,1.6cqw,20px);background:var(--ink);color:var(--paper);font:700 clamp(12px,1.35cqw,15px)/1 var(--f-narrow);letter-spacing:.2em;text-transform:uppercase;padding:8px 13px 7px;transform:rotate(-2.5deg)}
+.idea{margin:clamp(18px,3cqw,36px) 0 0;font:400 clamp(23px,4.3cqw,52px)/1.28 var(--f-mark);max-width:19em;transform:rotate(-.8deg);transform-origin:0 50%}
+.idea span{background:linear-gradient(transparent 56%,var(--yellow) 56% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 .12em}
+.sub{font-size:clamp(15px,1.6cqw,19px);line-height:1.6;margin:1.2em 0 0;max-width:34em;color:#2a2a28}
+.section{margin-top:clamp(40px,7cqw,92px)}
+.lead{margin-top:clamp(26px,5cqw,64px)}
+.cap{display:flex;align-items:center;gap:14px;margin:0 0 clamp(14px,2cqw,24px);font:700 13px/1 var(--f-narrow);letter-spacing:.22em;text-transform:uppercase}
+.cap b{color:var(--blue)}
+.cap::after{content:"";flex:1;border-top:1.5px dashed rgba(20,14,8,.42)}
+.bigfig{margin:0 auto;max-width:960px}
+.bigfig.bill{max-width:1100px}
+.bigfig img,.bigfig video,.jg img,.jg video{width:100%;height:auto;box-shadow:0 1px 2px rgba(20,14,8,.25),0 8px 22px rgba(20,14,8,.16)}
+.jg{display:flex;flex-wrap:wrap;gap:clamp(14px,2.2cqw,28px);justify-content:center;align-items:flex-start}
+.jg figure{margin:0;flex:calc(var(--r)*1) 1 calc(var(--r)*var(--h));max-width:calc(var(--r)*var(--mh))}
+.jg figcaption{font:400 clamp(22px,2.6cqw,30px)/1.05 var(--f-hand);margin-top:12px;color:var(--ink);transform:rotate(-.8deg)}
+.jg figure:nth-child(even) figcaption{transform:rotate(.8deg)}
+.ph{aspect-ratio:var(--r);border:2px dashed rgba(20,14,8,.4);display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;background:rgba(0,0,0,.03);font-size:14px}
+.ph b{display:block;font-size:1.1em}
+.nextrow{margin-top:clamp(56px,9cqw,120px)}
+.nextrow .cap{margin-bottom:10px}
+.next{display:inline-block;font:400 clamp(38px,10cqw,128px)/.95 var(--f-bold);letter-spacing:-.025em;text-transform:uppercase;border-bottom:.09em solid var(--red);padding-bottom:.04em;transition:color .2s ease}
+.next span{display:inline-block;transition:transform .25s ease}
+.next:hover{color:var(--red)}.next:hover span{transform:translateX(.12em)}
+
+/* about + contact */
+.about-hero .hi{margin:.1em 0 0;font:400 clamp(110px,26cqw,320px)/.84 var(--f-mark);color:var(--blue);transform:rotate(-3deg);transform-origin:0 100%;filter:url(#roughbig);text-transform:none;letter-spacing:0}
+.about-top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:clamp(24px,5cqw,70px);align-items:start}
+.bio h2{font:400 clamp(26px,4.6cqw,54px)/1 var(--f-bold);text-transform:uppercase;letter-spacing:-.02em;margin:0 0 .6em}
+.bio p{font-size:clamp(16px,1.9cqw,21px);line-height:1.65;margin:0 0 1.1em;max-width:34em}
+.snap{position:relative;margin:0;background:#fff;padding:clamp(6px,1cqw,12px);box-shadow:0 1px 2px rgba(20,14,8,.3),0 12px 26px rgba(20,14,8,.22)}
+.snap img{width:100%;height:auto}
+.snap::before{content:"";position:absolute;top:-1.6cqw;left:50%;width:min(34%,110px);height:2.8cqw;min-height:20px;transform:translateX(-50%) rotate(-3deg);background:rgba(236,224,164,.75);box-shadow:0 1px 3px rgba(20,14,8,.2);z-index:2}
+.snap.s1{transform:rotate(1.6deg)}.snap.s2{transform:rotate(-1.8deg)}.snap.s3{transform:rotate(1deg)}.snap.s2::before{transform:translateX(-50%) rotate(4deg)}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:clamp(22px,3.6cqw,48px);margin-top:clamp(40px,7cqw,90px)}
+.contact{margin-top:clamp(56px,10cqw,130px)}
+.say{margin:0;font-weight:400}
+.say span{display:block;font:400 clamp(66px,19cqw,240px)/.86 var(--f-bold);letter-spacing:-.035em}
+.say span+span{color:var(--red);margin-left:.4em}
+.contact-links{list-style:none;margin:clamp(22px,4cqw,48px) 0 0;padding:0;display:flex;flex-direction:column;gap:clamp(6px,1cqw,12px)}
+.contact-links a{display:inline-block;font:800 clamp(20px,4.2cqw,48px)/1.15 var(--f-body);letter-spacing:-.02em;text-decoration:underline;text-decoration-thickness:.07em;text-underline-offset:.16em;text-decoration-color:var(--blue);word-break:break-word;transition:transform .22s ease,color .2s}
+.contact-links a:hover{color:var(--blue);transform:translateX(.3em)}
+.resume{display:inline-block;margin-top:clamp(26px,4cqw,50px);background:var(--blue);color:#fff;padding:.5em 1.3em .55em;transform:rotate(-1.6deg);transition:transform .22s ease;
+  clip-path:polygon(0 4%,6% 0,24% 3%,50% 0,78% 4%,100% 0,99% 50%,100% 97%,82% 100%,56% 96%,30% 100%,8% 97%,0 100%,1% 48%)}
+.resume span{display:block;font:400 clamp(26px,4.2cqw,46px)/1.05 var(--f-mark)}
+.resume small{display:block;font:700 12px/1 var(--f-narrow);letter-spacing:.2em;text-transform:uppercase;margin-top:.5em;opacity:.9}
+.resume:hover{transform:rotate(0)}
+
+/* soft reveal for pictures */
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+
+@media (max-width:760px){
+  .home .sheetwrap{--W:min(calc(100vw - 40px),calc((100dvh - 8vh)/1.6))}
+  .b-black{left:-5cqw;right:-3cqw}.b-yellow{left:-6cqw}
+  .stage.home{padding-top:clamp(12px,4vh,40px)}
+  .topnav{gap:5px;padding:12px 8px}
+  .topnav a{font-size:11.5px;padding:7px 9px 6px}
+  .poster-wrap{padding-top:clamp(96px,26vw,118px);padding-left:10px;padding-right:10px}
+  .poster .tabs{--th:64cqw;--tf:5.5cqw;padding:0 1.6cqw;gap:1cqw}
+  .poster .tab .n{font-size:3.2cqw;top:3cqw}.poster .tab .t{top:10cqw;bottom:3.6cqw}
+  .about-top{grid-template-columns:1fr}
+  .portrait{max-width:300px;margin:12px auto 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .tab,.topnav a,.next,.next span,.resume,.contact-links a{transition:none}
+  .js .rv{opacity:1;transform:none;transition:none}
+  .sheetwrap,.poster,.tape,.tab,.topnav a{animation:none!important}
+}
+/* VERSION 5: illustrated art gallery. Off-white wall, gold frames, a wooden bench, visitors seen from behind. */
+body.g{--ink:#1d1a16;--paper:#fbfaf6;--blue:#8a6a1c;--red:#7a2a22;--yellow:#e6c25c;
+  --gold:linear-gradient(135deg,#f6dd83 0%,#b98a2e 22%,#fbeaa4 38%,#8f6516 58%,#e8c35c 78%,#a97a22 100%);
+  --f-serif:'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif;background:#efe9de}
+body.g .scene{background:radial-gradient(ellipse at 50% 12%,#fffdf8,#ece5d8 75%);}
+body.g .scene::after{display:none}
+body.g .tape,body.g .staple{display:none}
+
+/* ---------------- HOME ---------------- */
+body.g.home{overflow:hidden}
+.gallery{position:fixed;inset:0;overflow:hidden;--rw:min(100vw,177.78dvh);--wall:#efe9de;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.07),transparent 9%),
+    radial-gradient(ellipse 60% 55% at 50% 38%,rgba(255,252,243,.9),transparent 70%),var(--wall)}
+.gallery .floor{position:absolute;left:0;right:0;bottom:0;height:calc(var(--rw)*.5625*.289);
+  background:
+    linear-gradient(180deg,rgba(60,35,10,.38),rgba(60,35,10,0) 14%),
+    repeating-linear-gradient(90deg,rgba(70,40,12,.16) 0 1px,transparent 1px calc(var(--rw)*.062)),
+    linear-gradient(180deg,#c7a173,#a57b4f);box-shadow:0 -3px 0 #f6f1e7,0 -4px 0 rgba(0,0,0,.12)}
+.room{position:absolute;bottom:0;left:0;right:0;margin:0 auto;width:var(--rw);aspect-ratio:16/9;container-type:size}
+.room>*{position:absolute}
+
+.vinyl{margin:0;left:0;right:0;top:2.8%;text-align:center;font:600 3.1cqw/1 var(--f-serif);letter-spacing:.06em;color:#2a241b}
+.vinyl span{display:block}
+.vinyl small{display:block;margin-top:.9cqw;font:600 .95cqw var(--f-narrow);letter-spacing:.34em;text-transform:uppercase;color:#7b6a45}
+
+.frame{display:block;--ph:22.5cqw;--pad:4.8cqw;width:calc(var(--ph)*var(--r) + var(--pad));translate:-50% 0;top:17%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.frame.f1{left:33%}.frame.f2{left:67%}
+.frame .gold{position:relative;display:block;padding:1.3cqw;background:var(--gold);
+  box-shadow:inset 0 0 0 .2cqw rgba(255,244,180,.95),inset 0 0 0 .55cqw #8a5f14,inset 0 0 .9cqw .45cqw rgba(70,40,0,.55),0 .3cqw .8cqw rgba(40,25,5,.4),0 1.6cqw 2.6cqw -.8cqw rgba(40,25,5,.45);transition:box-shadow .4s}
+.frame .gold::before{content:"";position:absolute;inset:0;padding:1.3cqw;pointer-events:none;
+  background:radial-gradient(circle,rgba(110,70,8,.65) 0 .16cqw,transparent .2cqw) 0 0/.85cqw .85cqw;
+  -webkit-mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask-composite:exclude;opacity:.8}
+.frame .gold::after{content:"";position:absolute;inset:-.2cqw;pointer-events:none;
+  background:
+   radial-gradient(circle,#fff6c4 0 .38cqw,#a8761c .45cqw .75cqw,#6d4709 .8cqw 1cqw,transparent 1.05cqw) 0 0/2.2cqw 2.2cqw no-repeat,
+   radial-gradient(circle,#fff6c4 0 .38cqw,#a8761c .45cqw .75cqw,#6d4709 .8cqw 1cqw,transparent 1.05cqw) 100% 0/2.2cqw 2.2cqw no-repeat,
+   radial-gradient(circle,#fff6c4 0 .38cqw,#a8761c .45cqw .75cqw,#6d4709 .8cqw 1cqw,transparent 1.05cqw) 0 100%/2.2cqw 2.2cqw no-repeat,
+   radial-gradient(circle,#fff6c4 0 .38cqw,#a8761c .45cqw .75cqw,#6d4709 .8cqw 1cqw,transparent 1.05cqw) 100% 100%/2.2cqw 2.2cqw no-repeat}
+.frame .mat{display:block;padding:1.1cqw;background:#f8f4ea;box-shadow:inset 0 .25cqw .7cqw rgba(0,0,0,.4),0 0 0 .18cqw #7a5410}
+.frame .mat picture{display:block}.frame .mat img{display:block;width:calc(var(--ph)*var(--r));height:var(--ph);max-width:none;object-fit:cover}
+.frame .mat img{box-shadow:0 0 0 .12cqw rgba(0,0,0,.4)}
+.frame .lamp{position:absolute;left:50%;top:-2.7cqw;width:9cqw;height:.8cqw;margin-left:-4.5cqw;border-radius:.4cqw;background:linear-gradient(180deg,#e7c670,#8c6212);box-shadow:0 .3cqw .6cqw rgba(0,0,0,.35);pointer-events:none}
+.frame .lamp::before{content:"";position:absolute;left:50%;top:.7cqw;width:.35cqw;height:1.2cqw;margin-left:-.17cqw;background:#8c6212}
+.frame .lamp::after{content:"";position:absolute;left:50%;top:.5cqw;width:46cqw;height:30cqw;margin-left:-23cqw;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 50% 62% at 50% 0,rgba(255,240,190,.62),rgba(255,240,190,.18) 55%,transparent 75%)}
+.frame .label{display:block;margin-top:1.1cqw;padding-left:.2cqw;font:600 1.45cqw/1.15 var(--f-serif);color:#2a241b;letter-spacing:.02em}
+.frame .label b{font:700 1cqw var(--f-narrow);letter-spacing:.2em;color:#8a6a1c;margin-right:.5cqw}
+.frame .label small{display:none;margin-top:.35cqw;font:italic 500 1.15cqw/1.25 var(--f-serif);color:#6a5d45}
+.frame:hover,.frame:focus-visible{transform:translateY(-.5cqw);outline:none}
+.frame:hover .gold,.frame:focus-visible .gold{box-shadow:inset 0 0 0 .2cqw rgba(255,244,180,.95),inset 0 0 0 .55cqw #8a5f14,inset 0 0 .9cqw .45cqw rgba(70,40,0,.5),0 0 3cqw .8cqw rgba(255,214,110,.75),0 2cqw 3cqw -.8cqw rgba(40,25,5,.45)}
+.frame:focus-visible .label{text-decoration:underline}
+
+.plaques{left:45.5%;width:9%;top:30%;display:flex;flex-direction:column;gap:.8cqw}
+.plaque{display:block;text-align:center;padding:.75cqw .4cqw .65cqw;font:700 .95cqw/1 var(--f-narrow);letter-spacing:.2em;text-transform:uppercase;color:#3a2f1a;
+  background:linear-gradient(180deg,#fbf8f0,#efe7d4);border:.12cqw solid #b4893a;box-shadow:inset 0 0 0 .16cqw #fbf8f0,0 .25cqw .6cqw rgba(40,25,5,.3);transition:background .3s,color .3s,transform .3s}
+.plaque:hover,.plaque:focus-visible{background:var(--gold);color:#241a06;transform:translateY(-.2cqw);outline:none}
+
+.rug{left:28%;width:44%;top:81%;height:12%;border-radius:50%;background:radial-gradient(ellipse,rgba(110,45,35,.34),rgba(110,45,35,.2) 60%,transparent 72%)}
+.bench{position:static}
+.bench i{position:absolute;display:block}
+.bench .top{left:36%;width:28%;top:75%;height:1.4cqw;background:linear-gradient(180deg,#d6aa72,#b98a52);border-radius:.3cqw .3cqw 0 0;z-index:3;box-shadow:0 -.2cqw 0 rgba(255,235,190,.5)}
+.bench .front{left:36%;width:28%;top:calc(75% + 1.4cqw);height:2.3cqw;background:linear-gradient(180deg,#a8763c,#8a5b2a);z-index:5;box-shadow:0 .6cqw .9cqw rgba(30,15,0,.35),inset 0 .15cqw 0 rgba(255,225,170,.35)}
+.bench .lg{width:1.3cqw;top:calc(75% + 3.7cqw);height:6.2cqw;background:linear-gradient(90deg,#7b5126,#946236);z-index:3;border-radius:0 0 .2cqw .2cqw}
+.bench .lg.a{left:37.4%}.bench .lg.b{left:61.3%}
+.bench .lg.c,.bench .lg.d{display:none}
+.hint{left:0;right:0;bottom:2.2%;text-align:center;font:italic 500 1.35cqw var(--f-serif);color:#f9efd8;text-shadow:0 1px 3px rgba(40,20,0,.55);letter-spacing:.04em;margin:0;pointer-events:none}
+
+/* visitors, drawn from behind */
+.vis{left:0;top:0;width:8cqw;transform-origin:50% 100%;will-change:transform;pointer-events:auto;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;opacity:0}
+.vis.drag{cursor:grabbing}.vis.drag svg{filter:drop-shadow(0 .6cqw .6cqw rgba(30,15,0,.35))}
+.vis.on{opacity:1}
+.vis svg{display:block;width:100%;height:auto;overflow:visible}
+.vis .skin{fill:var(--skin)}.vis .hair{fill:var(--hair)}.vis .top{fill:var(--top)}.vis .top.dk{fill:var(--top2)}.vis .hood{fill:var(--top2)}
+.vis .pants{fill:var(--pants)}.vis .shoe{fill:#f4f1ea}.vis .bag{fill:var(--bag)}.vis .bagstrap{fill:var(--bag);opacity:.9}
+.vis::before{content:"";position:absolute;left:-6%;right:-6%;bottom:-2.5%;height:6%;background:radial-gradient(ellipse,rgba(30,15,0,.35),transparent 70%);transition:opacity .5s}
+.vis.sit::before{opacity:0}
+.vis.w1{--hair:#e0be7a;--top:#9a9da4;--top2:#7e8188;--pants:#2c303b;--bag:#cf3a2d;--skin:#eac0a2;z-index:6}
+.vis.w2{--hair:#2b2119;--top:#25405e;--top2:#1a2e45;--pants:#4d3d2b;--bag:transparent;--skin:#b98563;z-index:2}
+.vis.w3{--hair:#7a3519;--top:#b8403c;--top2:#8f2f2d;--pants:#262a33;--bag:transparent;--skin:#f1caa9;z-index:2}
+.vis.w1.sit{z-index:4}
+.vis.w2 .bag,.vis.w2 .bagstrap,.vis.w3 .bag,.vis.w3 .bagstrap{display:none}
+.vis .legs{transform-origin:50% 54%;transition:transform .8s ease,opacity .5s}
+.vis.sit .legs{transform:scaleY(.12) translateY(-4px);opacity:0}
+.vis .leg,.vis .arm,.vis .body,.vis .head{transform-box:fill-box}
+.vis .head{transform-origin:50% 90%;transition:transform 1s ease}
+.vis .leg{transform-origin:50% 0}
+.vis.walk .leg.l{animation:stepL .78s ease-in-out infinite}
+.vis.walk .leg.r{animation:stepL .78s ease-in-out infinite -.39s}
+@keyframes stepL{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-14px) scaleY(.9)}}
+.vis.walk .arm.l{animation:swing .78s ease-in-out infinite;transform-origin:50% 8%}
+.vis.walk .arm.r{animation:swing .78s ease-in-out infinite -.39s;transform-origin:50% 8%}
+@keyframes swing{0%,100%{transform:rotate(5deg)}50%{transform:rotate(-5deg)}}
+.vis.walk .body,.vis.walk .head{animation:bob .39s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+/* looking up at the frames */
+.vis.look .head{animation:gaze 15s ease-in-out infinite}
+@keyframes gaze{0%,100%{transform:translate(0,0) rotate(0)}8%,22%{transform:translate(-4px,-3px) rotate(-3deg) scaleY(1.04)}34%{transform:translate(0,-1px)}52%,66%{transform:translate(4px,-3px) rotate(3deg) scaleY(1.04)}80%{transform:translate(0,-4px) scaleY(1.06)}}
+.room[data-look="0"] .vis.w1.look .head{animation:none;transform:translate(-4px,-3px) rotate(-3deg) scaleY(1.05)}
+.room[data-look="1"] .vis.w1.look .head{animation:none;transform:translate(4px,-3px) rotate(3deg) scaleY(1.05)}
+
+/* ---------------- INNER PAGES ---------------- */
+body.g.inner{color:var(--ink)}
+body.g .topnav a{transform:none;background:linear-gradient(180deg,#fbf8f0,#efe7d4);color:#3a2f1a;border:1px solid #b4893a;border-radius:0;font:700 12px/1 var(--f-narrow);letter-spacing:.2em;box-shadow:inset 0 0 0 2px #fbf8f0,0 2px 6px rgba(40,25,5,.22)}
+body.g .topnav a:hover,body.g .topnav a:focus-visible{background:var(--gold);color:#241a06;transform:translateY(-2px)}
+body.g .topnav a.cover{background:linear-gradient(180deg,#fbf8f0,#efe7d4)}
+body.g .topnav a[aria-current=page]{background:var(--gold);color:#241a06}
+body.g .poster-wrap{padding-inline:clamp(26px,5vw,60px)}
+body.g .poster{animation:none}
+body.g .poster::before{content:"";position:absolute;inset:-2.8cqw;background:var(--gold);z-index:0;
+  box-shadow:inset 0 0 0 .3cqw rgba(255,244,180,.95),inset 0 0 0 .7cqw #8a5f14,inset 0 0 1.2cqw .5cqw rgba(70,40,0,.5),0 1cqw 2cqw rgba(40,25,5,.3),0 3cqw 6cqw -1cqw rgba(40,25,5,.35)}
+body.g .paper{z-index:1;box-shadow:0 0 0 1.3cqw #f8f4ea,0 0 0 1.5cqw #7a5410,inset 0 0 1.6cqw rgba(60,40,10,.12)}
+body.g .paper::after{display:none}
+body.g .paper::before{opacity:.25}
+body.g .foot{color:#6a5d45;text-shadow:none}
+body.g .poster .tape{display:none}
+@media (max-width:760px){body.g .poster::before{inset:-3.4cqw}}
+
+/* ---------------- PHONE: a tall room, frames stacked ---------------- */
+@media (max-width:760px),(max-aspect-ratio:4/5){
+  .gallery{--rw:100vw}
+  .gallery .floor{height:34%}
+  .room{aspect-ratio:auto;height:100dvh;width:100vw}
+  .vinyl{top:2.6%;font-size:8cqw}.vinyl small{font-size:2.7cqw;margin-top:2cqw}
+  .frame{--ph:50cqw;--pad:8cqw;top:24%}
+  .frame.f1{left:26%}.frame.f2{left:74%}
+  .frame .gold{padding:2.2cqw}.frame .gold::before{padding:2.2cqw;background-size:1.8cqw 1.8cqw;background-image:radial-gradient(circle,rgba(110,70,8,.65) 0 .35cqw,transparent .45cqw)}
+  .frame .gold::after{background-size:4.4cqw 4.4cqw}
+  .frame .mat{padding:1.8cqw}
+  .frame .lamp{top:-4.4cqw;width:16cqw;height:1.8cqw;margin-left:-8cqw}
+  .frame .lamp::after{width:80cqw;height:50cqw;margin-left:-40cqw}
+  .frame .label{font-size:max(14px,3.8cqw);margin-top:2.4cqw}.frame .label b{font-size:max(10px,2.8cqw)}.frame .label small{display:none}
+  .plaques{left:10%;width:80%;top:14%;flex-direction:row;gap:2cqw}
+  .plaque{flex:1;font-size:max(11px,3cqw);padding:2.6cqw 1cqw;border-width:1px}
+  .bench .top{left:20%;width:60%;top:76%;height:3cqw}
+  .bench .front{left:20%;width:60%;top:calc(76% + 3cqw);height:5cqw}
+  .bench .lg{top:calc(76% + 8cqw);height:12cqw;width:3cqw}.bench .lg.a{left:23%}.bench .lg.b{left:73%}
+  .rug{left:8%;width:84%;top:85%;height:9%}
+  .vis{width:15cqw}
+  .hint{font-size:4cqw;bottom:1.5%}
+}
+@media (prefers-reduced-motion:reduce){.vis *{animation:none!important}}
+/* VERSION 6: a photographed museum. The campaigns are hung inside the photo's own gold frames. */
+body.museum-page{background:#d9c9ac;overflow:hidden}
+body.museum-page .scene{display:none}
+.museum{position:fixed;inset:0;overflow:hidden;background:#cdb690}
+.pan{position:absolute;inset:0;overflow:hidden}
+.stage{position:absolute;left:50%;top:50%;translate:-50% -50%;width:max(100vw,calc(100dvh*1.7767));aspect-ratio:1672/941;container-type:inline-size;
+  transition:transform 1.1s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.shot{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.stage>*{position:absolute}.stage>.shot{position:absolute}
+
+/* the campaign, mounted on a cream mat inside the photographed opening */
+.museum .stage .frame{display:block;outline:none;cursor:pointer;translate:none;transform:none;--ph:initial}
+.museum .stage .frame:hover,.museum .stage .frame:focus-visible{transform:none}
+.frame .art{position:absolute;overflow:hidden;background:linear-gradient(180deg,#e6d9c1,#efe5d0 60%,#e9dcc4);
+  box-shadow:inset 0 .55cqw .75cqw -.2cqw rgba(38,21,4,.62),inset .3cqw 0 .5cqw -.2cqw rgba(38,21,4,.38),inset -.15cqw 0 .3cqw -.1cqw rgba(38,21,4,.25)}
+.frame .art picture{position:absolute;left:50%;top:50%;width:var(--pw,90%);aspect-ratio:var(--r);translate:-50% -50%;display:block;
+  box-shadow:0 0 0 .22cqw #f7f1e4,0 0 0 .3cqw rgba(60,40,15,.28),0 .25cqw .5cqw rgba(30,15,0,.45)}
+.frame .art img{display:block;width:100%;height:100%;object-fit:cover}
+/* light falling on the print: spotlight from above, warm tint, a faint glass sheen, soft falloff at the bottom */
+.frame .art .lit{position:absolute;inset:0;pointer-events:none;
+  background:
+   linear-gradient(115deg,rgba(255,255,255,.17) 0,rgba(255,255,255,.04) 26%,transparent 38%,transparent 62%,rgba(255,255,255,.07) 74%,transparent 86%),
+   radial-gradient(ellipse 85% 65% at 50% -6%,rgba(255,238,196,.34),transparent 72%),
+   linear-gradient(180deg,rgba(40,22,4,.16),transparent 18%,transparent 70%,rgba(60,35,10,.18)),
+   linear-gradient(rgba(255,226,172,.10),rgba(255,226,172,.10))}
+.frame .glow{inset:-3%;left:-3%;top:-6%;width:106%;height:112%;pointer-events:none;opacity:0;transition:opacity .7s ease;
+  background:radial-gradient(ellipse 60% 50% at 50% 0,rgba(255,232,178,.55),rgba(255,226,160,.16) 55%,transparent 75%);mix-blend-mode:screen}
+.frame:hover .glow,.frame:focus-visible .glow{opacity:1}
+.frame:focus-visible::after{content:"";position:absolute;inset:-1%;border:2px solid #fff6dc;border-radius:2px;box-shadow:0 0 0 2px rgba(120,80,20,.7)}
+
+/* exhibition labels on the wall under each frame */
+.wl{margin:0;font:600 1.2cqw/1.15 'Cormorant Garamond',Georgia,serif;color:#4a3a22;letter-spacing:.02em;pointer-events:none;text-shadow:0 1px 0 rgba(255,250,238,.5)}
+.wl b{font:700 .78cqw 'Archivo Narrow','Archivo',sans-serif;letter-spacing:.22em;color:#8a6a1c;margin-right:.45cqw}
+.wl small{display:none;margin-top:.25cqw;font:italic 500 1cqw/1.25 'Cormorant Garamond',Georgia,serif;color:#6d5c40}
+
+/* name + navigation in the header, light enough to leave the cornice and artwork alone */
+.mast{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+  padding:calc(22px + env(safe-area-inset-top)) clamp(18px,3.6vw,56px) 36px;background:linear-gradient(180deg,rgba(248,243,232,.94),rgba(248,243,232,.7) 55%,rgba(248,243,232,0))}
+.mast h1{margin:0;font-weight:500}
+.mast .nm{display:block;font:500 clamp(26px,2.5vw,38px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.04em;color:#241d12}
+.mast small{display:block;margin-top:9px;font:600 clamp(9.5px,.72vw,11px) 'Archivo Narrow','Archivo',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#7b6a45}
+.mast nav{display:flex;gap:clamp(18px,2.4vw,38px);padding-top:6px}
+.mast nav a{font:600 clamp(10.5px,.82vw,12.5px) 'Archivo Narrow','Archivo',sans-serif;letter-spacing:.26em;text-transform:uppercase;color:#3a2f1a;padding:8px 0;position:relative}
+.mast nav a::after{content:"";position:absolute;left:0;right:100%;bottom:3px;height:1px;background:#a47a22;transition:right .35s ease}
+.mast nav a:hover::after,.mast nav a:focus-visible::after{right:0}
+.mast nav a:focus-visible{outline:2px solid #a47a22;outline-offset:4px}
+.swipe{display:none}
+
+/* phone: the photo is shown large and you swipe from one framed campaign to the other */
+@media (max-width:760px),(max-aspect-ratio:1/1){
+  .museum{display:flex;flex-direction:column;padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+  .pan{position:relative;inset:auto;flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+  .pan::-webkit-scrollbar{display:none}
+  .stage{position:relative;left:auto;top:auto;translate:none;height:100%;width:calc(100dvh*1.2);aspect-ratio:auto;flex:none}
+  .museum .stage .frame{scroll-snap-align:center}
+  .mast{position:relative;flex:none;flex-direction:column;align-items:center;text-align:center;gap:0;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;background:#f8f3e8;border-bottom:1px solid rgba(140,110,50,.35)}
+  .mast .nm{font-size:27px}.mast small{margin-top:7px;font-size:9.5px;letter-spacing:.3em}
+  .mast nav{position:fixed;left:0;right:0;bottom:0;justify-content:space-around;gap:0;padding:0 8px env(safe-area-inset-bottom);background:#f8f3e8;border-top:1px solid rgba(140,110,50,.35);z-index:6}
+  .mast nav a{font-size:12px;letter-spacing:.24em;padding:20px 14px}
+  .swipe{display:block;position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));text-align:center;margin:0;font:italic 500 15px 'Cormorant Garamond',Georgia,serif;color:#fff6e0;text-shadow:0 1px 4px rgba(30,15,0,.7);pointer-events:none;transition:opacity .6s}
+  .swipe.gone{opacity:0}
+  .wl{font-size:1.5cqw}.wl b{font-size:1cqw}
+}
+@media (prefers-reduced-motion:reduce){.stage,.frame .glow{transition:none}}
+
+/* the bench front face is re-laid over the seated visitor (a slice of the photo itself) */
+.benchcut{background-image:url(../scene/museum.webp);background-repeat:no-repeat;z-index:3;pointer-events:none}
+.museum .stage .frame{z-index:1}
+.vis:not(.on){pointer-events:none}
+.vis.drag{z-index:9!important}
+.stage[data-look="0"] .vis.sit.look .head{animation:none;transform:translate(-4px,-3px) rotate(-3deg) scaleY(1.05)}
+.stage[data-look="1"] .vis.sit.look .head{animation:none;transform:translate(4px,-3px) rotate(3deg) scaleY(1.05)}
+.stage>.vis{position:absolute}
+.stage>.vis{width:8cqw}
+
+/* still by default: no idle swaying; a quiet look up at the art, and a head turn toward the pointer on hover */
+.stage .vis.look .head{animation:none;transform:translate(0,-1px)}
+.stage .vis.hov:not(.drag) .head{transform:translate(calc(var(--lx,0)*5px),-2px) rotate(calc(var(--lx,0)*5deg));transition:transform .35s ease}
+.stage .vis.hov:not(.drag) .body{transform:translateX(calc(var(--lx,0)*1.2px));transition:transform .35s ease}
+.stage .vis{cursor:grab}
+.vis svg{filter:saturate(.82) sepia(.1) brightness(.97)}
+.vis .shade{fill:#000;opacity:.16}.vis .hl{fill:#fff;opacity:.18}
+
+/* photographed visitors */
+.stage>.vis{width:var(--bw);aspect-ratio:var(--ar);pointer-events:none;cursor:grab;opacity:0}
+.stage>.vis.on{opacity:1}
+.stage>.vis::before{display:none}
+.stage>.vis .spr{position:absolute;left:50%;bottom:0;translate:-50% 0;display:block;transition:translate .25s ease}
+.stage>.vis .spr.sit{display:none}
+.stage>.vis.sit .spr.sit{display:block}.stage>.vis.sit .spr.stand{display:none}
+.stage>.vis img{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none;pointer-events:auto;
+  filter:saturate(.96) brightness(.97) drop-shadow(0 .5cqw .6cqw rgba(45,22,5,.28))}
+.stage>.vis.sit img{filter:saturate(.96) brightness(.97)}
+.stage>.vis img.body{clip-path:inset(var(--cut) 0 0 0)}
+.stage>.vis img.head{-webkit-mask-image:linear-gradient(#000 var(--cut),transparent calc(var(--cut) + var(--ov)));mask-image:linear-gradient(#000 var(--cut),transparent calc(var(--cut) + var(--ov)));
+  transform-origin:50% var(--cut);transform:translate(calc(var(--hx,0)*.14cqw),calc(.1cqw + var(--hy,0)*.09cqw)) rotate(calc(var(--hx,0)*2deg));transition:transform .22s ease-out;clip-path:none}
+.stage>.vis.drag .spr{translate:-50% -1cqw}
+.stage>.vis.drag{z-index:9!important}
+@media (prefers-reduced-motion:reduce){.stage>.vis img.head,.stage>.vis .spr{transition:none}}
+
+/* everyone breathes and drifts a little, all the time (head layer rides on a wrapper so the pointer-follow still works) */
+.stage>.vis .hw{position:absolute;inset:0;display:block;transform-origin:50% var(--cut);animation:idleHead var(--hd,9s) ease-in-out infinite;animation-delay:var(--dl,0s);pointer-events:none}
+.stage>.vis img.head{inset:0}
+.stage>.vis img.body{transform-origin:50% 100%;animation:breathe var(--bd,5s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+@keyframes breathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-.05cqw) scaleY(1.01)}}
+.stage>.vis .spr{transform-origin:50% 100%;animation:sway calc(var(--bd,5s)*1.5) ease-in-out infinite;animation-delay:var(--dl,0s)}
+@keyframes stepbob{0%,100%{transform:translateY(0) rotate(-1.4deg)}25%{transform:translateY(-.32cqw) rotate(0)}50%{transform:translateY(0) rotate(1.4deg)}75%{transform:translateY(-.32cqw) rotate(0)}}
+.stage>.vis.walk .spr{animation:stepbob .62s linear infinite}
+@keyframes sway{0%,100%{transform:translateX(-.14cqw) rotate(-.9deg)}50%{transform:translateX(.14cqw) rotate(.9deg)}}
+@keyframes idleHead{0%,100%{transform:translate(0,.02cqw) rotate(0)}22%{transform:translate(.12cqw,-.02cqw) rotate(2deg)}50%{transform:translate(0,-.06cqw) rotate(.2deg)}74%{transform:translate(-.12cqw,0) rotate(-2deg)}}
+@media (prefers-reduced-motion:reduce){.stage>.vis .hw,.stage>.vis img.body,.stage>.vis .spr{animation:none}}
+/* a soft dent of shadow where each visitor sits on the cushion */
+.sitshade{position:absolute;display:none;z-index:4;pointer-events:none;height:2.4cqw;transform:translateX(-50%);mix-blend-mode:multiply;
+  background:radial-gradient(ellipse 50% 50% at 50% 35%,rgba(35,18,6,.5),rgba(35,18,6,.18) 55%,transparent 75%)}
+</style>
+<script>document.documentElement.className+=" js"</script>
+</head>
+<body class="g inner">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="rough" x="-4%" y="-8%" width="108%" height="116%"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter>
+<filter id="roughbig" x="-4%" y="-6%" width="108%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="6"/></filter>
+</defs></svg>
+<div class="scene" aria-hidden="true"></div>
+<a class="skip" href="#work">Skip to the work</a>
+<nav class="topnav" aria-label="Main">
+  <a style="--i:0" class="cover" href="../index.html">← Cover</a>
+  <a style="--i:1" class="" href="../godox-c100/index.html">Godox C100</a>
+  <a style="--i:2" class="" href="../strip-jerky/index.html" aria-current="page">Strip Jerky</a>
+  <a style="--i:3" class="" href="../about/index.html">About me</a>
+  <a style="--i:4" class="" href="../about/index.html#contact">Contact</a>
+  <a style="--i:5" class="res" href="../uploads/untitled-document-73-.pdf" download>Résumé</a>
+</nav>
+<div class="poster-wrap">
+<main class="poster">
+  <i class="tape t1"></i><i class="tape t2"></i>
+  <div class="paper">
+    <header class="hero">
+      <span class="torn" id="torn"><b>02</b>Strip Jerky</span>
+      <h1 aria-label="Strip Jerky"><span>STRIP</span><span>JERKY</span></h1>
+      
+      <p class="idea"><span>Stripped Down to the Good Stuff.</span></p>
+      
+    </header>
+    <div id="work">
+      <figure class="bigfig lead"><picture><source srcset="../optimized/concepboardnew.webp" type="image/webp"><img class="im" src="../optimized/concepboardnew.webp" alt="Strip Jerky concept board" loading="lazy" decoding="async" width="1000" height="667"></picture></figure>
+      <section class="section" aria-labelledby="h-posters"><p class="cap" id="h-posters"><b>01</b> Posters</p><div class="jg" style="--h:300px;--mh:520px">
+      <figure style="--r:0.667"><picture><source srcset="../optimized/bag.webp" type="image/webp"><img class="im" src="../optimized/bag.webp" alt="Poster 1" loading="lazy" decoding="async" width="1000" height="1500"></picture></figure>
+      <figure style="--r:0.614"><picture><source srcset="../optimized/yees.webp" type="image/webp"><img class="im" src="../optimized/yees.webp" alt="Poster 2" loading="lazy" decoding="async" width="1000" height="1630"></picture></figure>
+      <figure style="--r:0.667"><picture><source srcset="../optimized/shaddow.webp" type="image/webp"><img class="im" src="../optimized/shaddow.webp" alt="Poster 3" loading="lazy" decoding="async" width="1000" height="1500"></picture></figure>
+      <figure style="--r:0.667"><picture><source srcset="../optimized/stripped.webp" type="image/webp"><img class="im" src="../optimized/stripped.webp" alt="Poster 4" loading="lazy" decoding="async" width="1000" height="1500"></picture></figure>
+      <figure style="--r:0.667"><picture><source srcset="../optimized/ingredients.webp" type="image/webp"><img class="im" src="../optimized/ingredients.webp" alt="Poster 5" loading="lazy" decoding="async" width="1000" height="1500"></picture></figure>
+      <figure style="--r:0.667"><picture><source srcset="../optimized/good1.webp" type="image/webp"><img class="im" src="../optimized/good1.webp" alt="Poster 6" loading="lazy" decoding="async" width="1000" height="1500"></picture></figure>
+    </div></section>
+      <section class="section" aria-labelledby="h-bill"><p class="cap" id="h-bill"><b>02</b> Billboard</p><figure class="bigfig bill"><picture><source srcset="../optimized/8013b4ea-f6ff-4229-9f2c-380539dd8d2d.webp" type="image/webp"><img class="im" src="../optimized/8013b4ea-f6ff-4229-9f2c-380539dd8d2d.webp" alt="Strip Jerky billboard" loading="lazy" decoding="async" width="1000" height="500"></picture></figure></section>
+      <section class="section" aria-labelledby="h-act"><p class="cap" id="h-act"><b>03</b> Activations</p><div class="jg" style="--h:320px;--mh:540px">
+      <figure style="--r:0.667"><picture><source srcset="../optimized/s.webp" type="image/webp"><img class="im" src="../optimized/s.webp" alt="Ingredient Claw Machine" loading="lazy" decoding="async" width="1000" height="1499"></picture><figcaption>Ingredient Claw Machine</figcaption></figure>
+      <figure style="--r:0.667"><picture><source srcset="../optimized/92ebd50a-2d34-4483-addd-e717c7ebb107.webp" type="image/webp"><img class="im" src="../optimized/92ebd50a-2d34-4483-addd-e717c7ebb107.webp" alt="The Good Stuff Has Taken Over" loading="lazy" decoding="async" width="1000" height="1500"></picture><figcaption>The Good Stuff Has Taken Over</figcaption></figure>
+    </div></section>
+    </div>
+    <div class="nextrow"><p class="cap">Keep going</p><a href="../about/index.html" class="next">About me <span aria-hidden="true">→</span></a></div>
+  </div>
+</main>
+</div>
+<p class="foot">Chloe Schlesinger · Art Director</p>
+<script>(function () {
+  var reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var store = function (k, v) { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} };
+  var load = function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } };
+
+  // coming back with the browser's back button: reset any half-torn flyer
+  addEventListener("pageshow", function (e) { if (e.persisted && document.querySelector(".tab-flying")) location.reload(); });
+
+  // a ragged torn edge: the strip of paper left behind on the flyer
+  function raggedEdge() {
+    var pts = ["0 0", "100% 0"], n = 14, i;
+    for (i = n; i >= 0; i--) pts.push((i / n * 100).toFixed(1) + "% " + (62 + Math.random() * 38).toFixed(0) + "%");
+    return "polygon(" + pts.join(",") + ")";
+  }
+
+  // TEAR-OFF: lift the tab, rip it from the bottom up, let it fall; the torn strip stays on the flyer
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a.tab");
+    if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    store("rip", JSON.stringify({ k: a.dataset.key, t: Date.now() }));
+    if (reduce || !a.animate) return;
+    e.preventDefault();
+    var href = a.href, d = Math.random() < .5 ? -1 : 1;
+    var stub = document.createElement("span");
+    stub.className = "torn-stub"; stub.setAttribute("aria-hidden", "true");
+    stub.style.cssText = "left:" + a.offsetLeft + "px;width:" + a.offsetWidth + "px;height:" + Math.round(a.offsetWidth * .2) + "px;clip-path:" + raggedEdge();
+    a.parentNode.insertBefore(stub, a);
+    a.classList.add("tab-flying");
+    a.style.transformOrigin = d < 0 ? "88% 0" : "12% 0";
+    var P = "perspective(720px) ";
+    a.animate([
+      { transform: P + "rotate(0deg)", offset: 0 },
+      { transform: P + "rotateX(-26deg) rotate(" + 1.5 * d + "deg) translateY(-3px)", offset: .17, easing: "ease-out" },
+      { transform: P + "rotateX(-44deg) rotate(" + 6 * d + "deg) translate(" + 3 * d + "px,1px)", offset: .33, easing: "cubic-bezier(.6,0,1,1)" },
+      { transform: P + "rotateX(-58deg) rotate(" + 14 * d + "deg) translate(" + 10 * d + "px,16px)", offset: .45 },
+      { transform: P + "translate(" + 70 * d + "px,62vh) rotate(" + 58 * d + "deg) rotateX(-72deg)", opacity: .92, offset: 1 }
+    ], { duration: 940, easing: "linear", fill: "forwards" });
+    setTimeout(function () { location.href = href; }, 760);
+  });
+
+  // ARRIVAL: the strip that was torn off lands in the poster's header
+  var torn = document.getElementById("torn"), rip = load("rip");
+  store("rip", null);
+  if (torn && rip && !reduce && torn.animate) {
+    try { var r = JSON.parse(rip); if (Date.now() - r.t < 8000)
+      torn.animate([
+        { transform: "translate(40px,-80px) rotate(80deg) scale(1.2)", opacity: 0 },
+        { transform: "translate(14px,-18px) rotate(30deg) scale(1.08)", opacity: 1, offset: .35 },
+        { transform: "rotate(-1.5deg)", opacity: 1 }
+      ], { duration: 820, delay: 500, easing: "cubic-bezier(.3,1.2,.5,1)", fill: "backwards" }); } catch (e) {}
+  }
+
+  // gentle rise-in for pictures as you scroll
+  var els = [].slice.call(document.querySelectorAll(".jg figure,.bigfig,.pics figure,.portrait"));
+  if (!reduce && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
+    els.forEach(function (el) { el.classList.add("rv"); io.observe(el); });
+  }
+})();
+
+/* every page opens at the top (unless the link carries a #hash, like Contact); links to the page you're already on scroll up too */
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  var top = function () { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; };
+  if (!location.hash) { top(); addEventListener("load", top); addEventListener("pageshow", top); }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented || a.target === "_blank") return;
+    var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
+    if (u.origin === location.origin && u.pathname.replace(/index\.html$/, "") === location.pathname.replace(/index\.html$/, "") && !u.hash) {
+      e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+})();
+</script>
+<script>(function () {
+  var room = document.querySelector(".room");
+  var reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var store = function (k, v) { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} };
+  var load = function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } };
+
+  /* ---- arrival on an inner page: the framed work comes forward out of the wall ---- */
+  var poster = document.querySelector(".poster");
+  if (poster && load("zoom") && !reduce && poster.animate) {
+    store("zoom", null);
+    poster.animate([{ transform: "scale(1.22)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], { duration: 760, easing: "cubic-bezier(.2,.7,.2,1)" });
+  } else store("zoom", null);
+
+  if (!room) return;
+
+  /* ---- click a frame: the room zooms toward it, then the campaign page opens ---- */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a.frame");
+    if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    store("zoom", "1");
+    if (reduce || !room.animate) return;
+    e.preventDefault();
+    var g = a.querySelector(".gold").getBoundingClientRect(), r = room.getBoundingClientRect();
+    var cx = g.left + g.width / 2 - r.left, cy = g.top + g.height / 2 - r.top;
+    var s = Math.min(innerWidth * 0.86 / g.width, innerHeight * 0.9 / g.height);
+    room.style.transformOrigin = cx + "px " + cy + "px";
+    var dx = innerWidth / 2 - (g.left + g.width / 2), dy = innerHeight / 2 - (g.top + g.height / 2);
+    room.animate([{ transform: "translate(0,0) scale(1)" }, { transform: "translate(" + dx + "px," + dy + "px) scale(" + s + ")" }], { duration: 720, easing: "cubic-bezier(.65,0,.3,1)", fill: "forwards" });
+    var veil = document.createElement("div");
+    veil.style.cssText = "position:fixed;inset:0;background:#efe9de;opacity:0;pointer-events:none;z-index:50";
+    document.body.appendChild(veil);
+    veil.animate([{ opacity: 0 }, { opacity: 0, offset: .55 }, { opacity: 1 }], { duration: 720, fill: "forwards" });
+    setTimeout(function () { location.href = a.href; }, 700);
+  });
+  addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
+
+  /* a visitor on the bench glances at whichever frame you point at */
+  [].forEach.call(room.querySelectorAll("a.frame"), function (f) {
+    var on = function () { room.setAttribute("data-look", f.dataset.i); }, off = function () { room.removeAttribute("data-look"); };
+    f.addEventListener("mouseenter", on); f.addEventListener("focus", on); f.addEventListener("mouseleave", off); f.addEventListener("blur", off);
+  });
+
+  /* ---- the visitors ---- */
+  var w1 = room.querySelector(".w1"), w2 = room.querySelector(".w2"), w3 = room.querySelector(".w3");
+  var benchTop = room.querySelector(".bench .top"), benchFront = room.querySelector(".bench .front");
+  var M = {};
+  function measure() {
+    var r = room.getBoundingClientRect(), t = benchTop.getBoundingClientRect(), f = benchFront.getBoundingClientRect();
+    M.W = r.width; M.H = r.height; M.fw = w1.offsetWidth; M.fh = M.fw * 2.62;
+    M.seatX = t.left - r.left + t.width * .42; M.seatY = t.top - r.top + t.height * .55;
+    M.frontY = f.bottom - r.top + M.H * .045;
+    M.back = t.top - r.top + t.height * .6;
+  }
+  var ease = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x); };
+  var lerp = function (a, b, k) { return a + (b - a) * k; };
+  function place(el, x, y, s, flip) {
+    el.style.transform = "translate(" + (x - M.fw / 2).toFixed(1) + "px," + (y - M.fh).toFixed(1) + "px) scale(" + s.toFixed(3) + ")";
+  }
+  function setState(el, st) {
+    el.classList.toggle("walk", st.walk); el.classList.toggle("sit", !!st.sit); el.classList.toggle("look", !!st.look); el.classList.toggle("on", st.on !== false);
+  }
+  // scale by depth: nearer the viewer (bigger y) = larger
+  var depth = function (y) { return 1 + (y - M.seatY) / M.H * .5; };
+
+  // the main visitor: walks in from the bottom of the room, sits on the bench, looks up, leaves to the right
+  var T1 = [6.5, .7, 1.7, 17, 1.6, .6, 6.5, 2.5]; // walk in, pause, sit, stay, rise, pause, leave, gap
+  var LOOP1 = T1.reduce(function (a, b) { return a + b; }, 0);
+  function pose1(t) {
+    t = t % LOOP1;
+    var x0 = M.seatX - M.W * .24, y0 = M.H + M.fh * 1.45, xs = M.seatX - M.W * .03, ys = M.frontY;
+    var seatFeet = M.seatY + M.fh * .43 * .96, k;
+    if (t < T1[0]) { k = t / T1[0]; return { x: lerp(x0, xs, ease(k * .98 + .02 * k)), y: lerp(y0, ys, k), s: depth(lerp(y0, ys, k)), walk: true, on: k > .02 }; }
+    t -= T1[0];
+    if (t < T1[1]) return { x: xs, y: ys, s: depth(ys), walk: false };
+    t -= T1[1];
+    if (t < T1[2]) { k = ease(t / T1[2]); var yy = lerp(ys, seatFeet, k); return { x: lerp(xs, M.seatX, k), y: yy, s: lerp(depth(ys), 1, k), walk: false, sit: k > .25 }; }
+    t -= T1[2];
+    if (t < T1[3]) return { x: M.seatX, y: seatFeet, s: 1, walk: false, sit: true, look: true };
+    t -= T1[3];
+    if (t < T1[4]) { k = ease(t / T1[4]); return { x: lerp(M.seatX, xs, k), y: lerp(seatFeet, ys, k), s: lerp(1, depth(ys), k), walk: false, sit: k < .7 }; }
+    t -= T1[4];
+    if (t < T1[5]) return { x: xs, y: ys, s: depth(ys), walk: false };
+    t -= T1[5];
+    if (t < T1[6]) { k = t / T1[6]; var xe = M.W + M.fw * 1.5; return { x: lerp(xs, xe, k), y: ys, s: depth(ys), walk: true }; }
+    return { x: 0, y: 0, s: 1, walk: false, on: false };
+  }
+
+  // wanderers pass behind the bench, pause in front of a frame and look up
+  function wander(t, dir, period, stops, scale, off) {
+    var u = ((t + off) % period) / period; // 0..1
+    // stops: [{u0,u1,x}] pauses; between them walk linearly
+    var pts = [{ u: 0, x: dir > 0 ? -.08 : 1.08 }].concat(stops, [{ u: 1, x: dir > 0 ? 1.08 : -.08 }]);
+    for (var i = 0; i < pts.length - 1; i++) {
+      var a = pts[i], b = pts[i + 1], aEnd = a.hold ? a.u + a.hold : a.u;
+      if (u >= a.u && u < aEnd) return { x: a.x * M.W, y: M.back, s: scale, walk: false, look: true };
+      if (u >= aEnd && u < b.u) { var k = (u - aEnd) / (b.u - aEnd); return { x: lerp(a.x, b.x, k) * M.W, y: M.back, s: scale, walk: true }; }
+    }
+    return { x: pts[pts.length - 1].x * M.W, y: M.back, s: scale, walk: true };
+  }
+  var S2 = [{ u: .26, hold: .13, x: .40 }, { u: .62, hold: .12, x: .86 }];
+  var S3 = [{ u: .3, hold: .1, x: .9 }, { u: .66, hold: .16, x: .42 }];
+
+  // ---- drag a visitor to stand (or sit) somewhere else ----
+  var man = {}, last = {}, floorEl = document.querySelector(".gallery .floor");
+  var floorTop = function () { return floorEl.getBoundingClientRect().top - room.getBoundingClientRect().top; };
+  var scaleAt = function (y) { var f = floorTop(); return lerp(.62, 1.3, Math.max(0, Math.min(1, (y - f) / (M.H - f)))); };
+  var seatFeet = function () { return M.seatY + M.fh * .43 * .96; };
+  var benchSpan = function () { var t = benchTop.getBoundingClientRect(), r = room.getBoundingClientRect(); return [t.left - r.left, t.right - r.left]; };
+  function manualPose(m, el) {
+    if (m.sit) return { x: m.x, y: seatFeet(), s: 1, sit: true, look: true, walk: false };
+    return { x: m.x, y: m.y, s: scaleAt(m.y), walk: !!m.drag, look: !m.drag };
+  }
+  function apply(el, p) {
+    last[el.className.match(/w\d/)[0]] = p; setState(el, p); place(el, p.x, p.y, p.s);
+    if (man[el.className.match(/w\d/)[0]] && !p.sit) el.style.zIndex = p.y > M.back + M.H * .01 ? 6 : 2;
+    else if (p.sit) el.style.zIndex = 4; else el.style.zIndex = "";
+  }
+  [w1, w2, w3].forEach(function (el) {
+    var key = el.className.match(/w\d/)[0], grab = null;
+    el.addEventListener("pointerdown", function (e) {
+      var p = last[key]; if (!p || p.on === false) return;
+      var r = room.getBoundingClientRect();
+      grab = { dx: e.clientX - r.left - p.x, dy: e.clientY - r.top - p.y };
+      man[key] = { x: p.x, y: p.sit ? seatFeet() : p.y, sit: false, drag: true };
+      if (p.sit) man[key].y = M.frontY;
+      el.setPointerCapture(e.pointerId); el.classList.add("drag"); e.preventDefault();
+    });
+    el.addEventListener("pointermove", function (e) {
+      if (!grab) return;
+      var r = room.getBoundingClientRect(), m = man[key];
+      m.x = Math.max(M.fw * .3, Math.min(M.W - M.fw * .3, e.clientX - r.left - grab.dx));
+      m.y = Math.max(floorTop() + M.H * .03, Math.min(M.H, e.clientY - r.top - grab.dy));
+      apply(el, manualPose(m, el));
+    });
+    var end = function () {
+      if (!grab) return; grab = null; el.classList.remove("drag");
+      var m = man[key], b = benchSpan();
+      m.drag = false;
+      if (m.x > b[0] && m.x < b[1] && m.y > M.back - M.H * .02 && m.y < M.frontY + M.H * .08) { m.sit = true; m.x = Math.max(b[0] + M.fw * .6, Math.min(b[1] - M.fw * .6, m.x)); }
+      apply(el, manualPose(m, el));
+    };
+    el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
+  });
+
+  function frame(now) {
+    var t = now / 1000;
+    var p1 = man.w1 ? manualPose(man.w1, w1) : pose1(t);
+    var p2 = man.w2 ? manualPose(man.w2, w2) : wander(t, 1, 70, S2, .66, 4);
+    var p3 = man.w3 ? manualPose(man.w3, w3) : wander(t, -1, 90, S3, .6, 31);
+    apply(w1, p1); apply(w2, p2); apply(w3, p3);
+    if (running) raf = requestAnimationFrame(frame);
+  }
+  var running = false, raf = 0;
+  function start() { if (running) return; running = true; raf = requestAnimationFrame(frame); }
+  function stop() { running = false; cancelAnimationFrame(raf); }
+
+  measure();
+  addEventListener("resize", measure);
+  document.addEventListener("visibilitychange", function () { document.hidden ? stop() : start(); });
+
+  if (reduce) {
+    // still scene: one visitor seated, two standing in front of the frames
+    apply(w1, { x: M.seatX, y: seatFeet(), s: 1, sit: true, look: false });
+    apply(w2, { x: M.W * .4, y: M.back, s: .66, walk: false });
+    apply(w3, { x: M.W * .9, y: M.back, s: .6, walk: false });
+  } else { window.__t0 = performance.now(); start(); }
+  window.__gallery = { seek: function (sec) { stop(); measure(); frame(sec * 1000); } };
+})();
+</script>
+<script>(function () {
+  var stage = document.querySelector(".museum .stage");
+  if (!stage) return;
+  var pan = document.querySelector(".museum .pan"), swipe = document.querySelector(".swipe");
+  var reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var phone = function () { return matchMedia("(max-width:760px),(max-aspect-ratio:1/1)").matches; };
+  var store = function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} };
+  var frames = [].slice.call(stage.querySelectorAll("a.frame"));
+
+  // phone: start centred on the first campaign; the swipe hint goes away once you move
+  function fit() { if (phone()) stage.style.width = Math.round(pan.clientHeight * 1672 / 941) + "px"; else stage.style.width = ""; }
+  fit();
+  function center(i) { var f = frames[i]; pan.scrollLeft = f.offsetLeft + f.offsetWidth / 2 - pan.clientWidth / 2; }
+  if (phone()) { center(0); pan.addEventListener("scroll", function () { if (Math.abs(pan.scrollLeft - (frames[0].offsetLeft + frames[0].offsetWidth / 2 - pan.clientWidth / 2)) > 24 && swipe) swipe.classList.add("gone"); }, { passive: true }); setTimeout(function () { if (swipe) swipe.classList.add("gone"); }, 6000); }
+  addEventListener("resize", function () { fit(); if (phone()) center(0); });
+
+  // desktop hover: the camera drifts a little toward the frame you point at
+  function lean(f) {
+    if (reduce || phone()) return;
+    var s = stage.getBoundingClientRect(), r = f.getBoundingClientRect();
+    var ox = (r.left + r.width / 2 - s.left) / s.width * 100, oy = (r.top + r.height / 2 - s.top) / s.height * 100;
+    /* no screen zoom on hover (kept as a no-op) */
+  }
+  function unlean() { stage.style.transform = ""; }
+  frames.forEach(function (f) {
+    f.addEventListener("mouseenter", function () { lean(f); }); f.addEventListener("focus", function () { lean(f); });
+    f.addEventListener("mouseleave", unlean); f.addEventListener("blur", unlean);
+  });
+
+  // click: the framed picture (with its piece of the photo) grows to fill the screen, then the campaign page opens
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a.frame");
+    if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    store("zoom", "1");
+    if (reduce) return;
+    e.preventDefault();
+    var r = a.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    var clone = document.createElement("div");
+    clone.style.cssText = "position:fixed;z-index:60;pointer-events:none;overflow:hidden;transform-origin:50% 50%;left:" + r.left + "px;top:" + r.top + "px;width:" + r.width + "px;height:" + r.height + "px";
+    var wrap = document.createElement("div"); // same size as the room so the picture keeps its proportions and shadows
+    wrap.className = "frame";
+    wrap.style.cssText = "position:absolute;translate:none;transform:none;container-type:inline-size;left:" + (s.left - r.left) + "px;top:" + (s.top - r.top) + "px;width:" + s.width + "px;height:" + s.height + "px;background:url(../scene/museum.webp) 0 0/100% 100% no-repeat";
+    var art = a.querySelector(".art").cloneNode(true), ar = a.querySelector(".art").getBoundingClientRect();
+    art.style.cssText += ";position:absolute;left:" + (ar.left - s.left) + "px;top:" + (ar.top - s.top) + "px;width:" + ar.width + "px;height:" + ar.height + "px";
+    wrap.appendChild(art); clone.appendChild(wrap);
+    var veil = document.createElement("div");
+    veil.style.cssText = "position:fixed;inset:0;z-index:59;background:#efe9de;opacity:0;pointer-events:none";
+    document.body.appendChild(veil); document.body.appendChild(clone);
+    var k = Math.min(innerWidth * .9 / r.width, innerHeight * .86 / r.height);
+    var dx = innerWidth / 2 - (r.left + r.width / 2), dy = innerHeight / 2 - (r.top + r.height / 2);
+    veil.animate([{ opacity: 0 }, { opacity: .96 }], { duration: 640, fill: "forwards", easing: "ease-in" });
+    clone.animate([{ transform: "none" }, { transform: "translate(" + dx + "px," + dy + "px) scale(" + k + ")" }], { duration: 760, fill: "forwards", easing: "cubic-bezier(.6,0,.25,1)" });
+    setTimeout(function () { location.href = a.href; }, 740);
+  });
+
+  /* ---- the visitors: real photographed people. They start seated on the bench and stay put; heads follow the pointer; drag to move ---- */
+  var vis = { a: stage.querySelector(".p-a"), b: stage.querySelector(".p-b"), c: stage.querySelector(".p-c") };
+  var PW = 1672, BX0 = 543, BX1 = 1156;                  // photo width, bench left/right edge (photo pixels)
+  var M = {}, man = {}, last = {};
+  function measure() {
+    var k = stage.clientWidth / PW;
+    M.k = k; M.W = stage.clientWidth; M.H = stage.clientHeight;
+    M.floorTop = 730 * k; M.back = 746 * k; M.sitAnchor = 758 * k; M.sitMax = 800 * k; M.frontY = 905 * k; M.b0 = BX0 * k; M.b1 = BX1 * k;
+  }
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+  var scaleAt = function (y) { return lerp(.9, 1.2, Math.max(0, Math.min(1, (y - M.floorTop) / (M.H - M.floorTop)))); };
+  function place(el, x, y, s) { el.style.transform = "translate(" + (x - el.offsetWidth / 2).toFixed(1) + "px," + (y - el.offsetHeight).toFixed(1) + "px) scale(" + s.toFixed(3) + ")"; }
+  function apply(el, key, m) {
+    var y = m.sit ? M.sitAnchor : m.y, s = scaleAt(m.sit ? 770 * M.k : m.y) * (m.sit ? 1 : .86);
+    el.classList.toggle("sit", !!m.sit); el.classList.toggle("on", true);
+    place(el, m.x, y, s);
+    var sh = stage.querySelector(".s-" + key);
+    if (sh) {
+      if (m.sit) { var sw = el.querySelector(".spr.sit").offsetWidth * s; sh.style.display = "block"; sh.style.width = (sw * 1.05).toFixed(1) + "px"; sh.style.left = m.x.toFixed(1) + "px"; sh.style.top = (748 * M.k).toFixed(1) + "px"; }
+      else sh.style.display = "none";
+    }
+    if (!el.classList.contains("drag")) el.style.zIndex = m.sit ? 2 : (m.y > M.sitMax ? 6 : 2);
+  }
+  // seats along the bench: left to right  c, a, b
+  var WALKER = null, REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // on arrival: the blonde and the brunette stand looking at the art, the man sits in the middle of the bench (photo coordinates; drag anyone anywhere)
+  var START = { c: [230, 849], b: [1397, 883] };
+  var seatX = {};
+  var seats = { c: .24, a: .45, b: .63 };
+  function settle() {
+    // equal room between neighbours (and the bench ends): spread by the real widths of the seated sprites
+    var order = ["c", "a", "b"], ws = order.map(function (k) { var sp = vis[k].querySelector(".spr.sit"); return sp.offsetWidth * scaleAt(770 * M.k); });
+    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
+    cur = M.b0 + gap * .6;
+    order.forEach(function (k, i) { seatX[k] = cur + ws[i] / 2; cur += ws[i] + gap; });
+    ["c", "a", "b"].forEach(function (key) {
+      var m = man[key];
+      if (!m) m = man[key] = START[key] ? { x: START[key][0] * M.k, y: START[key][1] * M.k, sit: false, seed: false } : { x: 0, y: 0, sit: true, seed: true };
+      if (m.seed) m.x = (M.b0 + M.b1) / 2;
+      apply(vis[key], key, m);
+    });
+  }
+  // heads follow the pointer
+  var pend = null;
+  function aim(cx, cy) {
+    ["a", "b", "c"].forEach(function (key) {
+      var el = vis[key], h = el.querySelector(".spr:not([style*='none']) .head"), sp = el.classList.contains("sit") ? el.querySelector(".spr.sit") : el.querySelector(".spr.stand");
+      var r = sp.getBoundingClientRect(), hx = r.left + r.width / 2, hy = r.top + r.height * (el.classList.contains("sit") ? .2 : .1);
+      var dx = Math.max(-1, Math.min(1, (cx - hx) / (stage.clientWidth * .3))), dy = Math.max(-1, Math.min(1, (cy - hy) / (stage.clientHeight * .4)));
+      el.style.setProperty("--hx", dx.toFixed(2)); el.style.setProperty("--hy", dy.toFixed(2));
+    });
+  }
+  document.addEventListener("pointermove", function (e) {
+    pend = [e.clientX, e.clientY];
+    if (pend.raf) return; pend.raf = 1;
+    requestAnimationFrame(function () { if (pend) aim(pend[0], pend[1]); pend = null; });
+  }, { passive: true });
+
+  // drag and drop (they stay wherever you put them; drop on the bench to sit)
+  ["a", "b", "c"].forEach(function (key) {
+    var el = vis[key], grab = null;
+    el.addEventListener("pointerdown", function (e) {
+      var r = stage.getBoundingClientRect(), m = man[key];
+      var px = e.clientX - r.left, py = e.clientY - r.top;
+      grab = { dx: px - m.x, dy: py - (m.sit ? M.frontY : m.y) };
+      man[key] = { x: m.x, y: m.sit ? M.frontY : m.y, sit: false, seed: false };
+      el.classList.add("drag"); el.setPointerCapture(e.pointerId); e.preventDefault(); apply(el, key, man[key]);
+    });
+    el.addEventListener("pointermove", function (e) {
+      if (!grab) return;
+      var r = stage.getBoundingClientRect(), m = man[key], w = el.offsetWidth * .5;
+      m.x = Math.max(w * .6, Math.min(M.W - w * .6, e.clientX - r.left - grab.dx));
+      m.y = Math.max(M.back, Math.min(M.H, e.clientY - r.top - grab.dy));
+      apply(el, key, m);
+    });
+    var end = function () {
+      if (!grab) return; grab = null; el.classList.remove("drag");
+      var m = man[key];
+      if (m.x > M.b0 && m.x < M.b1 && m.y > M.back + M.H * .004 && m.y < M.sitMax) { m.sit = true; m.x = Math.max(M.b0 + 70 * M.k, Math.min(M.b1 - 70 * M.k, m.x)); }
+      apply(el, key, m);
+    };
+    el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
+  });
+  measure(); settle();
+  // one visitor (the man) wanders the floor in front of the bench until someone picks him up; where you drop him, he stays
+  var wPause = .6, wLast = 0;
+  function wander(t) {
+    var m = man[WALKER], el = vis[WALKER], dt = Math.min(.05, wLast ? (t - wLast) / 1000 : 0); wLast = t;
+    if (m && m.walk && !m.sit && !el.classList.contains("drag")) {
+      if (wPause > 0) { wPause -= dt; el.classList.remove("walk"); }
+      else {
+        if (m.tx == null) { m.tx = M.W * (.12 + Math.random() * .76); m.ty = (845 + Math.random() * 85) * M.k; if (Math.abs(m.tx - m.x) < M.W * .12) m.tx = m.x < M.W / 2 ? m.x + M.W * .25 : m.x - M.W * .25; }
+        var dx = m.tx - m.x, dy = m.ty - m.y, d = Math.hypot(dx, dy), st = 95 * M.k * dt;
+        if (d <= st) { m.x = m.tx; m.y = m.ty; m.tx = null; wPause = 1.5 + Math.random() * 3; el.classList.remove("walk"); }
+        else { m.x += dx / d * st; m.y += dy / d * st; el.classList.add("walk"); }
+        apply(el, WALKER, m);
+      }
+    } else el.classList.remove("walk");
+    requestAnimationFrame(wander);
+  }
+  if (!REDUCE && WALKER) requestAnimationFrame(wander);
+  addEventListener("resize", function () { measure(); settle(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); settle(); });
+  addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
+})();
+</script>
+</body>
+</html>
