@@ -7,12 +7,16 @@
   var store = function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} };
   var frames = [].slice.call(stage.querySelectorAll("a.frame"));
 
-  // phone: start centred on the first campaign; the swipe hint goes away once you move
-  function fit() { if (phone()) stage.style.width = Math.round(pan.clientHeight * 1672 / 941) + "px"; else stage.style.width = ""; }
+  // phone: the whole room fits the screen width (both paintings, the bench and everyone on it); no swiping needed
+  var CROP0 = 405, CROPW = 880;      // photo pixels shown on a phone: just the two frames and the bench
+  function fit() {
+    if (phone()) {
+      var w = Math.round(pan.clientWidth * 1672 / CROPW); stage.style.width = w + "px"; stage.style.height = Math.round(w * 941 / 1672) + "px";
+      pan.style.height = stage.style.height; pan.scrollLeft = Math.round(CROP0 / 1672 * w);
+    } else { stage.style.width = ""; stage.style.height = ""; pan.style.height = ""; }
+  }
   fit();
-  function center(i) { var f = frames[i]; pan.scrollLeft = f.offsetLeft + f.offsetWidth / 2 - pan.clientWidth / 2; }
-  if (phone()) { center(0); pan.addEventListener("scroll", function () { if (Math.abs(pan.scrollLeft - (frames[0].offsetLeft + frames[0].offsetWidth / 2 - pan.clientWidth / 2)) > 24 && swipe) swipe.classList.add("gone"); }, { passive: true }); setTimeout(function () { if (swipe) swipe.classList.add("gone"); }, 6000); }
-  addEventListener("resize", function () { fit(); if (phone()) center(0); });
+  addEventListener("resize", fit);
 
   // desktop hover: the camera drifts a little toward the frame you point at
   function lean(f) {
@@ -86,8 +90,8 @@
   function settle() {
     // equal room between neighbours (and the bench ends): spread by the real widths of the seated sprites
     var order = ["c", "a", "b"], ws = order.map(function (k) { var sp = vis[k].querySelector(".spr.sit"); return sp.offsetWidth * scaleAt(770 * M.k); });
-    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
-    cur = M.b0 + gap * .6 + (PHONE ? M.W * .045 : 0);
+    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = PHONE ? -tot * .03 : Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
+    cur = PHONE ? (M.b0 + M.b1) / 2 - (tot + gap * 2) / 2 - M.W * .014 : M.b0 + gap * .6;
     order.forEach(function (k, i) { seatX[k] = cur + ws[i] / 2; cur += ws[i] + gap; });
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key];
@@ -124,11 +128,6 @@
       el.classList.add("drag"); try { el.setPointerCapture(e.pointerId); } catch (x) {} apply(el, key, man[key]);
     }
     el.addEventListener("pointerdown", function (e) {
-      if (e.pointerType === "touch") {      // on a phone: swiping over a person scrolls the room; press and hold to pick them up
-        var sx = e.clientX, sy = e.clientY, id = e.pointerId, ev = { clientX: sx, clientY: sy, pointerId: id };
-        hold = { t: setTimeout(function () { hold = null; begin(ev); if (navigator.vibrate) try { navigator.vibrate(12); } catch (x) {} }, 320), sx: sx, sy: sy };
-        return;
-      }
       begin(e); e.preventDefault();
     });
     var cancelHold = function () { if (hold) { clearTimeout(hold.t); hold = null; } };

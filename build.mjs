@@ -225,7 +225,7 @@ function homePage() {
       ${PERSON("b")}
     </div>
   </div>
-  <p class="swipe" aria-hidden="true">Swipe to see both campaigns</p>
+  <p class="swipe" aria-hidden="true">Tap a painting to open the campaign</p>
 </main>`;
   return shell({
     title: `${home.first_name} ${home.last_name}, ${home.role}`,

@@ -49,16 +49,17 @@ body.museum-page .scene{display:none}
 /* phone: the photo is shown large and you swipe from one framed campaign to the other */
 @media (max-width:760px),(max-aspect-ratio:1/1){
   .museum{display:flex;flex-direction:column;padding-bottom:calc(60px + env(safe-area-inset-bottom))}
-  .pan{position:relative;inset:auto;flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+  .museum{min-height:100dvh;background:#f8f3e8}
+  .pan{position:relative;inset:auto;flex:none;margin:auto 0;overflow:hidden;scrollbar-width:none;border-top:1px solid rgba(140,110,50,.45);border-bottom:1px solid rgba(140,110,50,.45)}
   .pan::-webkit-scrollbar{display:none}
-  .stage{position:relative;left:auto;top:auto;translate:none;height:100%;width:calc(100dvh*1.2);aspect-ratio:auto;flex:none}
+  .stage{position:relative;left:auto;top:auto;translate:none;flex:none;aspect-ratio:1672/941}
+  .stage>.vis img{touch-action:none}
   .museum .stage .frame{scroll-snap-align:center}
-  .mast{position:relative;flex:none;flex-direction:column;align-items:center;text-align:center;gap:0;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;background:#f8f3e8;border-bottom:1px solid rgba(140,110,50,.35)}
+  .mast{position:relative;flex:none;order:0;flex-direction:column;align-items:center;text-align:center;gap:0;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;background:#f8f3e8;border-bottom:1px solid rgba(140,110,50,.35)}
   .mast .nm{font-size:27px}.mast small{margin-top:7px;font-size:9.5px;letter-spacing:.3em}
   .mast nav{position:fixed;left:0;right:0;bottom:0;justify-content:space-around;gap:0;padding:0 8px env(safe-area-inset-bottom);background:#f8f3e8;border-top:1px solid rgba(140,110,50,.35);z-index:6}
   .mast nav a{font-size:12px;letter-spacing:.24em;padding:20px 14px}
-  .swipe{display:block;position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));text-align:center;margin:0;font:italic 500 15px 'Cormorant Garamond',Georgia,serif;color:#fff6e0;text-shadow:0 1px 4px rgba(30,15,0,.7);pointer-events:none;transition:opacity .6s}
-  .swipe.gone{opacity:0}
+  .swipe{display:block;position:static;order:3;text-align:center;margin:0 0 22px;font:italic 500 17px 'Cormorant Garamond',Georgia,serif;color:#6d5a33;pointer-events:none}
   .wl{font-size:1.5cqw}.wl b{font-size:1cqw}
 }
 @media (prefers-reduced-motion:reduce){.stage,.frame .glow{transition:none}}
