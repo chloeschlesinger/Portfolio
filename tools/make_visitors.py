@@ -64,7 +64,7 @@ for p, d in meta.items():
     final[p] = {}
     for kind in ("stand", "sit"):
         img, name = d["_src"][kind]
-        k = 0.987 if name == "c-sit" else 1.0
+        k = 0.76 if name == "c-sit" else 1.0
         im2 = img.resize((round(img.width * s * k), round(img.height * s * k)), Image.LANCZOS)
         im2.save(f"{OUT}/{name}.webp", quality=90, method=6)
         final[p][kind] = dict(file=f"/scene/people/{name}.webp", w=im2.width, h=im2.height, cut=round(d[kind]["cut"] * s * k))
