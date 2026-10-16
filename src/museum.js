@@ -12,7 +12,7 @@
   function fit() {
     if (phone()) {
       var w = Math.round(pan.clientWidth * 1672 / CROPW); stage.style.width = w + "px"; stage.style.height = Math.round(w * 941 / 1672) + "px";
-      pan.style.height = stage.style.height; pan.scrollLeft = Math.round(CROP0 / 1672 * w);
+      pan.style.height = ""; pan.scrollLeft = Math.round(CROP0 / 1672 * w);
     } else { stage.style.width = ""; stage.style.height = ""; pan.style.height = ""; }
   }
   fit();
@@ -90,8 +90,8 @@
   function settle() {
     // equal room between neighbours (and the bench ends): spread by the real widths of the seated sprites
     var order = ["c", "a", "b"], ws = order.map(function (k) { var sp = vis[k].querySelector(".spr.sit"); return sp.offsetWidth * scaleAt(770 * M.k); });
-    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = PHONE ? -tot * .03 : Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
-    cur = PHONE ? (M.b0 + M.b1) / 2 - (tot + gap * 2) / 2 - M.W * .014 : M.b0 + gap * .6;
+    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = PHONE ? tot * .045 : Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
+    cur = PHONE ? (M.b0 + M.b1) / 2 - (tot + gap * 2) / 2 - M.W * .02 : M.b0 + gap * .6;
     order.forEach(function (k, i) { seatX[k] = cur + ws[i] / 2; cur += ws[i] + gap; });
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key];
