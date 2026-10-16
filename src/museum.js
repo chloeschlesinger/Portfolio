@@ -77,13 +77,19 @@
     if (!el.classList.contains("drag")) el.style.zIndex = m.sit ? 2 : (m.y > M.sitMax ? 6 : 2);
   }
   // seats along the bench: left to right  c, a, b
-  var WALKER = "a", REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var WALKER = null, REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var seatX = {};
   var seats = { c: .24, a: .45, b: .63 };
   function settle() {
+    // equal room between neighbours (and the bench ends): spread by the real widths of the seated sprites
+    var order = ["c", "a", "b"], ws = order.map(function (k) { var sp = vis[k].querySelector(".spr.sit"); return sp.offsetWidth * scaleAt(770 * M.k); });
+    var tot = ws.reduce(function (a, b) { return a + b; }, 0), gap = Math.min(tot * .08, (M.b1 - M.b0 - tot) / 4), cur; seatX = {};
+    cur = M.b0 + gap * .6;
+    order.forEach(function (k, i) { seatX[k] = cur + ws[i] / 2; cur += ws[i] + gap; });
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key];
       if (!m) m = man[key] = key === WALKER ? { x: M.W * .5, y: 915 * M.k, sit: false, seed: false, walk: !REDUCE } : { x: 0, y: 0, sit: true, seed: true };
-      if (m.seed) m.x = M.b0 + (M.b1 - M.b0) * seats[key];
+      if (m.seed) m.x = seatX[key];
       apply(vis[key], key, m);
     });
   }
@@ -145,7 +151,7 @@
     } else el.classList.remove("walk");
     requestAnimationFrame(wander);
   }
-  if (!REDUCE) requestAnimationFrame(wander);
+  if (!REDUCE && WALKER) requestAnimationFrame(wander);
   addEventListener("resize", function () { measure(); settle(); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); settle(); });
   addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
