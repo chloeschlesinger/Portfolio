@@ -77,7 +77,7 @@
     if (!el.classList.contains("drag")) el.style.zIndex = m.sit ? 2 : (m.y > M.sitMax ? 6 : 2);
   }
   // seats along the bench: left to right  c, a, b
-  var seats = { c: .14, a: .40, b: .65 };
+  var seats = { c: .29, a: .50, b: .65 };
   function settle() {
     ["c", "a", "b"].forEach(function (key) {
       var m = man[key]; if (!m) m = man[key] = { x: 0, y: 0, sit: true, seed: true };
