@@ -57,3 +57,17 @@
     els.forEach(function (el) { el.classList.add("rv"); io.observe(el); });
   }
 })();
+
+/* every page opens at the top (unless the link carries a #hash, like Contact); links to the page you're already on scroll up too */
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  var top = function () { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; };
+  if (!location.hash) { top(); addEventListener("load", top); addEventListener("pageshow", top); }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented || a.target === "_blank") return;
+    var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
+    if (u.origin === location.origin && u.pathname.replace(/index\.html$/, "") === location.pathname.replace(/index\.html$/, "") && !u.hash) {
+      e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+})();
