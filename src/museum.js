@@ -66,7 +66,7 @@
   var scaleAt = function (y) { return lerp(.9, 1.2, Math.max(0, Math.min(1, (y - M.floorTop) / (M.H - M.floorTop)))); };
   function place(el, x, y, s) { el.style.transform = "translate(" + (x - el.offsetWidth / 2).toFixed(1) + "px," + (y - el.offsetHeight).toFixed(1) + "px) scale(" + s.toFixed(3) + ")"; }
   function apply(el, key, m) {
-    var y = m.sit ? M.sitAnchor : m.y, s = scaleAt(m.sit ? 770 * M.k : m.y);
+    var y = m.sit ? M.sitAnchor : m.y, s = scaleAt(m.sit ? 770 * M.k : m.y) * (m.sit ? 1 : .86);
     el.classList.toggle("sit", !!m.sit); el.classList.toggle("on", true);
     place(el, m.x, y, s);
     var sh = stage.querySelector(".s-" + key);
@@ -77,10 +77,12 @@
     if (!el.classList.contains("drag")) el.style.zIndex = m.sit ? 2 : (m.y > M.sitMax ? 6 : 2);
   }
   // seats along the bench: left to right  c, a, b
+  var WALKER = "a", REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var seats = { c: .24, a: .45, b: .63 };
   function settle() {
     ["c", "a", "b"].forEach(function (key) {
-      var m = man[key]; if (!m) m = man[key] = { x: 0, y: 0, sit: true, seed: true };
+      var m = man[key];
+      if (!m) m = man[key] = key === WALKER ? { x: M.W * .5, y: 915 * M.k, sit: false, seed: false, walk: !REDUCE } : { x: 0, y: 0, sit: true, seed: true };
       if (m.seed) m.x = M.b0 + (M.b1 - M.b0) * seats[key];
       apply(vis[key], key, m);
     });
@@ -127,6 +129,23 @@
     el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
   });
   measure(); settle();
+  // one visitor (the man) wanders the floor in front of the bench until someone picks him up; where you drop him, he stays
+  var wPause = .6, wLast = 0;
+  function wander(t) {
+    var m = man[WALKER], el = vis[WALKER], dt = Math.min(.05, wLast ? (t - wLast) / 1000 : 0); wLast = t;
+    if (m && m.walk && !m.sit && !el.classList.contains("drag")) {
+      if (wPause > 0) { wPause -= dt; el.classList.remove("walk"); }
+      else {
+        if (m.tx == null) { m.tx = M.W * (.12 + Math.random() * .76); m.ty = (845 + Math.random() * 85) * M.k; if (Math.abs(m.tx - m.x) < M.W * .12) m.tx = m.x < M.W / 2 ? m.x + M.W * .25 : m.x - M.W * .25; }
+        var dx = m.tx - m.x, dy = m.ty - m.y, d = Math.hypot(dx, dy), st = 95 * M.k * dt;
+        if (d <= st) { m.x = m.tx; m.y = m.ty; m.tx = null; wPause = 1.5 + Math.random() * 3; el.classList.remove("walk"); }
+        else { m.x += dx / d * st; m.y += dy / d * st; el.classList.add("walk"); }
+        apply(el, WALKER, m);
+      }
+    } else el.classList.remove("walk");
+    requestAnimationFrame(wander);
+  }
+  if (!REDUCE) requestAnimationFrame(wander);
   addEventListener("resize", function () { measure(); settle(); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); settle(); });
   addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
